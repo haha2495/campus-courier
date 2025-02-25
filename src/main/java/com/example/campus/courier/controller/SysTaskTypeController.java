@@ -40,7 +40,7 @@ public class SysTaskTypeController extends BaseController {
         }
         return Result.success(taskTypeService.addTaskType(request), "添加任务类型成功");
     }
-    
+
     /**
      * 分页查询任务类型
      *
@@ -57,7 +57,7 @@ public class SysTaskTypeController extends BaseController {
         }
         return Result.success(taskTypeService.pageTaskTypes(request), "查询成功");
     }
-    
+
     /**
      * 启用任务类型
      *
@@ -74,7 +74,7 @@ public class SysTaskTypeController extends BaseController {
         }
         return Result.success(taskTypeService.enableTaskType(id), "启用任务类型成功");
     }
-    
+
     /**
      * 禁用任务类型
      *
@@ -90,5 +90,22 @@ public class SysTaskTypeController extends BaseController {
             return Result.forbidden();
         }
         return Result.success(taskTypeService.disableTaskType(id), "禁用任务类型成功");
+    }
+
+    /**
+     * 获取任务类型详情
+     *
+     * @param id 任务类型ID
+     * @return 任务类型详情
+     */
+    @GetMapping("/detail/{id}")
+    @Operation(summary = "获取任务类型详情", description = "根据ID获取任务类型详细信息")
+    public Result<SysTaskType> getTaskTypeDetail(
+            @PathVariable @Parameter(description = "任务类型ID") Integer id) {
+        // 检查当前用户是否为管理员
+        if (!isAdmin()) {
+            return Result.forbidden();
+        }
+        return Result.success(taskTypeService.getTaskTypeDetail(id), "获取任务类型详情成功");
     }
 } 

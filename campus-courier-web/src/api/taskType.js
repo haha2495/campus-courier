@@ -50,3 +50,15 @@ export function disableTaskType(id) {
     })
 }
 
+/**
+ * 获取任务类型详情
+ * @param {string | LocationQueryValue[]} id - 任务类型ID
+ * @returns {Promise}
+ */
+export function getTaskTypeDetail(id) {
+    return request({
+        url: `/task/types/detail/${id}`,
+        method: 'get'
+    })
+}
+

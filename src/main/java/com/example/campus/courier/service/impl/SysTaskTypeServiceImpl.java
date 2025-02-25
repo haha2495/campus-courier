@@ -84,4 +84,18 @@ public class SysTaskTypeServiceImpl implements SysTaskTypeService {
         // 调用Handler执行禁用操作
         return taskTypeHandler.disableTaskType(id);
     }
+    
+    /**
+     * 获取任务类型详情
+     *
+     * @param id 任务类型ID
+     * @return 任务类型详情
+     */
+    @Override
+    public SysTaskType getTaskTypeDetail(Integer id) {
+        log.info("获取任务类型详情, ID: {}", id);
+        
+        // 调用Handler获取任务类型详情
+        return taskTypeHandler.getTaskTypeDetail(id);
+    }
 } 

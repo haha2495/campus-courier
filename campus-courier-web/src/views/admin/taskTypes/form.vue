@@ -407,7 +407,7 @@ import {useRoute, useRouter} from 'vue-router'
 import {ElMessage, ElMessageBox} from 'element-plus'
 import {Back, InfoFilled, Plus, Search} from '@element-plus/icons-vue'
 import {IconCategoryEnum, PresetIconsEnum} from '@/utils/enums/iconEnums'
-import {addTaskType} from '@/api/taskType' // 导入API方法
+import {addTaskType, getTaskTypeDetail} from '@/api/taskType' // 导入获取详情API
 
 const route = useRoute()
 const router = useRouter()
@@ -695,11 +695,11 @@ const submitForm = () => {
       try {
         // 调用API添加任务类型
         await addTaskType(formData);
-        ElMessage.success('添加成功');
+        ElMessage.success(isEdit.value ? '更新成功' : '添加成功');
         // 跳转到任务类型列表页
         router.push('/admin/task-types');
       } catch (error) {
-        console.error('添加任务类型失败:', error);
+        console.error('操作任务类型失败:', error);
         ElMessage.error(error.message || '操作失败');
       } finally {
         submitting.value = false;
@@ -716,27 +716,36 @@ onMounted(async () => {
   document.body.classList.add('admin-page');
 
   if (isEdit.value) {
-    const id = route.query.id
+    const id = route.query.id;
     try {
-      // 这里应该调用实际的API获取数据
-      // 模拟API调用
-      await new Promise(resolve => setTimeout(resolve, 500))
-
-      // 模拟数据，实际项目中应该从API获取
+      // 显示加载中提示
+      ElMessage.info({
+        message: '正在加载任务类型数据...',
+        duration: 1000
+      });
+      
+      // 调用API获取任务类型详情
+      const response = await getTaskTypeDetail(id);
+      
+      // 更新表单数据
       Object.assign(formData, {
-        id: id,
-        typeName: '示例任务类型',
-        icon: 'https://cdn-icons-png.flaticon.com/128/2271/2271048.png', // 使用预设图标之一
-        description: '这是一个示例任务类型的描述信息',
-        priority: 10,
-        status: 1
-      })
+        id: response.id,
+        typeName: response.typeName,
+        icon: response.icon,
+        description: response.description,
+        priority: response.priority,
+        status: response.status
+      });
+      
+      // 提示加载成功
+      ElMessage.success('任务类型数据加载成功');
     } catch (error) {
-      ElMessage.error('获取任务类型信息失败')
-      router.push('/admin/task-types')
+      console.error('获取任务类型详情失败:', error);
+      ElMessage.error('获取任务类型信息失败');
+      router.push('/admin/task-types');
     }
   }
-})
+});
 </script>
 
 <style scoped>

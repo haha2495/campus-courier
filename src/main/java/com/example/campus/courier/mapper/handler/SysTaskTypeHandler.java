@@ -84,4 +84,17 @@ public class SysTaskTypeHandler extends ServiceImpl<SysTaskTypeMapper, SysTaskTy
         // 执行更新操作
         return update(updateWrapper);
     }
+    
+    /**
+     * 获取任务类型详情
+     *
+     * @param id 任务类型ID
+     * @return 任务类型详情
+     */
+    public SysTaskType getTaskTypeDetail(Integer id) {
+        log.info("Handler - 获取任务类型详情, ID: {}", id);
+        
+        // 直接通过ID查询
+        return getById(id);
+    }
 }
