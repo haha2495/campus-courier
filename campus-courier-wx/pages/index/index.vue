@@ -43,7 +43,7 @@
             <text class="welcome-subtitle">有什么需要帮忙的吗？</text>
             <view class="publish-button" @click="navigateTo('publish')">
               <text class="button-text">发布新任务</text>
-              <u-icon name="arrow-right" color="#fff" size="14"></u-icon>
+              <image src="https://cdn-icons-png.flaticon.com/128/271/271228.png" class="arrow-icon"></image>
             </view>
           </view>
           <view class="welcome-image">🛵</view>
@@ -69,11 +69,15 @@
             <text class="section-title">最近任务</text>
             <view class="view-more" @click="navigateTo('tasks')">
               <text class="more-text">查看全部</text>
-              <u-icon name="arrow-right" color="#666" size="12"></u-icon>
+              <image src="https://cdn-icons-png.flaticon.com/128/271/271228.png" class="arrow-icon"></image>
             </view>
           </view>
           
-          <u-empty text="暂无任务记录" mode="list"></u-empty>
+          <view v-if="showEmpty" class="custom-empty">
+            <image class="empty-image" src="https://cdn-icons-png.flaticon.com/128/7486/7486754.png" mode="aspectFit"></image>
+            <text class="empty-text">暂无数据</text>
+            <text class="empty-tips">下拉刷新试试看</text>
+          </view>
         </view>
       </block>
       
@@ -85,7 +89,7 @@
             <text class="welcome-subtitle">准备开始新的旅程？</text>
             <view class="publish-button runner" @click="navigateTo('orders')">
               <text class="button-text">前往抢单</text>
-              <u-icon name="arrow-right" color="#fff" size="14"></u-icon>
+              <image src="https://cdn-icons-png.flaticon.com/128/271/271228.png" class="arrow-icon"></image>
             </view>
           </view>
           <view class="welcome-image">📦</view>
@@ -111,11 +115,15 @@
             <text class="section-title">热门任务</text>
             <view class="view-more" @click="navigateTo('orders')">
               <text class="more-text">查看全部</text>
-              <u-icon name="arrow-right" color="#666" size="12"></u-icon>
+              <image src="https://cdn-icons-png.flaticon.com/128/271/271228.png" class="arrow-icon"></image>
             </view>
           </view>
           
-          <u-empty text="暂无热门任务" mode="list"></u-empty>
+          <view v-if="showEmpty" class="custom-empty">
+            <image class="empty-image" src="https://cdn-icons-png.flaticon.com/128/7486/7486754.png" mode="aspectFit"></image>
+            <text class="empty-text">暂无数据</text>
+            <text class="empty-tips">下拉刷新试试看</text>
+          </view>
         </view>
       </block>
       
@@ -243,16 +251,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
-import { onShow } from '@dcloudio/uni-app'
-import { 
-  TabBarType, 
-  TabPageName, 
-  publisherTabConfig, 
-  runnerTabConfig, 
-  getCenterButton,
-  getVersionedIconUrl
-} from '@/utils/tabConfig'
+import { ref, onMounted, computed, onShow } from 'vue'
+import { TabBarType, TabPageName, publisherTabConfig, runnerTabConfig, getCenterButton, getVersionedIconUrl, ICON_VERSION } from '@/utils/tabConfig'
 
 // 当前角色：publisher(发布者) 或 runner(跑腿者)
 const currentRole = ref(TabBarType.PUBLISHER)
@@ -277,6 +277,30 @@ const currentTabs = computed(() => {
 
 // 图标缓存对象
 const iconCache = ref({})
+
+// 添加空状态控制
+const showEmpty = ref(true)
+const isLoading = ref(false)
+
+// 刷新数据方法
+const refreshData = async () => {
+  isLoading.value = true
+  showEmpty.value = false
+  
+  try {
+    // 这里添加你的数据加载逻辑
+    // 模拟数据加载
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    
+    // 如果没有数据则显示空状态
+    showEmpty.value = true
+  } catch (error) {
+    console.error('加载数据失败:', error)
+    showEmpty.value = true
+  } finally {
+    isLoading.value = false
+  }
+}
 
 // 从缓存获取图标URL
 const getIconSrc = (url) => {
@@ -307,12 +331,14 @@ onMounted(() => {
   initRoleFromStorage()
   loadIconCache()
   preloadTabIcons()
+  refreshData()
 })
 
 // 每次显示页面时执行
 onShow(() => {
   // 刷新图标缓存
   loadIconCache()
+  refreshData()
 })
 
 // 加载图标缓存
@@ -330,8 +356,9 @@ const getSystemInfo = () => {
     // 底部安全区域高度（适配iPhone X及以上机型）
     safeAreaInsetBottom.value = info.safeAreaInsets?.bottom || 0
     
-    // 设置CSS变量
-    document.documentElement.style.setProperty('--status-bar-height', `${statusBarHeight.value}px`)
+    // 设置CSS变量 - 修复document对象的使用
+    // 小程序环境不支持直接操作document，改为使用样式变量
+    const statusBarHeightValue = `${statusBarHeight.value}px`
     
     console.log('系统信息:', info)
     console.log('状态栏高度:', statusBarHeight.value)
@@ -558,6 +585,57 @@ const preloadTabIcons = () => {
     })
   })
 }
+
+// 添加刷新图标缓存的方法
+const refreshIconCache = () => {
+  // 检查缓存版本
+  const cachedVersion = uni.getStorageSync('iconCacheVersion')
+  
+  if (cachedVersion !== ICON_VERSION) {
+    console.log('图标版本已更新，刷新缓存', cachedVersion, '->', ICON_VERSION)
+    
+    // 清除所有图标缓存
+    try {
+      const fs = uni.getFileSystemManager()
+      const cachePath = `${uni.env.USER_DATA_PATH}/icons`
+      
+      // 尝试删除并重新创建缓存目录
+      try {
+        const fileList = fs.readdirSync(cachePath)
+        fileList.forEach(file => {
+          try {
+            fs.unlinkSync(`${cachePath}/${file}`)
+          } catch (e) {
+            console.warn('删除缓存文件失败', e)
+          }
+        })
+      } catch (e) {
+        console.log('缓存目录可能不存在，将创建新目录')
+      }
+      
+      // 重新创建缓存目录
+      try {
+        fs.mkdirSync(cachePath, true)
+      } catch (e) {
+        console.warn('创建缓存目录失败', e)
+      }
+      
+      // 清除缓存记录
+      iconCache.value = {}
+      uni.setStorageSync('iconCache', {})
+      
+      // 更新缓存版本
+      uni.setStorageSync('iconCacheVersion', ICON_VERSION)
+      
+      // 强制重新预加载图标
+      setTimeout(() => {
+        preloadTabIcons()
+      }, 500)
+    } catch (e) {
+      console.error('刷新图标缓存失败', e)
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -580,7 +658,7 @@ const preloadTabIcons = () => {
 // 悬浮角色切换器
 .floating-role-switch {
   position: absolute;
-  top: calc(var(--status-bar-height, 20px) + 10rpx);
+  top: v-bind('statusBarHeight + 10 + "px"');
   left: 50%;
   transform: translateX(-50%);
   z-index: 99;
@@ -835,21 +913,55 @@ const preloadTabIcons = () => {
     height: 44rpx;
     margin-bottom: 4rpx;
     will-change: transform;
-    transition: transform 0.2s;
+    transition: all 0.3s;
   }
   
   .tab-text {
     font-size: 20rpx;
     color: #999;
     margin-top: 4rpx;
+    transition: all 0.3s;
+  }
+  
+  &.active {
+    .tab-icon {
+      transform: scale(1.15);
+      filter: drop-shadow(0 2rpx 6rpx rgba(0, 0, 0, 0.15));
+    }
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 16rpx;
+      height: 6rpx;
+      border-radius: 3rpx;
+      background: linear-gradient(to right, #ff9500, #ff7d00);
+      transition: width 0.3s;
+    }
+    
+    &:hover::after {
+      width: 24rpx;
+    }
+  }
+  
+  &.active:nth-child(5),
+  &.active:nth-child(6) {
+    &::after {
+      background: linear-gradient(to right, #3498db, #2980b9);
+    }
   }
   
   .active-text {
     color: #ff9500;
+    font-weight: 600;
   }
   
   .active-text-runner {
     color: #3498db;
+    font-weight: 600;
   }
 }
 
@@ -954,7 +1066,7 @@ const preloadTabIcons = () => {
 /* 小屏幕设备适配 */
 @media screen and (max-height: 650px) {
   .floating-role-switch {
-    top: calc(var(--status-bar-height, 20px) + 5rpx);
+    top: v-bind('statusBarHeight + 5 + "px"');
   }
   
   .role-switch {
@@ -993,6 +1105,39 @@ const preloadTabIcons = () => {
   
   .stats-label {
     font-size: 20rpx !important;
+  }
+}
+
+// 添加箭头图标样式
+.arrow-icon {
+  width: 24rpx;
+  height: 24rpx;
+  margin-left: 4rpx;
+}
+
+// 自定义空状态样式
+.custom-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 0;
+  
+  .empty-image {
+    width: 150rpx;
+    height: 150rpx;
+    margin-bottom: 20rpx;
+  }
+  
+  .empty-text {
+    font-size: 28rpx;
+    color: #666;
+    margin-bottom: 10rpx;
+  }
+  
+  .empty-tips {
+    font-size: 24rpx;
+    color: #999;
   }
 }
 </style>

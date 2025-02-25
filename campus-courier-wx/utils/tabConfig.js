@@ -4,7 +4,7 @@
  */
 
 // 图标版本，更新图标时修改此版本号可强制刷新缓存
-export const ICON_VERSION = '1.0.0';
+export const ICON_VERSION = '1.1.0';
 
 // 验证图标URL是否有效
 export const validateIconUrl = (url) => {
@@ -49,13 +49,13 @@ export const publisherTabConfig = [
     name: TabPageName.HOME, 
     text: '首页', 
     icon: 'https://cdn-icons-png.flaticon.com/128/1946/1946488.png', 
-    activeIcon: 'https://cdn-icons-png.flaticon.com/128/1946/1946436.png' 
+    activeIcon: 'https://cdn-icons-png.flaticon.com/128/619/619032.png' 
   },
   { 
     name: TabPageName.TASKS, 
     text: '我的任务', 
     icon: 'https://cdn-icons-png.flaticon.com/128/2098/2098561.png', 
-    activeIcon: 'https://cdn-icons-png.flaticon.com/128/2355/2355330.png' 
+    activeIcon: 'https://cdn-icons-png.flaticon.com/128/3176/3176363.png' 
   },
   { 
     name: TabPageName.PUBLISH, 
@@ -67,13 +67,13 @@ export const publisherTabConfig = [
     name: TabPageName.DISPUTES, 
     text: '纠纷大厅', 
     icon: 'https://cdn-icons-png.flaticon.com/128/1585/1585464.png', 
-    activeIcon: 'https://cdn-icons-png.flaticon.com/128/1585/1585527.png' 
+    activeIcon: 'https://cdn-icons-png.flaticon.com/128/5726/5726532.png' 
   },
   { 
     name: TabPageName.MINE, 
     text: '我的', 
     icon: 'https://cdn-icons-png.flaticon.com/128/1077/1077114.png', 
-    activeIcon: 'https://cdn-icons-png.flaticon.com/128/1077/1077063.png' 
+    activeIcon: 'https://cdn-icons-png.flaticon.com/128/4140/4140048.png' 
   }
 ]
 
@@ -83,13 +83,13 @@ export const runnerTabConfig = [
     name: TabPageName.HOME, 
     text: '首页', 
     icon: 'https://cdn-icons-png.flaticon.com/128/1946/1946488.png', 
-    activeIcon: 'https://cdn-icons-png.flaticon.com/128/1946/1946436.png' 
+    activeIcon: 'https://cdn-icons-png.flaticon.com/128/619/619032.png' 
   },
   { 
     name: TabPageName.CURRENT, 
     text: '当前任务', 
     icon: 'https://cdn-icons-png.flaticon.com/128/2838/2838779.png', 
-    activeIcon: 'https://cdn-icons-png.flaticon.com/128/2838/2838846.png' 
+    activeIcon: 'https://cdn-icons-png.flaticon.com/128/5865/5865966.png' 
   },
   { 
     name: TabPageName.ORDERS, 
@@ -101,13 +101,13 @@ export const runnerTabConfig = [
     name: TabPageName.RECORDS, 
     text: '我的接单', 
     icon: 'https://cdn-icons-png.flaticon.com/128/2098/2098561.png', 
-    activeIcon: 'https://cdn-icons-png.flaticon.com/128/2355/2355330.png' 
+    activeIcon: 'https://cdn-icons-png.flaticon.com/128/3176/3176363.png' 
   },
   { 
     name: TabPageName.MINE, 
     text: '我的', 
     icon: 'https://cdn-icons-png.flaticon.com/128/1077/1077114.png', 
-    activeIcon: 'https://cdn-icons-png.flaticon.com/128/1077/1077063.png' 
+    activeIcon: 'https://cdn-icons-png.flaticon.com/128/4140/4140048.png' 
   }
 ]
 
