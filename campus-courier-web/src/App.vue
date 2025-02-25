@@ -40,12 +40,12 @@ html,
 body {
   width: 100%;
   height: 100%;
-  /* 移除强制overflow:hidden，改为只在非管理页面使用 */
+  overflow: hidden; /* 禁止全局滚动 */
 }
 
 /* 允许管理页面滚动，如任务类型表单页面 */
 body.admin-page {
-  overflow-y: auto !important;
+  overflow-y: hidden; /* 禁止全局滚动 */
 }
 
 /* 默认仍保持原有效果 */
@@ -58,23 +58,22 @@ body.app-page {
   height: 100vh;
   position: relative;
   overflow-x: hidden;
+  display: flex;
   perspective: 1200px; /* 添加透视效果，增强3D感 */
 }
 
 .page-component {
   width: 100%;
   height: 100%;
-  position: absolute;
-  left: 0;
-  top: 0;
+  position: relative;
+  overflow-y: auto; /* 允许内容区域滚动 */
+  padding-top: 60px; /* 留出面包屑的空间 */
 }
 
 /* 允许管理类页面组件滚动 */
-.page-component.admin-component {
-  position: relative;
-  height: auto;
+.admin-component {
   min-height: 100%;
-  overflow-y: auto;
+  overflow-y: auto; /* 允许管理类页面组件滚动 */
 }
 
 /* 新的缩放淡入淡出动画 - 更流畅，无卡顿 */
