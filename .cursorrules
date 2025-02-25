@@ -50,7 +50,7 @@
     #### 后端开发规范：
     1. 项目结构规范：
        ```
-       src/main/java/com/example/campus/club/
+       src/main/java/com/example/campus/courier/
        ├── controller/    # 控制器层，处理HTTP请求
        ├── service/      # 服务层，业务逻辑
        │   └── impl/     # 服务实现类
