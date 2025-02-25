@@ -8,12 +8,14 @@
             {{ isEdit ? '编辑任务类型' : '新增任务类型' }}
           </span>
           <el-button @click="goBack" text class="back-button">
-            <el-icon><Back /></el-icon>
+            <el-icon>
+              <Back/>
+            </el-icon>
             返回列表
           </el-button>
         </div>
       </template>
-      
+
       <div class="form-content">
         <div class="form-wrapper">
           <!-- 表单引导语 -->
@@ -21,26 +23,26 @@
             <div class="intro-icon">🎯</div>
             <p>创建一个清晰明了的任务类型，帮助同学们快速找到需要的服务</p>
           </div>
-          
-          <el-form 
-            ref="formRef" 
-            :model="formData" 
-            :rules="rules" 
-            label-width="100px" 
-            label-position="right"
-            status-icon
-            class="task-type-form-inner"
+
+          <el-form
+              ref="formRef"
+              :model="formData"
+              :rules="rules"
+              label-width="100px"
+              label-position="right"
+              status-icon
+              class="task-type-form-inner"
           >
             <!-- 类型名称 -->
             <el-form-item label="类型名称" prop="typeName">
               <div class="fancy-input-wrapper">
-                <el-input 
-                  v-model="formData.typeName" 
-                  placeholder="为你的任务类型取个简洁明了的名字吧~"
-                  maxlength="50"
-                  show-word-limit
-                  class="fancy-input"
-                  @input="() => { if(formData.lastSelectedIconName === formData.typeName) formData.lastSelectedIconName = '' }"
+                <el-input
+                    v-model="formData.typeName"
+                    placeholder="为你的任务类型取个简洁明了的名字吧~"
+                    maxlength="50"
+                    show-word-limit
+                    class="fancy-input"
+                    @input="() => { if(formData.lastSelectedIconName === formData.typeName) formData.lastSelectedIconName = '' }"
                 >
                   <template #prefix>
                     <div class="input-prefix-icon">📝</div>
@@ -54,7 +56,7 @@
                 </div>
               </div>
             </el-form-item>
-            
+
             <!-- 简化后的类型图标选择 -->
             <el-form-item label="类型图标" prop="icon">
               <div class="icon-compact-selection">
@@ -66,33 +68,33 @@
                     <div class="icon-name">{{ getSelectedIconName() }}</div>
                   </div>
                 </div>
-                
+
                 <!-- 选择图标按钮 -->
                 <div class="icon-actions">
-                  <el-button 
-                    @click="openIconDialog"
-                    type="primary" 
-                    :icon="formData.icon ? 'Edit' : 'Plus'"
-                    class="select-icon-btn"
+                  <el-button
+                      @click="openIconDialog"
+                      type="primary"
+                      :icon="formData.icon ? 'Edit' : 'Plus'"
+                      class="select-icon-btn"
                   >
                     {{ formData.icon ? '更换图标' : '选择图标' }}
                   </el-button>
-                  <el-button 
-                    v-if="formData.icon" 
-                    @click="uploadCustomIcon"
-                    plain
-                    class="select-icon-btn"
+                  <el-button
+                      v-if="formData.icon"
+                      @click="uploadCustomIcon"
+                      plain
+                      class="select-icon-btn"
                   >
                     上传自定义图标
                   </el-button>
                 </div>
-                
+
                 <div class="icon-tip" v-if="!formData.icon">
                   <el-alert
-                    title="请选择一个能代表此任务类型的图标"
-                    type="info"
-                    :closable="false"
-                    show-icon
+                      title="请选择一个能代表此任务类型的图标"
+                      type="info"
+                      :closable="false"
+                      show-icon
                   >
                     <template #default>
                       好的图标能帮助用户快速识别任务类型
@@ -101,19 +103,19 @@
                 </div>
               </div>
             </el-form-item>
-            
+
             <!-- 类型描述 -->
             <el-form-item label="类型描述" prop="description">
               <div class="fancy-input-wrapper">
-                <el-input 
-                  v-model="formData.description" 
-                  type="textarea" 
-                  placeholder="描述一下这个任务类型是做什么的，帮助同学们更好地理解~"
-                  maxlength="200"
-                  show-word-limit
-                  :rows="4"
-                  class="fancy-textarea"
-                  @input="() => formData.isDefaultDescription = false"
+                <el-input
+                    v-model="formData.description"
+                    type="textarea"
+                    placeholder="描述一下这个任务类型是做什么的，帮助同学们更好地理解~"
+                    maxlength="200"
+                    show-word-limit
+                    :rows="4"
+                    class="fancy-textarea"
+                    @input="() => formData.isDefaultDescription = false"
                 />
                 <div class="input-hint">
                   好的描述能提高接单效率，例如："提供专业的快递代取服务，包括校内所有快递点"
@@ -123,26 +125,26 @@
                 </div>
               </div>
             </el-form-item>
-            
+
             <!-- 优先级 -->
             <el-form-item label="优先级" prop="priority">
               <div class="priority-container">
                 <div class="priority-input">
-                  <el-input-number 
-                    v-model="formData.priority" 
-                    :min="1" 
-                    :max="100" 
-                    placeholder="请输入优先级"
-                    controls-position="right"
+                  <el-input-number
+                      v-model="formData.priority"
+                      :min="1"
+                      :max="100"
+                      placeholder="请输入优先级"
+                      controls-position="right"
                   />
                 </div>
                 <div class="priority-slider">
-                  <el-slider 
-                    v-model="formData.priority" 
-                    :min="1" 
-                    :max="100"
-                    :format-tooltip="formatPriorityTooltip"
-                    class="custom-slider"
+                  <el-slider
+                      v-model="formData.priority"
+                      :min="1"
+                      :max="100"
+                      :format-tooltip="formatPriorityTooltip"
+                      class="custom-slider"
                   />
                 </div>
               </div>
@@ -151,35 +153,37 @@
                 数字越大优先级越高，将在任务类型列表中排序靠前，默认为10
               </div>
             </el-form-item>
-            
+
             <!-- 状态 -->
             <el-form-item label="状态" prop="status">
               <div class="status-switch-container">
                 <el-switch
-                  v-model="formData.status"
-                  :active-value="1"
-                  :inactive-value="0"
-                  active-text="启用"
-                  inactive-text="禁用"
-                  class="status-switch"
+                    v-model="formData.status"
+                    :active-value="1"
+                    :inactive-value="0"
+                    active-text="启用"
+                    inactive-text="禁用"
+                    class="status-switch"
                 />
                 <div class="status-description">
-                  {{ formData.status === 1 ? '启用后，该任务类型将对所有用户可见' : '禁用后，该任务类型将不会在用户端显示' }}
+                  {{
+                    formData.status === 1 ? '启用后，该任务类型将对所有用户可见' : '禁用后，该任务类型将不会在用户端显示'
+                  }}
                 </div>
               </div>
             </el-form-item>
-            
+
             <!-- 自动填充提示 -->
             <el-alert
-              v-if="showAutoFillTip"
-              title="已根据您选择的图标自动填充名称和描述"
-              type="success"
-              description="我们根据您选择的图标自动生成了任务类型名称和描述，您可以直接使用或进行修改。"
-              :closable="true"
-              show-icon
-              class="auto-fill-alert"
+                v-if="showAutoFillTip"
+                title="已根据您选择的图标自动填充名称和描述"
+                type="success"
+                description="我们根据您选择的图标自动生成了任务类型名称和描述，您可以直接使用或进行修改。"
+                :closable="true"
+                show-icon
+                class="auto-fill-alert"
             />
-            
+
             <!-- 提交按钮 -->
             <el-form-item>
               <div class="form-actions">
@@ -197,15 +201,15 @@
         </div>
       </div>
     </el-card>
-    
+
     <!-- 图标选择弹窗 -->
     <el-dialog
-      v-model="iconDialogVisible"
-      title="选择任务类型图标"
-      width="70%"
-      class="icon-selection-dialog"
-      :destroy-on-close="false"
-      :close-on-click-modal="false"
+        v-model="iconDialogVisible"
+        title="选择任务类型图标"
+        width="70%"
+        class="icon-selection-dialog"
+        :destroy-on-close="false"
+        :close-on-click-modal="false"
     >
       <div class="icon-dialog-content">
         <!-- 图标选择方式切换 -->
@@ -214,41 +218,41 @@
             <!-- 图标选择小提示 -->
             <div class="selection-tip">
               <el-alert
-                title="选择一个能代表你任务类型的精美图标"
-                type="info"
-                :closable="false"
-                show-icon
+                  title="选择一个能代表你任务类型的精美图标"
+                  type="info"
+                  :closable="false"
+                  show-icon
               >
                 <template #default>
                   我们准备了140+精美图标，涵盖校园生活的方方面面
                 </template>
               </el-alert>
             </div>
-            
+
             <div class="icon-categories">
               <div class="category-title">图标分类</div>
               <el-radio-group v-model="currentCategory" size="large">
-                <el-radio-button 
-                  v-for="category in iconCategories" 
-                  :key="category.value" 
-                  :label="category.value"
-                  class="category-button"
+                <el-radio-button
+                    v-for="category in iconCategories"
+                    :key="category.value"
+                    :label="category.value"
+                    class="category-button"
                 >
                   {{ getCategoryEmoji(category.value) }} {{ category.label }}
                 </el-radio-button>
               </el-radio-group>
             </div>
-            
+
             <div class="icon-grid">
               <el-scrollbar height="300px">
                 <div class="icon-list">
-                  <div 
-                    v-for="icon in filteredIcons" 
-                    :key="icon.name"
-                    class="icon-item"
-                    :class="{ 'is-selected': formData.icon === icon.url }"
-                    @click="selectIconAndClose(icon)"
-                    :data-icon="icon.name"
+                  <div
+                      v-for="icon in filteredIcons"
+                      :key="icon.name"
+                      class="icon-item"
+                      :class="{ 'is-selected': formData.icon === icon.url }"
+                      @click="selectIconAndClose(icon)"
+                      :data-icon="icon.name"
                   >
                     <div class="icon-wrapper">
                       <img :src="icon.url" class="icon-preview" :alt="icon.name">
@@ -259,33 +263,35 @@
                 </div>
               </el-scrollbar>
             </div>
-            
+
             <div class="icon-search">
               <el-input
-                v-model="iconSearchText"
-                placeholder="搜索图标，例如：快递、打印、代课..."
-                :prefix-icon="Search"
-                clearable
-                class="search-input"
+                  v-model="iconSearchText"
+                  placeholder="搜索图标，例如：快递、打印、代课..."
+                  :prefix-icon="Search"
+                  clearable
+                  class="search-input"
               />
             </div>
           </el-tab-pane>
-          
+
           <el-tab-pane label="上传自定义图标" name="upload">
             <div class="upload-container">
               <el-upload
-                class="avatar-uploader"
-                action="#"
-                :http-request="uploadIcon"
-                :show-file-list="false"
-                :before-upload="beforeIconUpload"
-                drag
+                  class="avatar-uploader"
+                  action="#"
+                  :http-request="uploadIcon"
+                  :show-file-list="false"
+                  :before-upload="beforeIconUpload"
+                  drag
               >
                 <div v-if="formData.icon && iconSelectionMode === 'upload'" class="avatar-preview">
-                  <el-avatar :size="120" :src="formData.icon" />
+                  <el-avatar :size="120" :src="formData.icon"/>
                 </div>
                 <template v-else>
-                  <el-icon class="avatar-uploader-icon"><Plus /></el-icon>
+                  <el-icon class="avatar-uploader-icon">
+                    <Plus/>
+                  </el-icon>
                   <div class="upload-text">
                     <p>点击或拖拽图片到此处上传</p>
                     <p class="upload-subtext">自定义你的专属图标</p>
@@ -294,7 +300,9 @@
               </el-upload>
               <div class="upload-tip">
                 <div class="tip-header">
-                  <el-icon><InfoFilled /></el-icon>
+                  <el-icon>
+                    <InfoFilled/>
+                  </el-icon>
                   <span>上传提示</span>
                 </div>
                 <p>支持JPG、PNG格式，建议尺寸100x100px</p>
@@ -304,23 +312,26 @@
             </div>
           </el-tab-pane>
         </el-tabs>
-        
+
         <!-- 选择预览区域 -->
         <div class="dialog-preview-area">
           <div class="dialog-preview-title">实时预览</div>
           <div class="dialog-preview-card">
             <div class="preview-icon-container">
-              <img :src="formData.icon || 'https://cdn-icons-png.flaticon.com/128/2897/2897230.png'" 
-                class="preview-icon" alt="Icon Preview">
+              <img :src="formData.icon || 'https://cdn-icons-png.flaticon.com/128/2897/2897230.png'"
+                   class="preview-icon" alt="Icon Preview">
             </div>
             <div class="preview-text">
               <div class="preview-type-name">{{ formData.typeName || '任务类型名称' }}</div>
-              <div class="preview-description">{{ truncateDescription(formData.description) || '任务类型描述信息' }}</div>
+              <div class="preview-description">{{
+                  truncateDescription(formData.description) || '任务类型描述信息'
+                }}
+              </div>
             </div>
           </div>
         </div>
       </div>
-      
+
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="iconDialogVisible = false" class="cancel-button">取消</el-button>
@@ -333,36 +344,43 @@
 
     <!-- 自定义图标上传弹窗 -->
     <el-dialog
-      v-model="uploadDialogVisible"
-      title="上传自定义图标"
-      width="500px"
-      :destroy-on-close="false"
-      :close-on-click-modal="false"
-      class="icon-selection-dialog"
+        v-model="uploadDialogVisible"
+        title="上传自定义图标"
+        width="500px"
+        :destroy-on-close="false"
+        :close-on-click-modal="false"
+        class="icon-selection-dialog"
     >
       <div class="upload-dialog-content">
         <el-upload
-          class="custom-icon-uploader"
-          action="#"
-          :http-request="uploadCustomIconHandler"
-          :show-file-list="false"
-          :before-upload="beforeIconUpload"
-          drag
+            class="custom-icon-uploader"
+            action="#"
+            :http-request="uploadCustomIconHandler"
+            :show-file-list="false"
+            :before-upload="beforeIconUpload"
+            drag
         >
           <div v-if="tempUploadIcon" class="upload-preview">
-            <el-avatar :size="100" :src="tempUploadIcon" />
+            <el-avatar :size="100" :src="tempUploadIcon"/>
           </div>
           <template v-else>
-            <el-icon class="upload-icon"><Plus /></el-icon>
+            <el-icon class="upload-icon">
+              <Plus/>
+            </el-icon>
             <div class="upload-text">
               <p>点击或拖拽图片到此处上传</p>
               <p class="upload-subtext">支持JPG、PNG格式</p>
             </div>
           </template>
         </el-upload>
-        
+
         <div class="upload-instructions">
-          <p><el-icon><InfoFilled /></el-icon> 上传说明：</p>
+          <p>
+            <el-icon>
+              <InfoFilled/>
+            </el-icon>
+            上传说明：
+          </p>
           <ul>
             <li>推荐使用简洁明了的图标</li>
             <li>图标尺寸建议100x100像素</li>
@@ -370,7 +388,7 @@
           </ul>
         </div>
       </div>
-      
+
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="cancelUpload" class="cancel-button">取消</el-button>
@@ -384,11 +402,12 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { ElMessage, ElMessageBox } from 'element-plus'
-import { Back, Plus, Search, InfoFilled, Edit } from '@element-plus/icons-vue'
-import { IconCategoryEnum, PresetIconsEnum } from '@/utils/enums/iconEnums'
+import {computed, onMounted, reactive, ref, watch} from 'vue'
+import {useRoute, useRouter} from 'vue-router'
+import {ElMessage, ElMessageBox} from 'element-plus'
+import {Back, InfoFilled, Plus, Search} from '@element-plus/icons-vue'
+import {IconCategoryEnum, PresetIconsEnum} from '@/utils/enums/iconEnums'
+import {addTaskType} from '@/api/taskType' // 导入API方法
 
 const route = useRoute()
 const router = useRouter()
@@ -421,21 +440,21 @@ const formData = reactive({
 // 表单验证规则
 const rules = reactive({
   typeName: [
-    { required: true, message: '请输入任务类型名称', trigger: 'blur' },
-    { min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur' }
+    {required: true, message: '请输入任务类型名称', trigger: 'blur'},
+    {min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur'}
   ],
   icon: [
-    { required: true, message: '请选择或上传任务类型图标', trigger: 'change' }
+    {required: true, message: '请选择或上传任务类型图标', trigger: 'change'}
   ],
   description: [
-    { required: true, message: '请输入任务类型描述', trigger: 'blur' },
-    { max: 200, message: '长度不能超过 200 个字符', trigger: 'blur' }
+    {required: true, message: '请输入任务类型描述', trigger: 'blur'},
+    {max: 200, message: '长度不能超过 200 个字符', trigger: 'blur'}
   ],
   priority: [
-    { required: true, message: '请输入优先级', trigger: 'blur' }
+    {required: true, message: '请输入优先级', trigger: 'blur'}
   ],
   status: [
-    { required: true, message: '请选择状态', trigger: 'change' }
+    {required: true, message: '请选择状态', trigger: 'change'}
   ]
 })
 
@@ -453,7 +472,7 @@ const presetIcons = reactive(PresetIconsEnum)
 // 获取已选择图标的名称
 const getSelectedIconName = () => {
   if (!formData.icon) return ''
-  
+
   const selectedIcon = presetIcons.find(icon => icon.url === formData.icon)
   return selectedIcon ? selectedIcon.name : '自定义图标'
 }
@@ -526,16 +545,16 @@ const getCategoryEmoji = (category) => {
 // 格式化优先级提示文本
 const formatPriorityTooltip = (val) => {
   const levelMap = {
-    1: { text: '最低', icon: '⭐' },
-    25: { text: '较低', icon: '⭐⭐' },
-    50: { text: '中等', icon: '⭐⭐⭐' },
-    75: { text: '较高', icon: '⭐⭐⭐⭐' },
-    100: { text: '最高', icon: '⭐⭐⭐⭐⭐' }
+    1: {text: '最低', icon: '⭐'},
+    25: {text: '较低', icon: '⭐⭐'},
+    50: {text: '中等', icon: '⭐⭐⭐'},
+    75: {text: '较高', icon: '⭐⭐⭐⭐'},
+    100: {text: '最高', icon: '⭐⭐⭐⭐⭐'}
   }
-  
+
   let level = '普通'
   let icon = '⭐⭐'
-  
+
   if (val <= 5) {
     level = levelMap[1].text
     icon = levelMap[1].icon
@@ -552,19 +571,19 @@ const formatPriorityTooltip = (val) => {
     level = levelMap[100].text
     icon = levelMap[100].icon
   }
-  
+
   return `${icon} ${val} (${level})`
 }
 
 // 根据分类和搜索文本过滤图标
 const filteredIcons = computed(() => {
   let result = presetIcons.filter(icon => icon.category === currentCategory.value)
-  
+
   if (iconSearchText.value) {
     const searchTerm = iconSearchText.value.toLowerCase()
     result = result.filter(icon => icon.name.toLowerCase().includes(searchTerm))
   }
-  
+
   return result
 })
 
@@ -577,24 +596,24 @@ const selectIconAndClose = (icon) => {
 // 选择预设图标
 const selectIcon = (icon) => {
   formData.icon = icon.url
-  
+
   // 智能自动填充：当任务类型名称为空或与之前选择的图标名称相同时，自动更新名称
   if (!formData.typeName || formData.lastSelectedIconName === formData.typeName) {
     formData.typeName = icon.name
     formData.lastSelectedIconName = icon.name
   }
-  
+
   // 智能自动填充：当描述为空或是默认描述时，自动生成描述
   if (!formData.description || formData.isDefaultDescription) {
     // 获取图标分类的中文名称
     const categoryObj = iconCategories.find(cat => cat.value === icon.category)
     const categoryName = categoryObj ? categoryObj.label : '通用'
-    
+
     // 生成默认描述
     formData.description = `提供专业的${icon.name}服务，满足校园内${categoryName}相关需求，快速便捷。`
     formData.isDefaultDescription = true
   }
-  
+
   // 添加选择动画效果的类名
   const iconElement = document.querySelector(`.icon-item[data-icon="${icon.name}"]`)
   if (iconElement) {
@@ -603,7 +622,7 @@ const selectIcon = (icon) => {
       iconElement.classList.remove('icon-selected-animation')
     }, 500)
   }
-  
+
   // 显示自动填充提示
   showAutoFillTip.value = true
   setTimeout(() => {
@@ -622,7 +641,8 @@ const goBack = () => {
     type: 'warning'
   }).then(() => {
     router.push('/admin/task-types')
-  }).catch(() => {})
+  }).catch(() => {
+  })
 }
 
 // 图标上传前的验证
@@ -667,55 +687,41 @@ watch(iconSelectionMode, (newMode) => {
   }
 })
 
-// 提交表单
-const submitForm = async () => {
-  if (!formRef.value) return
-  
-  await formRef.value.validate(async (valid) => {
+// 表单提交
+const submitForm = () => {
+  formRef.value.validate(async (valid) => {
     if (valid) {
-      submitting.value = true
+      submitting.value = true;
       try {
-        // 这里应该调用实际的API保存数据
-        // 模拟API调用
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        
-        ElMessage({
-          message: isEdit.value ? '修改成功！任务类型已更新' : '创建成功！新的任务类型已添加',
-          type: 'success',
-          duration: 3000,
-          showClose: true,
-          customClass: 'fancy-message'
-        })
-        
-        router.push('/admin/task-types')
+        // 调用API添加任务类型
+        await addTaskType(formData);
+        ElMessage.success('添加成功');
+        // 跳转到任务类型列表页
+        router.push('/admin/task-types');
       } catch (error) {
-        ElMessage.error(error.message || '操作失败，请重试')
+        console.error('添加任务类型失败:', error);
+        ElMessage.error(error.message || '操作失败');
       } finally {
-        submitting.value = false
+        submitting.value = false;
       }
     } else {
-      ElMessage({
-        message: '请正确填写表单内容',
-        type: 'warning',
-        showClose: true
-      })
-      return false
+      ElMessage.warning('请正确填写表单信息');
     }
-  })
-}
+  });
+};
 
 // 如果是编辑模式，加载任务类型数据
 onMounted(async () => {
   // 确保此页面可以滚动
   document.body.classList.add('admin-page');
-  
+
   if (isEdit.value) {
     const id = route.query.id
     try {
       // 这里应该调用实际的API获取数据
       // 模拟API调用
       await new Promise(resolve => setTimeout(resolve, 500))
-      
+
       // 模拟数据，实际项目中应该从API获取
       Object.assign(formData, {
         id: id,
@@ -796,7 +802,7 @@ onMounted(async () => {
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 60%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 60%);
   opacity: 0;
   transform: scale(0.5);
   animation: pulse-header 15s infinite alternate;
@@ -831,9 +837,15 @@ onMounted(async () => {
 }
 
 @keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-8px); }
-  100% { transform: translateY(0px); }
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
 }
 
 .back-button {
@@ -876,8 +888,12 @@ onMounted(async () => {
 }
 
 @keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 .form-intro p {
@@ -1113,7 +1129,7 @@ onMounted(async () => {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.3), rgba(255,255,255,0));
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0));
   transition: all 0.6s;
 }
 
@@ -1284,7 +1300,7 @@ onMounted(async () => {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.3), rgba(255,255,255,0));
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0));
   transition: all 0.6s;
 }
 
@@ -1333,9 +1349,15 @@ onMounted(async () => {
 }
 
 @keyframes pop {
-  0% { transform: scale(0); }
-  80% { transform: scale(1.2); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(0);
+  }
+  80% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .auto-fill-alert {
@@ -1346,13 +1368,13 @@ onMounted(async () => {
 }
 
 @keyframes slideInUp {
-  from { 
-    opacity: 0; 
-    transform: translateY(30px); 
+  from {
+    opacity: 0;
+    transform: translateY(30px);
   }
-  to { 
-    opacity: 1; 
-    transform: translateY(0); 
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -1553,7 +1575,7 @@ onMounted(async () => {
   justify-content: center;
   align-items: center;
   background-color: #f9faff;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
   border: 2px solid #f0f5ff;
   transition: all 0.3s;
 }
@@ -1564,12 +1586,12 @@ onMounted(async () => {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0,0,0,0);
+  background-color: rgba(0, 0, 0, 0);
   transition: all 0.2s;
 }
 
 .icon-item:hover .hover-effect {
-  background-color: rgba(0,0,0,0.05);
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 .icon-preview {
@@ -1671,29 +1693,29 @@ onMounted(async () => {
   .icon-list {
     grid-template-columns: repeat(3, 1fr);
   }
-  
+
   .priority-container {
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   .priority-slider {
     width: 100%;
   }
-  
+
   .form-card {
     margin: 10px auto 30px;
   }
-  
+
   .icon-selection-dialog {
     width: 95% !important;
   }
-  
+
   .dialog-preview-card {
     flex-direction: column;
     text-align: center;
   }
-  
+
   .preview-icon-container {
     margin-right: 0;
     margin-bottom: 15px;
