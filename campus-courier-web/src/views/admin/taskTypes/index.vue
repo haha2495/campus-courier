@@ -1,60 +1,47 @@
 <template>
   <div class="task-type-manage">
     <!-- 顶部搜索区域 -->
-    <el-card class="search-card">
+    <el-card class="search-card" shadow="hover">
       <div class="search-area">
-        <div class="search-input-wrapper">
-          <!-- 类型名称搜索 -->
-          <el-input
-              v-model="searchForm.typeName"
-              placeholder="搜索任务类型名称"
-              clearable
-              class="search-input"
-          >
-            <template #prefix>
-              <el-icon class="search-icon">
-                <Document/>
-              </el-icon>
-            </template>
-          </el-input>
-
-          <!-- 状态筛选 -->
-          <el-select
-              v-model="searchForm.status"
-              placeholder="选择状态"
-              clearable
-              class="search-select"
-          >
-            <el-option :value="1" label="启用"/>
-            <el-option :value="0" label="禁用"/>
-          </el-select>
-
-          <div class="search-actions">
-            <el-button type="primary" @click="handleSearch" class="search-btn">
-              <el-icon>
-                <Search/>
-              </el-icon>
-              <span>搜索</span>
-            </el-button>
-            <el-button @click="handleReset" class="reset-btn">
-              <el-icon>
-                <RefreshRight/>
-              </el-icon>
-              <span>重置</span>
-            </el-button>
+        <div class="filter-wrapper">
+          <!-- 自定义状态筛选器 - 改为分段选择器样式 -->
+          <div class="custom-filter-group">
+            <div 
+              v-for="option in filterOptions" 
+              :key="option.value" 
+              class="filter-option" 
+              :class="{ active: searchForm.status === option.value }"
+              @click="selectStatus(option.value)"
+            >
+              <div class="option-content">
+                <el-icon v-if="option.icon" class="option-icon">
+                  <component :is="option.icon" />
+                </el-icon>
+                <span>{{ option.label }}</span>
+              </div>
+              <div class="active-indicator"></div>
+            </div>
           </div>
         </div>
-        <el-button type="primary" @click="handleAdd" class="add-btn">
-          <el-icon>
-            <Plus/>
-          </el-icon>
-          <span>新增任务类型</span>
+        
+        <!-- 改进的新增按钮 -->
+        <el-button 
+          type="primary" 
+          @click="handleAdd" 
+          class="add-btn pulse-on-hover"
+        >
+          <div class="btn-content">
+            <div class="icon-wrapper">
+              <el-icon><Plus /></el-icon>
+            </div>
+            <span>新增任务类型</span>
+          </div>
         </el-button>
       </div>
     </el-card>
 
     <!-- 中间表格区域 -->
-    <el-card class="table-card">
+    <el-card class="table-card" shadow="hover">
       <el-table
           :data="tableData"
           :height="tableHeight"
@@ -103,7 +90,14 @@
         <!-- 状态列 -->
         <el-table-column label="状态" width="100" align="center">
           <template #default="{ row }">
-            <el-tag :type="row.status === 1 ? 'success' : 'danger'" size="small">
+            <el-tag 
+                :type="row.status === 1 ? 'success' : 'danger'" 
+                size="small"
+                effect="light"
+                class="status-tag"
+            >
+              <el-icon v-if="row.status === 1" class="status-icon"><Check /></el-icon>
+              <el-icon v-else class="status-icon"><Close /></el-icon>
               {{ row.status === 1 ? '启用' : '禁用' }}
             </el-tag>
           </template>
@@ -115,42 +109,51 @@
         <!-- 操作列 -->
         <el-table-column label="操作" width="200" fixed="right">
           <template #default="{ row }">
-            <el-button size="small" type="primary" text @click="handleEdit(row)">
-              编辑
-            </el-button>
-            <el-button
-                v-if="row.status === 0"
-                size="small"
-                type="success"
-                text
-                @click="handleEnable(row)"
-            >
-              启用
-            </el-button>
-            <el-button
-                v-else
-                size="small"
-                type="warning"
-                text
-                @click="handleDisable(row)"
-            >
-              禁用
-            </el-button>
-            <el-button
-                size="small"
-                type="danger"
-                text
-                @click="handleDelete(row)"
-            >
-              删除
-            </el-button>
+            <div class="operation-buttons">
+              <el-button size="small" type="primary" text @click="handleEdit(row)" class="op-btn">
+                <el-icon><Edit /></el-icon>
+                <span>编辑</span>
+              </el-button>
+              <el-button
+                  v-if="row.status === 0"
+                  size="small"
+                  type="success"
+                  text
+                  @click="handleEnable(row)"
+                  class="op-btn"
+              >
+                <el-icon><Check /></el-icon>
+                <span>启用</span>
+              </el-button>
+              <el-button
+                  v-else
+                  size="small"
+                  type="warning"
+                  text
+                  @click="handleDisable(row)"
+                  class="op-btn"
+              >
+                <el-icon><Close /></el-icon>
+                <span>禁用</span>
+              </el-button>
+              <el-button
+                  size="small"
+                  type="danger"
+                  text
+                  @click="handleDelete(row)"
+                  class="op-btn"
+              >
+                <el-icon><Delete /></el-icon>
+                <span>删除</span>
+              </el-button>
+            </div>
           </template>
         </el-table-column>
       </el-table>
     </el-card>
 
     <!-- 底部分页区域 - 独立卡片 -->
-    <el-card class="pagination-card">
+    <el-card class="pagination-card" shadow="hover">
       <div class="pagination-container">
         <el-pagination
             v-model:current-page="currentPage"
@@ -170,15 +173,21 @@
 <script setup>
 import {ref, reactive, onMounted, computed} from 'vue'
 import {useRouter} from 'vue-router'
-import {Document, Search, RefreshRight, Plus} from '@element-plus/icons-vue'
+import {Document, Plus, Check, Close, Edit, Delete, View, Filter, List} from '@element-plus/icons-vue'
 import {pageTaskTypes} from '@/api/taskType'
 import {ElMessage, ElMessageBox} from 'element-plus'
 
 const router = useRouter()
 
-// 搜索表单
+// 筛选选项配置
+const filterOptions = [
+  { value: null, label: '全部', icon: 'List' },
+  { value: 1, label: '启用', icon: 'Check' },
+  { value: 0, label: '禁用', icon: 'Close' }
+];
+
+// 搜索表单 - 移除typeName，只保留status
 const searchForm = reactive({
-  typeName: '',
   status: null
 })
 
@@ -215,23 +224,17 @@ const fetchData = async () => {
   }
 }
 
-// 生命周期钩子
-onMounted(() => {
-  fetchData()
-})
-
-// 搜索
-const handleSearch = () => {
+// 选择状态
+const selectStatus = (status) => {
+  searchForm.status = status
   currentPage.value = 1
   fetchData()
 }
 
-// 重置搜索
-const handleReset = () => {
-  searchForm.typeName = ''
-  searchForm.status = null
-  handleSearch()
-}
+// 生命周期钩子
+onMounted(() => {
+  fetchData()
+})
 
 // 分页相关
 const handleSizeChange = (val) => {
@@ -260,13 +263,21 @@ const handleEdit = (row) => {
 // 启用任务类型
 const handleEnable = (row) => {
   // 这里暂时不实现启用逻辑
-  ElMessage.success('启用功能待实现')
+  ElMessage({
+    message: '启用功能待实现',
+    type: 'success',
+    duration: 2000
+  })
 }
 
 // 禁用任务类型
 const handleDisable = (row) => {
   // 这里暂时不实现禁用逻辑
-  ElMessage.success('禁用功能待实现')
+  ElMessage({
+    message: '禁用功能待实现',
+    type: 'warning',
+    duration: 2000
+  })
 }
 
 // 删除任务类型
@@ -282,7 +293,11 @@ const handleDelete = (row) => {
   )
       .then(() => {
         // 这里暂时不实现删除逻辑
-        ElMessage.success('删除功能待实现')
+        ElMessage({
+          message: '删除功能待实现',
+          type: 'success',
+          duration: 2000
+        })
       })
       .catch(() => {
         // 用户取消删除操作
@@ -297,6 +312,13 @@ const handleDelete = (row) => {
 
 .search-card {
   margin-bottom: 16px;
+  border-radius: 12px;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.search-card:hover {
+  transform: translateY(-2px);
 }
 
 .search-area {
@@ -305,37 +327,158 @@ const handleDelete = (row) => {
   align-items: center;
 }
 
-.search-input-wrapper {
+.filter-wrapper {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
 }
 
-.search-input {
-  width: 220px;
-}
-
-.search-select {
-  width: 120px;
-}
-
-.search-actions {
+/* 自定义状态筛选器样式 */
+.custom-filter-group {
   display: flex;
+  background-color: #f0f2f5;
+  border-radius: 12px;
+  padding: 3px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.filter-option {
+  position: relative;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 10px;
+  margin: 2px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.option-content {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 2;
+  position: relative;
+}
+
+.option-icon {
+  font-size: 14px;
+  color: inherit;
+}
+
+.filter-option:hover {
+  background-color: rgba(255, 255, 255, 0.6);
+}
+
+.filter-option.active {
+  background-color: white;
+  color: #409EFF;
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+}
+
+.active-indicator {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 3px;
+  background-color: #409EFF;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 3px;
+  transform: translateX(-50%);
+}
+
+.filter-option.active .active-indicator {
+  width: 60%;
+}
+
+/* 新增按钮样式 */
+.add-btn {
+  border-radius: 10px;
+  height: 40px;
+  transition: all 0.3s ease;
+  border: none;
+  background: linear-gradient(90deg, #409EFF, #67c23a);
+  box-shadow: 0 3px 8px rgba(64, 158, 255, 0.2);
+  overflow: hidden;
+  position: relative;
+}
+
+.btn-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   gap: 8px;
+  z-index: 2;
+  position: relative;
+}
+
+.icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  transition: all 0.3s ease;
+}
+
+.add-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(64, 158, 255, 0.3);
+}
+
+.add-btn:hover .icon-wrapper {
+  transform: rotate(90deg);
+}
+
+.pulse-on-hover:hover:before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 120%;
+  height: 120%;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  animation: pulse-effect 0.6s ease-out;
+}
+
+@keyframes pulse-effect {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+  }
 }
 
 .table-card {
   margin-bottom: 16px;
+  border-radius: 12px;
+  border: none;
+  overflow: hidden;
+  transition: all 0.3s ease;
 }
 
 .table-row {
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s;
 }
 
 .table-row:hover {
-  background-color: #f8fafc;
+  background-color: #f0f7ff !important;
+  transform: translateY(-1px);
 }
 
 .type-icon {
@@ -344,16 +487,64 @@ const handleDelete = (row) => {
   justify-content: center;
   background-color: #f3f4f6;
   color: #6b7280;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.type-icon:hover {
+  transform: scale(1.1);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 状态标签样式 */
+.status-tag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border-radius: 20px;
+  padding: 2px 10px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.status-tag:hover {
+  transform: scale(1.05);
+}
+
+.status-icon {
+  font-size: 12px;
+}
+
+/* 操作按钮样式 */
+.operation-buttons {
+  display: flex;
+  gap: 4px;
+}
+
+.op-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.3s ease;
+}
+
+.op-btn:hover {
+  transform: translateY(-2px);
 }
 
 /* 分页卡片样式 */
 .pagination-card {
   margin-bottom: 16px;
+  border-radius: 12px;
+  border: none;
+  transition: all 0.3s ease;
 }
 
 .pagination-container {
   display: flex;
-  justify-content: center; /* 居中显示 */
+  justify-content: center;
   padding: 8px 0;
 }
 </style> 
