@@ -127,18 +127,54 @@
     <view class="tabbar-wrapper" :style="{ paddingBottom: safeAreaInsetBottom + 'px' }">
       <!-- 发布者导航栏 -->
       <view class="tabbar" v-if="currentRole === 'publisher'">
+        <!-- 左侧图标 -->
         <view 
-          v-for="(item, index) in publisherTabs" 
+          v-for="(item, index) in publisherTabs.filter((_, i) => i < 2)" 
           :key="index" 
           class="tab-item"
           :class="{ active: currentTab === item.name }"
           @click="switchTab(item.name)"
         >
-          <u-icon 
-            :name="currentTab === item.name ? item.activeIcon : item.icon" 
-            :size="22" 
-            :color="currentTab === item.name ? '#ff9500' : '#999'"
-          ></u-icon>
+          <image 
+            :src="currentTab === item.name ? item.activeIcon : item.icon" 
+            class="tab-icon"
+            mode="aspectFit"
+          ></image>
+          <text 
+            class="tab-text" 
+            :class="{ 'active-text': currentTab === item.name }"
+          >{{ item.text }}</text>
+        </view>
+        
+        <!-- 中间发布按钮 -->
+        <view class="center-button-wrapper">
+          <view 
+            class="center-button" 
+            :class="{ active: currentTab === 'publish' }"
+            @click="switchTab('publish')"
+          >
+            <image 
+              src="https://cdn-icons-png.flaticon.com/128/4315/4315445.png" 
+              class="center-icon"
+              mode="aspectFit"
+            ></image>
+          </view>
+          <text class="center-button-text">发布任务</text>
+        </view>
+        
+        <!-- 右侧图标 -->
+        <view 
+          v-for="(item, index) in publisherTabs.filter((_, i) => i > 2)" 
+          :key="index + 2" 
+          class="tab-item"
+          :class="{ active: currentTab === item.name }"
+          @click="switchTab(item.name)"
+        >
+          <image 
+            :src="currentTab === item.name ? item.activeIcon : item.icon" 
+            class="tab-icon"
+            mode="aspectFit"
+          ></image>
           <text 
             class="tab-text" 
             :class="{ 'active-text': currentTab === item.name }"
@@ -148,18 +184,54 @@
       
       <!-- 跑腿者导航栏 -->
       <view class="tabbar" v-else>
+        <!-- 左侧图标 -->
         <view 
-          v-for="(item, index) in runnerTabs" 
+          v-for="(item, index) in runnerTabs.filter((_, i) => i < 2)" 
           :key="index" 
           class="tab-item"
           :class="{ active: currentTab === item.name }"
           @click="switchTab(item.name)"
         >
-          <u-icon 
-            :name="currentTab === item.name ? item.activeIcon : item.icon" 
-            :size="22" 
-            :color="currentTab === item.name ? '#3498db' : '#999'"
-          ></u-icon>
+          <image 
+            :src="currentTab === item.name ? item.activeIcon : item.icon" 
+            class="tab-icon"
+            mode="aspectFit"
+          ></image>
+          <text 
+            class="tab-text" 
+            :class="{ 'active-text-runner': currentTab === item.name }"
+          >{{ item.text }}</text>
+        </view>
+        
+        <!-- 中间抢单按钮 -->
+        <view class="center-button-wrapper">
+          <view 
+            class="center-button runner" 
+            :class="{ active: currentTab === 'orders' }"
+            @click="switchTab('orders')"
+          >
+            <image 
+              src="https://cdn-icons-png.flaticon.com/128/2645/2645233.png" 
+              class="center-icon"
+              mode="aspectFit"
+            ></image>
+          </view>
+          <text class="center-button-text">抢单大厅</text>
+        </view>
+        
+        <!-- 右侧图标 -->
+        <view 
+          v-for="(item, index) in runnerTabs.filter((_, i) => i > 2)" 
+          :key="index + 2" 
+          class="tab-item"
+          :class="{ active: currentTab === item.name }"
+          @click="switchTab(item.name)"
+        >
+          <image 
+            :src="currentTab === item.name ? item.activeIcon : item.icon" 
+            class="tab-icon"
+            mode="aspectFit"
+          ></image>
           <text 
             class="tab-text" 
             :class="{ 'active-text-runner': currentTab === item.name }"
@@ -189,26 +261,77 @@ const isRefreshing = ref(false)
 
 // 发布者导航栏配置
 const publisherTabs = [
-  { name: 'home', text: '首页', icon: 'home', activeIcon: 'home-fill' },
-  { name: 'publish', text: '发布任务', icon: 'plus-circle', activeIcon: 'plus-circle-fill' },
-  { name: 'tasks', text: '我的任务', icon: 'order', activeIcon: 'order-fill' },
-  { name: 'disputes', text: '纠纷大厅', icon: 'warning', activeIcon: 'warning-fill' },
-  { name: 'mine', text: '我的', icon: 'account', activeIcon: 'account-fill' }
+  { 
+    name: 'home', 
+    text: '首页', 
+    icon: 'https://cdn-icons-png.flaticon.com/128/1946/1946488.png', 
+    activeIcon: 'https://cdn-icons-png.flaticon.com/128/1946/1946436.png' 
+  },
+  { 
+    name: 'tasks', 
+    text: '我的任务', 
+    icon: 'https://cdn-icons-png.flaticon.com/128/2098/2098561.png', 
+    activeIcon: 'https://cdn-icons-png.flaticon.com/128/2355/2355330.png' 
+  },
+  { 
+    name: 'publish', 
+    text: '发布任务', 
+    icon: 'https://cdn-icons-png.flaticon.com/128/4315/4315445.png', 
+    activeIcon: 'https://cdn-icons-png.flaticon.com/128/4315/4315445.png' 
+  },
+  { 
+    name: 'disputes', 
+    text: '纠纷大厅', 
+    icon: 'https://cdn-icons-png.flaticon.com/128/1585/1585464.png', 
+    activeIcon: 'https://cdn-icons-png.flaticon.com/128/1585/1585527.png' 
+  },
+  { 
+    name: 'mine', 
+    text: '我的', 
+    icon: 'https://cdn-icons-png.flaticon.com/128/1077/1077114.png', 
+    activeIcon: 'https://cdn-icons-png.flaticon.com/128/1077/1077063.png' 
+  }
 ]
 
 // 跑腿者导航栏配置
 const runnerTabs = [
-  { name: 'home', text: '首页', icon: 'home', activeIcon: 'home-fill' },
-  { name: 'orders', text: '抢单大厅', icon: 'shopping-cart', activeIcon: 'shopping-cart-fill' },
-  { name: 'current', text: '当前任务', icon: 'clock', activeIcon: 'clock-fill' },
-  { name: 'records', text: '我的接单', icon: 'list', activeIcon: 'list-dot' },
-  { name: 'mine', text: '我的', icon: 'account', activeIcon: 'account-fill' }
+  { 
+    name: 'home', 
+    text: '首页', 
+    icon: 'https://cdn-icons-png.flaticon.com/128/1946/1946488.png', 
+    activeIcon: 'https://cdn-icons-png.flaticon.com/128/1946/1946436.png' 
+  },
+  { 
+    name: 'current', 
+    text: '当前任务', 
+    icon: 'https://cdn-icons-png.flaticon.com/128/2838/2838779.png', 
+    activeIcon: 'https://cdn-icons-png.flaticon.com/128/2838/2838846.png' 
+  },
+  { 
+    name: 'orders', 
+    text: '抢单大厅', 
+    icon: 'https://cdn-icons-png.flaticon.com/128/2645/2645233.png', 
+    activeIcon: 'https://cdn-icons-png.flaticon.com/128/2645/2645233.png' 
+  },
+  { 
+    name: 'records', 
+    text: '我的接单', 
+    icon: 'https://cdn-icons-png.flaticon.com/128/2098/2098561.png', 
+    activeIcon: 'https://cdn-icons-png.flaticon.com/128/2355/2355330.png' 
+  },
+  { 
+    name: 'mine', 
+    text: '我的', 
+    icon: 'https://cdn-icons-png.flaticon.com/128/1077/1077114.png', 
+    activeIcon: 'https://cdn-icons-png.flaticon.com/128/1077/1077063.png' 
+  }
 ]
 
 // 初始化函数
 onMounted(() => {
   getSystemInfo()
   initRoleFromStorage()
+  preloadTabIcons()
 })
 
 // 每次显示页面时执行
@@ -300,6 +423,11 @@ const handleTabNavigation = (tab) => {
 
 // 导航到特定页面
 const navigateTo = (page) => {
+  if (page === 'publish') {
+    switchTab('publish')
+    return
+  }
+  
   showMessage(`${page}页面待实现`)
 }
 
@@ -330,6 +458,74 @@ const onRestore = () => {
 
 const onAbort = () => {
   console.log('刷新中断')
+}
+
+// 预加载所有标签图标
+const preloadTabIcons = () => {
+  // 收集所有需要预加载的图标URL
+  const iconUrls = new Set()
+  
+  // 添加发布者图标
+  publisherTabs.forEach(tab => {
+    iconUrls.add(tab.icon)
+    iconUrls.add(tab.activeIcon)
+  })
+  
+  // 添加跑腿者图标
+  runnerTabs.forEach(tab => {
+    iconUrls.add(tab.icon)
+    iconUrls.add(tab.activeIcon)
+  })
+  
+  // 创建本地缓存对象
+  const iconCache = uni.getStorageSync('iconCache') || {}
+  const currentTime = Date.now()
+  // 清理过期缓存 (7天过期)
+  const CACHE_EXPIRY = 7 * 24 * 60 * 60 * 1000 // 7天
+  
+  Object.keys(iconCache).forEach(key => {
+    if (currentTime - iconCache[key].time > CACHE_EXPIRY) {
+      delete iconCache[key]
+    }
+  })
+  
+  // 预加载并缓存每个图标
+  iconUrls.forEach(url => {
+    // 如果已有有效缓存，跳过下载
+    if (iconCache[url] && iconCache[url].localPath) {
+      console.log('使用缓存图标:', url)
+      return
+    }
+    
+    // 下载图片到本地
+    uni.downloadFile({
+      url: url,
+      success: res => {
+        if (res.statusCode === 200) {
+          // 获取图片信息
+          uni.getImageInfo({
+            src: res.tempFilePath,
+            success: info => {
+              // 保存到本地缓存
+              iconCache[url] = {
+                localPath: res.tempFilePath,
+                width: info.width,
+                height: info.height,
+                time: currentTime
+              }
+              
+              // 更新存储
+              uni.setStorageSync('iconCache', iconCache)
+              console.log('图标缓存成功:', url)
+            }
+          })
+        }
+      },
+      fail: err => {
+        console.error('下载图标失败:', url, err)
+      }
+    })
+  })
 }
 </script>
 
@@ -415,6 +611,7 @@ const onAbort = () => {
   padding: 20rpx 30rpx;
   margin-top: 100rpx; // 给悬浮切换器留出空间
   box-sizing: border-box;
+  padding-bottom: 120rpx; // 增加底部间距，确保内容不被悬浮按钮遮挡
   
   // 确保内部所有内容有统一的左右安全距离
   :deep(view) {
@@ -589,6 +786,8 @@ const onAbort = () => {
 .tabbar {
   display: flex;
   height: 100rpx;
+  position: relative;
+  padding: 0 15rpx;
 }
 
 .tab-item {
@@ -598,6 +797,15 @@ const onAbort = () => {
   align-items: center;
   justify-content: center;
   padding: 10rpx 0;
+  position: relative;
+  
+  .tab-icon {
+    width: 44rpx;
+    height: 44rpx;
+    margin-bottom: 4rpx;
+    will-change: transform;
+    transition: transform 0.2s;
+  }
   
   .tab-text {
     font-size: 20rpx;
@@ -611,6 +819,104 @@ const onAbort = () => {
   
   .active-text-runner {
     color: #3498db;
+  }
+}
+
+.tab-item:active .tab-icon {
+  transform: scale(0.9);
+}
+
+// 中间按钮样式
+.center-button-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 110rpx;
+  position: relative;
+  justify-content: flex-end;
+  height: 120rpx;
+  margin-top: -45rpx;
+  
+  .center-button {
+    width: 90rpx;
+    height: 90rpx;
+    background: linear-gradient(135deg, #ff9500, #ff7d00);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 6rpx 20rpx rgba(255, 149, 0, 0.35);
+    margin-bottom: 5rpx;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+    
+    .center-icon {
+      width: 50rpx;
+      height: 50rpx;
+    }
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: -10rpx;
+      left: -10rpx;
+      right: -10rpx;
+      bottom: -10rpx;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0));
+      z-index: 0;
+      transform: rotate(45deg);
+      transition: all 0.3s;
+    }
+    
+    &:active::before {
+      transform: rotate(180deg);
+    }
+    
+    &.runner {
+      background: linear-gradient(135deg, #3498db, #2980b9);
+      box-shadow: 0 6rpx 20rpx rgba(52, 152, 219, 0.35);
+    }
+    
+    &.active {
+      transform: scale(1.05);
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      width: 104rpx;
+      height: 104rpx;
+      border: 2rpx solid rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    &.runner::after {
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+  }
+  
+  .center-button-text {
+    font-size: 20rpx;
+    color: #999;
+    margin-top: 2rpx;
+  }
+}
+
+// 发布按钮脉冲动画
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  70% {
+    transform: scale(1.1);
+    opacity: 0.2;
+  }
+  100% {
+    transform: scale(1.15);
+    opacity: 0;
   }
 }
 
