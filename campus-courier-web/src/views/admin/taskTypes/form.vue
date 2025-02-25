@@ -407,7 +407,7 @@ import {useRoute, useRouter} from 'vue-router'
 import {ElMessage, ElMessageBox} from 'element-plus'
 import {Back, InfoFilled, Plus, Search} from '@element-plus/icons-vue'
 import {IconCategoryEnum, PresetIconsEnum} from '@/utils/enums/iconEnums'
-import {addTaskType, getTaskTypeDetail} from '@/api/taskType' // 导入获取详情API
+import {addTaskType, getTaskTypeDetail, updateTaskType} from '@/api/taskType' // 导入更新API
 
 const route = useRoute()
 const router = useRouter()
@@ -693,9 +693,16 @@ const submitForm = () => {
     if (valid) {
       submitting.value = true;
       try {
-        // 调用API添加任务类型
-        await addTaskType(formData);
-        ElMessage.success(isEdit.value ? '更新成功' : '添加成功');
+        // 根据模式调用不同的API
+        if (isEdit.value) {
+          // 编辑模式，调用更新API
+          await updateTaskType(formData);
+          ElMessage.success('更新任务类型成功');
+        } else {
+          // 新增模式，调用添加API
+          await addTaskType(formData);
+          ElMessage.success('添加任务类型成功');
+        }
         // 跳转到任务类型列表页
         router.push('/admin/task-types');
       } catch (error) {

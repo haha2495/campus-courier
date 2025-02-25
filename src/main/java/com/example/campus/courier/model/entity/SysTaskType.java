@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.example.campus.courier.model.request.task.TaskTypeAddRequest;
+import com.example.campus.courier.model.request.task.TaskTypeUpdateRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -59,6 +60,22 @@ public class SysTaskType implements Serializable {
         this.priority = request.getPriority();
         this.status = request.getStatus();
         this.createTime = LocalDateTime.now();
+        return this;
+    }
+    
+    /**
+     * 根据更新请求更新任务类型实体
+     *
+     * @param request 任务类型更新请求
+     * @return 当前对象
+     */
+    public SysTaskType update(TaskTypeUpdateRequest request) {
+        this.id = request.getId();
+        this.typeName = request.getTypeName();
+        this.icon = request.getIcon();
+        this.description = request.getDescription();
+        this.priority = request.getPriority();
+        this.status = request.getStatus();
         return this;
     }
 } 

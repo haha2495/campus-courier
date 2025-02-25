@@ -62,3 +62,16 @@ export function getTaskTypeDetail(id) {
     })
 }
 
+/**
+ * 更新任务类型
+ * @param {Object} data - 任务类型更新数据，包含id和其他需要更新的字段
+ * @returns {Promise}
+ */
+export function updateTaskType(data) {
+    return request({
+        url: '/task/types/update',
+        method: 'post',
+        data
+    })
+}
+

@@ -3,6 +3,7 @@ package com.example.campus.courier.service;
 import com.example.campus.courier.model.entity.SysTaskType;
 import com.example.campus.courier.model.request.task.TaskTypeAddRequest;
 import com.example.campus.courier.model.request.task.TaskTypePageRequest;
+import com.example.campus.courier.model.request.task.TaskTypeUpdateRequest;
 import com.example.campus.courier.model.response.PageResult;
 
 /**
@@ -49,4 +50,12 @@ public interface SysTaskTypeService {
      * @return 任务类型详情
      */
     SysTaskType getTaskTypeDetail(Integer id);
+
+    /**
+     * 更新任务类型
+     *
+     * @param request 任务类型更新请求
+     * @return 操作是否成功
+     */
+    boolean updateTaskType(TaskTypeUpdateRequest request);
 } 

@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.campus.courier.mapper.SysTaskTypeMapper;
 import com.example.campus.courier.model.entity.SysTaskType;
 import com.example.campus.courier.model.request.task.TaskTypePageRequest;
+import com.example.campus.courier.model.request.task.TaskTypeUpdateRequest;
 import com.example.campus.courier.model.response.PageResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -96,5 +97,28 @@ public class SysTaskTypeHandler extends ServiceImpl<SysTaskTypeMapper, SysTaskTy
         
         // 直接通过ID查询
         return getById(id);
+    }
+    
+    /**
+     * 更新任务类型
+     *
+     * @param request 任务类型更新请求
+     * @return 操作是否成功
+     */
+    public boolean updateTaskType(TaskTypeUpdateRequest request) {
+        log.info("Handler - 更新任务类型, ID: {}", request.getId());
+        
+        // 先检查任务类型是否存在
+        SysTaskType existingType = getById(request.getId());
+        if (existingType == null) {
+            log.error("Handler - 更新任务类型失败，ID对应的任务类型不存在: {}", request.getId());
+            return false;
+        }
+        
+        // 使用实体的update方法更新任务类型
+        existingType.update(request);
+        
+        // 执行更新操作
+        return updateById(existingType);
     }
 }

@@ -6,6 +6,7 @@ import com.example.campus.courier.mapper.handler.SysTaskTypeHandler;
 import com.example.campus.courier.model.entity.SysTaskType;
 import com.example.campus.courier.model.request.task.TaskTypeAddRequest;
 import com.example.campus.courier.model.request.task.TaskTypePageRequest;
+import com.example.campus.courier.model.request.task.TaskTypeUpdateRequest;
 import com.example.campus.courier.model.response.PageResult;
 import com.example.campus.courier.service.SysTaskTypeService;
 import lombok.RequiredArgsConstructor;
@@ -97,5 +98,20 @@ public class SysTaskTypeServiceImpl implements SysTaskTypeService {
         
         // 调用Handler获取任务类型详情
         return taskTypeHandler.getTaskTypeDetail(id);
+    }
+    
+    /**
+     * 更新任务类型
+     *
+     * @param request 任务类型更新请求
+     * @return 操作是否成功
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean updateTaskType(TaskTypeUpdateRequest request) {
+        log.info("更新任务类型: {}", request);
+        
+        // 调用Handler执行更新操作
+        return taskTypeHandler.updateTaskType(request);
     }
 } 

@@ -3,6 +3,7 @@ package com.example.campus.courier.controller;
 import com.example.campus.courier.model.entity.SysTaskType;
 import com.example.campus.courier.model.request.task.TaskTypeAddRequest;
 import com.example.campus.courier.model.request.task.TaskTypePageRequest;
+import com.example.campus.courier.model.request.task.TaskTypeUpdateRequest;
 import com.example.campus.courier.model.response.PageResult;
 import com.example.campus.courier.model.response.Result;
 import com.example.campus.courier.service.SysTaskTypeService;
@@ -107,5 +108,22 @@ public class SysTaskTypeController extends BaseController {
             return Result.forbidden();
         }
         return Result.success(taskTypeService.getTaskTypeDetail(id), "获取任务类型详情成功");
+    }
+
+    /**
+     * 更新任务类型
+     *
+     * @param request 任务类型更新请求
+     * @return 响应结果
+     */
+    @PostMapping("/update")
+    @Operation(summary = "更新任务类型", description = "更新已有的任务类型信息")
+    public Result<Boolean> updateTaskType(
+            @RequestBody @Validated @Parameter(description = "任务类型更新信息") TaskTypeUpdateRequest request) {
+        // 检查当前用户是否为管理员
+        if (!isAdmin()) {
+            return Result.forbidden();
+        }
+        return Result.success(taskTypeService.updateTaskType(request), "更新任务类型成功");
     }
 } 
