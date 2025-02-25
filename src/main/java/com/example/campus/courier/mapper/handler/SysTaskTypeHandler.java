@@ -13,5 +13,4 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class SysTaskTypeHandler extends ServiceImpl<SysTaskTypeMapper, SysTaskType> {
 
-
-} 
+}
