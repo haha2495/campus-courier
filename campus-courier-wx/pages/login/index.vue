@@ -1,93 +1,126 @@
 <template>
   <view class="login-container">
-    <!-- 顶部背景 -->
-    <view class="top-bg">
-      <view class="delivery-animation">
-        <view class="delivery-icon">🛵</view>
+    <!-- 动态背景元素 -->
+    <view class="animated-bg">
+      <!-- 顶部装饰元素 -->
+      <view class="decoration-element dot-1"></view>
+      <view class="decoration-element dot-2"></view>
+      <view class="decoration-element dot-3"></view>
+      <view class="decoration-element dot-4"></view>
+      <view class="decoration-element dot-5"></view>
+      
+      <!-- 跑腿动画元素 -->
+      <view class="courier-animation">
+        <view class="courier-vehicle">🛵</view>
+        <view class="courier-track"></view>
+        <view class="courier-packages">
+          <view class="package package-1">📦</view>
+          <view class="package package-2">🍔</view>
+          <view class="package package-3">📚</view>
+        </view>
       </view>
-      <view class="wave"></view>
     </view>
 
-    <!-- 登录表单 -->
-    <view class="login-box">
-      <view class="welcome">
+    <!-- 登录卡片 -->
+    <view class="login-card">
+      <!-- 标题区域 -->
+      <view class="header">
+        <view class="logo-container">
+          <text class="logo-emoji">🛵</text>
+        </view>
         <text class="title">校园跑腿系统</text>
-        <text class="subtitle">快速·便捷·安全的校园配送服务</text>
+        <text class="subtitle">你的校园生活好帮手</text>
       </view>
 
-      <!-- 功能特点展示 -->
+      <!-- 特点展示 -->
       <view class="features">
         <view class="feature-item">
-          <text class="emoji">⚡</text>
+          <view class="feature-icon lightning">
+            <text class="emoji">⚡</text>
+          </view>
           <text class="text">极速配送</text>
         </view>
         <view class="feature-item">
-          <text class="emoji">💰</text>
-          <text class="text">合理价格</text>
+          <view class="feature-icon wallet">
+            <text class="emoji">💰</text>
+          </view>
+          <text class="text">超值价格</text>
         </view>
         <view class="feature-item">
-          <text class="emoji">🔒</text>
+          <view class="feature-icon shield">
+            <text class="emoji">🔒</text>
+          </view>
           <text class="text">安全保障</text>
         </view>
       </view>
 
-      <!-- 添加注册状态提示 -->
-      <view class="register-status" v-if="registerStatus.show">
+      <!-- 状态提示 -->
+      <view class="status-container" v-if="registerStatus.show">
         <view class="status-box" :class="registerStatus.class">
-          <u-icon :name="registerStatus.icon" size="32" :color="registerStatus.color"></u-icon>
+          <u-icon :name="registerStatus.icon" size="36" :color="registerStatus.color"></u-icon>
           <text class="status-text">{{ registerStatus.text }}</text>
         </view>
       </view>
 
-      <view class="form-box">
+      <!-- 表单区域 -->
+      <view class="form-container">
         <u--form
-            :model="formData"
-            ref="uForm"
-            labelPosition="left"
-            labelWidth="0"
+          :model="formData"
+          ref="uForm"
+          labelPosition="left"
+          labelWidth="0"
         >
-          <view class="input-item">
+          <!-- 用户名输入框 -->
+          <view class="input-wrapper">
             <u-form-item prop="studentNo">
               <u--input
-                  v-model="formData.studentNo"
-                  border="none"
-                  placeholder="请输入用户名"
-                  placeholderStyle="color: #999"
-                  :customStyle="inputStyle"
-                  prefixIcon="account"
-                  prefixIconStyle="font-size: 22px;color: #ff6b6b"
+                v-model="formData.studentNo"
+                border="none"
+                placeholder="输入学号/手机号"
+                placeholderStyle="color: #9399a6"
+                :customStyle="inputStyle"
+                prefixIcon="account"
+                prefixIconStyle="font-size: 40rpx; color: #6979f8"
               ></u--input>
             </u-form-item>
           </view>
 
-          <view class="input-item">
+          <!-- 密码输入框 -->
+          <view class="input-wrapper">
             <u-form-item prop="password">
               <u--input
-                  v-model="formData.password"
-                  type="password"
-                  border="none"
-                  placeholder="请输入密码"
-                  placeholderStyle="color: #999"
-                  :customStyle="inputStyle"
-                  prefixIcon="lock"
-                  prefixIconStyle="font-size: 22px;color: #ff6b6b"
+                v-model="formData.password"
+                type="password"
+                border="none"
+                placeholder="输入密码"
+                placeholderStyle="color: #9399a6"
+                :customStyle="inputStyle"
+                prefixIcon="lock"
+                prefixIconStyle="font-size: 40rpx; color: #6979f8"
               ></u--input>
             </u-form-item>
           </view>
         </u--form>
 
         <!-- 登录按钮 -->
-        <view class="btn-box">
+        <view class="action-area">
           <u-button
-              type="primary"
-              text="立即登录"
-              :customStyle="buttonStyle"
-              @click="handleLogin"
-              :loading="loading"
+            type="primary"
+            text="登 录"
+            :customStyle="buttonStyle"
+            @click="handleLogin"
+            :loading="loading"
           ></u-button>
         </view>
-
       </view>
+    </view>
+    
+    <!-- 底部装饰元素 -->
+    <view class="bottom-decoration">
+      <view class="campus-element building-1"></view>
+      <view class="campus-element building-2"></view>
+      <view class="campus-element tree-1"></view>
+      <view class="campus-element tree-2"></view>
     </view>
   </view>
 </template>
@@ -117,24 +150,26 @@ const registerStatus = reactive({
 // 输入框样式
 const inputStyle = {
   height: '110rpx',
-  backgroundColor: '#f8f9fc',
-  borderRadius: '16rpx',
-  fontSize: '28rpx',
+  backgroundColor: '#f5f7ff',
+  borderRadius: '20rpx',
+  fontSize: '30rpx',
   paddingLeft: '20rpx',
-  border: '2rpx solid #e8e8e8',
+  border: 'none',
+  boxShadow: '0 4rpx 16rpx rgba(105, 121, 248, 0.1)',
   transition: 'all 0.3s ease'
 }
 
 // 按钮样式
 const buttonStyle = {
-  height: '100rpx',
-  marginTop: '60rpx',
-  borderRadius: '50rpx',
-  fontSize: '32rpx',
-  fontWeight: '500',
-  background: 'linear-gradient(to right, #ff6b6b, #ff8787)',
-  boxShadow: '0 10rpx 20rpx rgba(255, 107, 107, 0.2)',
-  border: 'none'
+  height: '110rpx',
+  marginTop: '50rpx',
+  borderRadius: '55rpx',
+  fontSize: '34rpx',
+  fontWeight: 'bold',
+  background: 'linear-gradient(to right, #6979f8, #a5affb)',
+  boxShadow: '0 10rpx 20rpx rgba(105, 121, 248, 0.3)',
+  border: 'none',
+  letterSpacing: '6rpx'
 }
 
 // 表单校验规则
@@ -167,7 +202,16 @@ onMounted(() => {
       uForm.value.setRules(rules)
     }
   })
+  
+  // 添加动画启动
+  startCourierAnimation()
 })
+
+// 启动快递员动画
+const startCourierAnimation = () => {
+  // 这里可以添加一些JS动画控制逻辑
+  console.log('Courier animation started')
+}
 
 // 登录方法
 const handleLogin = () => {
@@ -243,173 +287,383 @@ const handleLogin = () => {
 <style lang="scss" scoped>
 .login-container {
   min-height: 100vh;
-  background-color: #ffffff;
+  background: linear-gradient(135deg, #e9efff 0%, #f5f7ff 100%);
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40rpx;
+}
 
-  .top-bg {
-    height: 460rpx;
-    width: 100%;
-    position: relative;
-    background: linear-gradient(120deg, #ff6b6b, #ff8787);
-    overflow: hidden;
-
-    .delivery-animation {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-
-      .delivery-icon {
-        position: absolute;
-        font-size: 80rpx;
-        animation: moveAcross 8s linear infinite;
-        top: 50%;
-        transform: translateY(-50%);
-      }
+/* 动态背景元素 */
+.animated-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  
+  .decoration-element {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.6;
+    
+    &.dot-1 {
+      width: 240rpx;
+      height: 240rpx;
+      background: linear-gradient(45deg, #6979f8, #a5affb);
+      top: -120rpx;
+      right: -100rpx;
+      animation: float 8s ease-in-out infinite;
     }
-
-    .wave {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
+    
+    &.dot-2 {
+      width: 160rpx;
+      height: 160rpx;
+      background: linear-gradient(45deg, #ffac41, #ff1e56);
+      bottom: 10%;
+      left: -80rpx;
+      animation: float 6s ease-in-out infinite;
+      animation-delay: 1s;
+    }
+    
+    &.dot-3 {
+      width: 120rpx;
       height: 120rpx;
-      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23ffffff' fill-opacity='1' d='M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,160C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E") no-repeat bottom;
-      background-size: cover;
+      background: linear-gradient(45deg, #0acffe, #495aff);
+      top: 20%;
+      left: 10%;
+      animation: float 10s ease-in-out infinite;
+      animation-delay: 2s;
+    }
+    
+    &.dot-4 {
+      width: 80rpx;
+      height: 80rpx;
+      background: linear-gradient(45deg, #13e2da, #5d7aff);
+      bottom: 15%;
+      right: 10%;
+      animation: float 7s ease-in-out infinite;
+      animation-delay: 3s;
+    }
+    
+    &.dot-5 {
+      width: 60rpx;
+      height: 60rpx;
+      background: linear-gradient(45deg, #ff7eb3, #ff758c);
+      top: 30%;
+      right: 20%;
+      animation: float 9s ease-in-out infinite;
+      animation-delay: 4s;
     }
   }
+}
 
-  .login-box {
+/* 快递动画 */
+.courier-animation {
+  position: absolute;
+  top: 80rpx;
+  width: 100%;
+  height: 120rpx;
+  z-index: 1;
+  
+  .courier-vehicle {
     position: absolute;
-    top: 300rpx;
-    left: 40rpx;
-    right: 40rpx;
-    background-color: rgba(255, 255, 255, 0.98);
-    border-radius: 24rpx;
-    padding: 50rpx 40rpx;
-    box-shadow: 0 20rpx 40rpx rgba(0, 0, 0, 0.08);
-    backdrop-filter: blur(10px);
-
-    .welcome {
-      text-align: center;
-      margin-bottom: 40rpx;
-
-      .title {
-        font-size: 44rpx;
-        font-weight: bold;
-        background: linear-gradient(120deg, #ff6b6b, #ff8787);
-        -webkit-background-clip: text;
-        color: transparent;
-        display: block;
-        margin-bottom: 16rpx;
+    font-size: 80rpx;
+    left: 10%;
+    animation: moveRight 12s linear infinite;
+    z-index: 3;
+  }
+  
+  .courier-track {
+    position: absolute;
+    top: 90rpx;
+    width: 100%;
+    height: 6rpx;
+    background: rgba(0, 0, 0, 0.05);
+    z-index: 1;
+  }
+  
+  .courier-packages {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    
+    .package {
+      position: absolute;
+      font-size: 50rpx;
+      opacity: 0;
+      animation: showPackage 12s linear infinite;
+      
+      &.package-1 {
+        top: 20rpx;
+        left: 80%;
+        animation-delay: 4s;
       }
-
-      .subtitle {
-        font-size: 26rpx;
-        color: #666;
-        letter-spacing: 2rpx;
+      
+      &.package-2 {
+        top: 30rpx;
+        left: 60%;
+        animation-delay: 8s;
+      }
+      
+      &.package-3 {
+        top: 10rpx;
+        left: 40%;
+        animation-delay: 0s;
       }
     }
+  }
+}
 
-    .features {
+/* 登录卡片 */
+.login-card {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20rpx);
+  border-radius: 40rpx;
+  padding: 60rpx 40rpx;
+  box-shadow: 0 20rpx 40rpx rgba(0, 0, 0, 0.08);
+  position: relative;
+  z-index: 10;
+  max-width: 650rpx;
+  
+  .header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 40rpx;
+    
+    .logo-container {
+      width: 120rpx;
+      height: 120rpx;
+      background: linear-gradient(45deg, #6979f8, #a5affb);
+      border-radius: 30rpx;
       display: flex;
-      justify-content: space-around;
-      margin-bottom: 40rpx;
-
-      .feature-item {
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 30rpx;
+      box-shadow: 0 10rpx 20rpx rgba(105, 121, 248, 0.3);
+      transform: rotate(-5deg);
+      
+      .logo-emoji {
+        font-size: 60rpx;
+      }
+    }
+    
+    .title {
+      font-size: 44rpx;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 16rpx;
+      background: linear-gradient(to right, #6979f8, #a5affb);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+    
+    .subtitle {
+      font-size: 28rpx;
+      color: #666;
+      margin-bottom: 10rpx;
+    }
+  }
+  
+  .features {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 40rpx;
+    
+    .feature-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      
+      .feature-icon {
+        width: 80rpx;
+        height: 80rpx;
+        border-radius: 50%;
         display: flex;
-        flex-direction: column;
         align-items: center;
-        gap: 10rpx;
-
+        justify-content: center;
+        margin-bottom: 16rpx;
+        animation: pulse 2s infinite;
+        
+        &.lightning {
+          background: linear-gradient(45deg, #ffde59, #ffa751);
+          box-shadow: 0 6rpx 12rpx rgba(255, 167, 81, 0.3);
+          animation-delay: 0s;
+        }
+        
+        &.wallet {
+          background: linear-gradient(45deg, #0acffe, #495aff);
+          box-shadow: 0 6rpx 12rpx rgba(73, 90, 255, 0.3);
+          animation-delay: 0.4s;
+        }
+        
+        &.shield {
+          background: linear-gradient(45deg, #11998e, #38ef7d);
+          box-shadow: 0 6rpx 12rpx rgba(56, 239, 125, 0.3);
+          animation-delay: 0.8s;
+        }
+        
         .emoji {
           font-size: 40rpx;
         }
-
-        .text {
-          font-size: 24rpx;
-          color: #666;
-        }
+      }
+      
+      .text {
+        font-size: 26rpx;
+        color: #333;
+        font-weight: 500;
       }
     }
-
-    .form-box {
-      .input-item {
-        margin-bottom: 24rpx;
-        position: relative;
-
-        :deep(.u-input--focus) {
-          border-color: #ff6b6b !important;
-          box-shadow: 0 0 0 2rpx rgba(255, 107, 107, 0.1);
-          background-color: #ffffff;
-        }
+  }
+  
+  .status-container {
+    margin-bottom: 30rpx;
+    
+    .status-box {
+      padding: 20rpx;
+      border-radius: 16rpx;
+      display: flex;
+      align-items: center;
+      
+      &.status-error {
+        background-color: rgba(255, 77, 79, 0.1);
       }
-
-      .register-link {
-        text-align: center;
-        margin-top: 30rpx;
+      
+      &.status-pending {
+        background-color: rgba(250, 173, 20, 0.1);
+      }
+      
+      &.status-rejected {
+        background-color: rgba(255, 77, 79, 0.1);
+      }
+      
+      &.status-disabled {
+        background-color: rgba(255, 77, 79, 0.1);
+      }
+      
+      .status-text {
+        margin-left: 16rpx;
         font-size: 26rpx;
-        color: #666;
-
-        .link {
-          color: #ff6b6b;
-          margin-left: 10rpx;
-        }
       }
+    }
+  }
+  
+  .form-container {
+    .input-wrapper {
+      margin-bottom: 30rpx;
+    }
+    
+    .action-area {
+      margin-top: 40rpx;
     }
   }
 }
 
-@keyframes moveAcross {
+/* 底部装饰 */
+.bottom-decoration {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 160rpx;
+  z-index: 1;
+  
+  .campus-element {
+    position: absolute;
+    bottom: 0;
+    
+    &.building-1 {
+      width: 120rpx;
+      height: 150rpx;
+      background: rgba(105, 121, 248, 0.6);
+      left: 10%;
+      border-radius: 8rpx 8rpx 0 0;
+    }
+    
+    &.building-2 {
+      width: 100rpx;
+      height: 120rpx;
+      background: rgba(165, 175, 251, 0.6);
+      left: 25%;
+      border-radius: 8rpx 8rpx 0 0;
+    }
+    
+    &.tree-1 {
+      width: 60rpx;
+      height: 90rpx;
+      background: rgba(56, 239, 125, 0.6);
+      right: 20%;
+      border-radius: 50% 50% 0 0;
+    }
+    
+    &.tree-2 {
+      width: 40rpx;
+      height: 60rpx;
+      background: rgba(56, 239, 125, 0.7);
+      right: 30%;
+      border-radius: 50% 50% 0 0;
+    }
+  }
+}
+
+/* 动画定义 */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20rpx);
+  }
+}
+
+@keyframes pulse {
   0% {
-    left: -100rpx;
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
   }
   100% {
-    left: 100%;
+    transform: scale(1);
   }
 }
 
-.register-status {
-  margin-bottom: 30rpx;
-
-  .status-box {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20rpx;
-    border-radius: 12rpx;
-
-    .status-text {
-      margin-left: 12rpx;
-      font-size: 28rpx;
-    }
+@keyframes moveRight {
+  0% {
+    left: -10%;
+    transform: translateY(0);
   }
-
-  .status-pending {
-    background-color: #fff7e6;
-    border: 2rpx solid #ffd591;
-
-    .status-text {
-      color: #faad14;
-    }
+  25% {
+    transform: translateY(-10rpx);
   }
-
-  .status-rejected {
-    background-color: #fff1f0;
-    border: 2rpx solid #ffa39e;
-
-    .status-text {
-      color: #ff4d4f;
-    }
+  50% {
+    transform: translateY(0);
   }
+  75% {
+    transform: translateY(-10rpx);
+  }
+  100% {
+    left: 110%;
+    transform: translateY(0);
+  }
+}
 
-  .status-approved {
-    background-color: #f6ffed;
-    border: 2rpx solid #b7eb8f;
-
-    .status-text {
-      color: #ff6b6b;
-    }
+@keyframes showPackage {
+  0%, 100% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  10%, 90% {
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-20rpx);
   }
 }
 </style> 
