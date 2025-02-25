@@ -44,7 +44,6 @@
     <el-card class="table-card" shadow="hover">
       <el-table
           :data="tableData"
-          :height="tableHeight"
           v-loading="loading"
           :header-cell-style="headerCellStyle"
           :cell-style="cellStyle"
@@ -224,7 +223,7 @@ import {
   Document, Plus, Check, Close, Edit, Delete, Calendar, List,
   Picture, InfoFilled, Sort, CircleCheck, Timer, SetUp
 } from '@element-plus/icons-vue'
-import {pageTaskTypes, enableTaskType, disableTaskType} from '@/api/taskType'
+import {pageTaskTypes, enableTaskType, disableTaskType, deleteTaskType} from '@/api/taskType'
 import {ElMessage, ElMessageBox} from 'element-plus'
 
 const router = useRouter()
@@ -250,11 +249,6 @@ const loading = ref(false)
 const total = ref(0)
 const currentPage = ref(1)
 const pageSize = ref(10)
-
-// 计算表格高度
-const tableHeight = computed(() => {
-  return window.innerHeight - 360 // 调整高度以适应独立的分页卡片
-})
 
 // 表格样式
 const headerCellStyle = () => {
@@ -419,8 +413,10 @@ const handleDisable = async (row) => {
 }
 
 // 删除任务类型
-const handleDelete = (row) => {
-  ElMessageBox.confirm(
+const handleDelete = async (row) => {
+  try {
+    // 确认删除
+    await ElMessageBox.confirm(
       `确定要删除任务类型 "${row.typeName}" 吗?`,
       '删除确认',
       {
@@ -428,18 +424,29 @@ const handleDelete = (row) => {
         cancelButtonText: '取消',
         type: 'warning',
       }
-  )
-      .then(() => {
-        // 这里暂时不实现删除逻辑
-        ElMessage({
-          message: '删除功能待实现',
-          type: 'success',
-          duration: 2000
-        })
+    )
+    
+    // 调用删除接口
+    const res = await deleteTaskType(row.id)
+    if (res) {
+      ElMessage({
+        message: '任务类型删除成功',
+        type: 'success',
+        duration: 2000
       })
-      .catch(() => {
-        // 用户取消删除操作
-      })
+      // 刷新数据
+      fetchData()
+    } else {
+      ElMessage.error('任务类型删除失败')
+    }
+  } catch (error) {
+    if (error === 'cancel') {
+      // 用户取消操作，不做处理
+      return
+    }
+    console.error('删除任务类型出错:', error)
+    ElMessage.error('系统异常，请稍后重试')
+  }
 }
 </script>
 
@@ -604,16 +611,48 @@ const handleDelete = (row) => {
 }
 
 .table-card {
-  margin-bottom: 16px;
+  margin-bottom: 20px;
   border-radius: 12px;
   border: none;
-  overflow: hidden;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .table-card:hover {
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.table-card :deep(.el-card__body) {
+  padding: 0;
+}
+
+.table-card :deep(.el-table) {
+  /* 设置表格高度，使其在内容过多时可滚动，同时留出足够空间显示底部分页 */
+  max-height: calc(100vh - 300px);
+}
+
+.table-card :deep(.el-table__body-wrapper) {
+  overflow-y: auto !important;
+}
+
+/* 修复表格截断问题 */
+:deep(.el-table) {
+  overflow: hidden;
+}
+
+:deep(.el-table__body-wrapper) {
+  overflow-y: auto !important;
+  overflow-x: hidden;
+}
+
+/* 保持这些样式以确保视觉效果正常 */
+:deep(.el-table__body td), 
+:deep(.el-table__header th) {
+  overflow: visible !important;
+}
+
+:deep(.cell) {
+  overflow: visible !important;
 }
 
 .table-row {
@@ -958,32 +997,5 @@ const handleDelete = (row) => {
       }
     }
   }
-}
-
-/* 修复表格截断问题 */
-:deep(.el-table) {
-  overflow: visible;
-}
-
-:deep(.el-table__body), 
-:deep(.el-table__footer), 
-:deep(.el-table__header) {
-  overflow: visible !important;
-}
-
-:deep(.el-table__body-wrapper), 
-:deep(.el-table__footer-wrapper), 
-:deep(.el-table__header-wrapper) {
-  overflow: visible !important;
-}
-
-:deep(.el-table__body td), 
-:deep(.el-table__footer td), 
-:deep(.el-table__header th) {
-  overflow: visible !important;
-}
-
-:deep(.cell) {
-  overflow: visible !important;
 }
 </style> 

@@ -126,4 +126,28 @@ public class SysTaskTypeController extends BaseController {
         }
         return Result.success(taskTypeService.updateTaskType(request), "更新任务类型成功");
     }
+
+    /**
+     * 删除任务类型
+     *
+     * @param id 任务类型ID
+     * @return 响应结果
+     */
+    @DeleteMapping("/{id}")
+    @Operation(summary = "删除任务类型", description = "根据ID删除任务类型")
+    public Result<Boolean> deleteTaskType(
+            @PathVariable @Parameter(description = "任务类型ID") Integer id) {
+        // 检查当前用户是否为管理员
+        if (!isAdmin()) {
+            return Result.forbidden();
+        }
+        
+        // 获取任务类型详情
+        SysTaskType taskType = taskTypeService.getTaskTypeDetail(id);
+        if (taskType == null) {
+            return Result.failed("任务类型不存在");
+        }
+        
+        return Result.success(taskTypeService.deleteTaskType(id), "删除任务类型成功");
+    }
 } 

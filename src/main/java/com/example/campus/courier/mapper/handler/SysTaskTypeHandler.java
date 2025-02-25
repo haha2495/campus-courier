@@ -121,4 +121,24 @@ public class SysTaskTypeHandler extends ServiceImpl<SysTaskTypeMapper, SysTaskTy
         // 执行更新操作
         return updateById(existingType);
     }
+    
+    /**
+     * 删除任务类型
+     *
+     * @param id 任务类型ID
+     * @return 操作是否成功
+     */
+    public boolean deleteTaskType(Integer id) {
+        log.info("Handler - 删除任务类型, ID: {}", id);
+        
+        // 先检查任务类型是否存在
+        SysTaskType existingType = getById(id);
+        if (existingType == null) {
+            log.error("Handler - 删除任务类型失败，ID对应的任务类型不存在: {}", id);
+            return false;
+        }
+        
+        // 执行删除操作
+        return removeById(id);
+    }
 }

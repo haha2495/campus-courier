@@ -58,4 +58,12 @@ public interface SysTaskTypeService {
      * @return 操作是否成功
      */
     boolean updateTaskType(TaskTypeUpdateRequest request);
+
+    /**
+     * 删除任务类型
+     *
+     * @param id 任务类型ID
+     * @return 操作是否成功
+     */
+    boolean deleteTaskType(Integer id);
 } 

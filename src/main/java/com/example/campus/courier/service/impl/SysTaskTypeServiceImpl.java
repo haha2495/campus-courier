@@ -114,4 +114,19 @@ public class SysTaskTypeServiceImpl implements SysTaskTypeService {
         // 调用Handler执行更新操作
         return taskTypeHandler.updateTaskType(request);
     }
+    
+    /**
+     * 删除任务类型
+     *
+     * @param id 任务类型ID
+     * @return 操作是否成功
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean deleteTaskType(Integer id) {
+        log.info("删除任务类型, ID: {}", id);
+        
+        // 调用Handler执行删除操作
+        return taskTypeHandler.deleteTaskType(id);
+    }
 } 

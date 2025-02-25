@@ -75,3 +75,15 @@ export function updateTaskType(data) {
     })
 }
 
+/**
+ * 删除任务类型
+ * @param {Number} id - 任务类型ID
+ * @returns {Promise}
+ */
+export function deleteTaskType(id) {
+    return request({
+        url: `/task/types/${id}`,
+        method: 'delete'
+    })
+}
+
