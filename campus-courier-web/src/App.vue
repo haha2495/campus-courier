@@ -4,7 +4,7 @@
 
 <template>
   <router-view v-slot="{ Component }">
-    <transition name="fade-transform" mode="out-in" appear>
+    <transition name="zoom-fade" mode="out-in" appear>
       <component :is="Component" class="page-component" />
     </transition>
   </router-view>
@@ -29,6 +29,7 @@ body {
   height: 100vh;
   position: relative;
   overflow-x: hidden;
+  perspective: 1200px; /* 添加透视效果，增强3D感 */
 }
 
 .page-component {
@@ -39,64 +40,117 @@ body {
   top: 0;
 }
 
-/* 路由过渡动画 */
-.fade-transform-enter-active,
-.fade-transform-leave-active {
-  transition: all 0.3s ease-out;
-  position: absolute;
-  width: 100%;
-  height: 100%;
+/* 新的缩放淡入淡出动画 - 更流畅，无卡顿 */
+.zoom-fade-enter-active {
+  transition: all 0.4s ease-out;
+  transform-origin: center center;
 }
 
-.fade-transform-enter-from {
+.zoom-fade-leave-active {
+  transition: all 0.3s ease-in;
+  transform-origin: center center;
+}
+
+.zoom-fade-enter-from {
   opacity: 0;
-  transform: translateX(30px);
+  transform: scale(0.85);
 }
 
-.fade-transform-leave-to {
+.zoom-fade-leave-to {
   opacity: 0;
-  transform: translateX(-30px);
+  transform: scale(1.15);
 }
 
-/* 页面加载动画 */
-@keyframes pageEnter {
+/* 弹性缩放动画 - 类似于iOS应用启动效果 */
+.bounce-scale-enter-active {
+  animation: bounceIn 0.5s;
+}
+
+.bounce-scale-leave-active {
+  animation: bounceOut 0.4s;
+}
+
+@keyframes bounceIn {
   0% {
     opacity: 0;
-    transform: translateY(20px);
+    transform: scale(0.3);
+  }
+  40% {
+    opacity: 0.7;
+    transform: scale(1.03);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(0.98);
   }
   100% {
     opacity: 1;
-    transform: translateY(0);
+    transform: scale(1);
   }
 }
 
-.page-enter {
-  animation: pageEnter 0.3s ease-out forwards;
+@keyframes bounceOut {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  40% {
+    opacity: 0.8;
+    transform: scale(1.03);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
 }
 
-/* 全局过渡效果 */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
+/* 3D翻页效果 - 模拟书页翻转 */
+.flip-enter-active {
+  animation: flipIn 0.6s ease-out forwards;
+  transform-origin: center center;
 }
 
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
+.flip-leave-active {
+  animation: flipOut 0.5s ease-in forwards;
+  transform-origin: center center;
 }
 
-/* 滑动效果 */
-.slide-fade-enter-active {
-  transition: all 0.3s ease-out;
+@keyframes flipIn {
+  0% {
+    opacity: 0;
+    transform: rotateY(-90deg);
+  }
+  100% {
+    opacity: 1;
+    transform: rotateY(0deg);
+  }
 }
 
+@keyframes flipOut {
+  0% {
+    opacity: 1;
+    transform: rotateY(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: rotateY(90deg);
+  }
+}
+
+/* 幻灯片效果 - 平滑滑动 */
+.slide-fade-enter-active,
 .slide-fade-leave-active {
-  transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
+  transition: all 0.35s ease;
 }
 
-.slide-fade-enter-from,
-.slide-fade-leave-to {
-  transform: translateY(20px);
+.slide-fade-enter-from {
   opacity: 0;
+  transform: translateY(30px);
+}
+
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-30px);
 }
 </style>
+

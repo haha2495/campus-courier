@@ -183,8 +183,8 @@ const fieldStatus = ref({
 
 // 登录表单数据
 const loginForm = ref({
-  username: "",
-  password: "",
+  username: "admin",
+  password: "123456",
   captcha: "",
 });
 
