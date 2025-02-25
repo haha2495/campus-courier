@@ -3,7 +3,7 @@ package com.example.campus.courier.controller;
 import com.example.campus.courier.model.dto.DepartmentDTO;
 import com.example.campus.courier.model.dto.StudentRecordDTO;
 import com.example.campus.courier.model.entity.SysStudent;
-import com.example.campus.courier.model.request.*;
+import com.example.campus.courier.model.request.student.*;
 import com.example.campus.courier.model.response.ImportResult;
 import com.example.campus.courier.model.response.PageResult;
 import com.example.campus.courier.model.response.Result;

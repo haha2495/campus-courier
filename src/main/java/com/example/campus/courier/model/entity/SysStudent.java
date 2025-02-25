@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.example.campus.courier.model.enums.UserRoleEnum;
-import com.example.campus.courier.model.request.StudentProfileUpdateRequest;
+import com.example.campus.courier.model.request.student.StudentProfileUpdateRequest;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

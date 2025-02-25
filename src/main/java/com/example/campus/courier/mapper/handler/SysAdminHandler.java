@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.campus.courier.mapper.SysAdminMapper;
 import com.example.campus.courier.model.entity.SysAdmin;
-import com.example.campus.courier.model.request.AdminPageRequest;
+import com.example.campus.courier.model.request.admin.AdminPageRequest;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;

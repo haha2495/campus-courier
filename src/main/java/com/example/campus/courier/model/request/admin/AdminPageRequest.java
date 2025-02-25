@@ -1,5 +1,6 @@
-package com.example.campus.courier.model.request;
+package com.example.campus.courier.model.request.admin;
 
+import com.example.campus.courier.model.request.BasePageRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

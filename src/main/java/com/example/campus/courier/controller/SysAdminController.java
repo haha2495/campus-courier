@@ -1,11 +1,11 @@
 package com.example.campus.courier.controller;
 
 import com.example.campus.courier.model.entity.SysAdmin;
-import com.example.campus.courier.model.request.AdminAddRequest;
-import com.example.campus.courier.model.request.AdminLoginRequest;
-import com.example.campus.courier.model.request.AdminPageRequest;
-import com.example.campus.courier.model.request.AdminUpdateRequest;
-import com.example.campus.courier.model.request.AdminProfileUpdateRequest;
+import com.example.campus.courier.model.request.admin.AdminAddRequest;
+import com.example.campus.courier.model.request.admin.AdminLoginRequest;
+import com.example.campus.courier.model.request.admin.AdminPageRequest;
+import com.example.campus.courier.model.request.admin.AdminUpdateRequest;
+import com.example.campus.courier.model.request.admin.AdminProfileUpdateRequest;
 import com.example.campus.courier.model.response.PageResult;
 import com.example.campus.courier.model.response.Result;
 import com.example.campus.courier.service.SysAdminService;

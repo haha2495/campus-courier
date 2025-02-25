@@ -1,9 +1,9 @@
 package com.example.campus.courier.service;
 
-import com.example.campus.courier.model.request.AdminAddRequest;
-import com.example.campus.courier.model.request.AdminPageRequest;
-import com.example.campus.courier.model.request.AdminUpdateRequest;
-import com.example.campus.courier.model.request.AdminProfileUpdateRequest;
+import com.example.campus.courier.model.request.admin.AdminAddRequest;
+import com.example.campus.courier.model.request.admin.AdminPageRequest;
+import com.example.campus.courier.model.request.admin.AdminUpdateRequest;
+import com.example.campus.courier.model.request.admin.AdminProfileUpdateRequest;
 import com.example.campus.courier.model.response.PageResult;
 import com.example.campus.courier.model.entity.SysAdmin;
 import io.swagger.v3.oas.annotations.tags.Tag;
