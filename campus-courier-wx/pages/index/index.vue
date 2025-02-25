@@ -8,16 +8,16 @@
       <view class="role-switch">
         <view 
           class="role-option" 
-          :class="{ active: currentRole === 'publisher' }"
-          @click="switchRole('publisher')"
+          :class="{ active: currentRole === TabBarType.PUBLISHER }"
+          @click="switchRole(TabBarType.PUBLISHER)"
         >
           <text class="role-text">发布模式</text>
         </view>
-        <view class="switch-slider" :style="{ transform: currentRole === 'publisher' ? 'translateX(0)' : 'translateX(100%)' }"></view>
+        <view class="switch-slider" :style="{ transform: currentRole === TabBarType.PUBLISHER ? 'translateX(0)' : 'translateX(100%)' }"></view>
         <view 
           class="role-option" 
-          :class="{ active: currentRole === 'runner' }"
-          @click="switchRole('runner')"
+          :class="{ active: currentRole === TabBarType.RUNNER }"
+          @click="switchRole(TabBarType.RUNNER)"
         >
           <text class="role-text">接单模式</text>
         </view>
@@ -36,7 +36,7 @@
       @refresherabort="onAbort"
     >
       <!-- 发布者内容 -->
-      <block v-if="currentRole === 'publisher'">
+      <block v-if="currentRole === TabBarType.PUBLISHER">
         <view class="welcome-card">
           <view class="welcome-content">
             <text class="welcome-title">Hi, 欢迎回来!</text>
@@ -126,17 +126,17 @@
     <!-- 底部导航栏 -->
     <view class="tabbar-wrapper" :style="{ paddingBottom: safeAreaInsetBottom + 'px' }">
       <!-- 发布者导航栏 -->
-      <view class="tabbar" v-if="currentRole === 'publisher'">
+      <view class="tabbar" v-if="currentRole === TabBarType.PUBLISHER">
         <!-- 左侧图标 -->
         <view 
-          v-for="(item, index) in publisherTabs.filter((_, i) => i < 2)" 
+          v-for="(item, index) in currentTabs.filter((_, i) => i < 2)" 
           :key="index" 
           class="tab-item"
           :class="{ active: currentTab === item.name }"
           @click="switchTab(item.name)"
         >
           <image 
-            :src="currentTab === item.name ? item.activeIcon : item.icon" 
+            :src="getIconSrc(currentTab === item.name ? item.activeIcon : item.icon)" 
             class="tab-icon"
             mode="aspectFit"
           ></image>
@@ -150,28 +150,28 @@
         <view class="center-button-wrapper">
           <view 
             class="center-button" 
-            :class="{ active: currentTab === 'publish' }"
-            @click="switchTab('publish')"
+            :class="{ active: currentTab === centerButton.name }"
+            @click="switchTab(centerButton.name)"
           >
             <image 
-              src="https://cdn-icons-png.flaticon.com/128/4315/4315445.png" 
+              :src="getIconSrc(centerButton.icon)" 
               class="center-icon"
               mode="aspectFit"
             ></image>
           </view>
-          <text class="center-button-text">发布任务</text>
+          <text class="center-button-text">{{ centerButton.text }}</text>
         </view>
         
         <!-- 右侧图标 -->
         <view 
-          v-for="(item, index) in publisherTabs.filter((_, i) => i > 2)" 
+          v-for="(item, index) in currentTabs.filter((_, i) => i > 2)" 
           :key="index + 2" 
           class="tab-item"
           :class="{ active: currentTab === item.name }"
           @click="switchTab(item.name)"
         >
           <image 
-            :src="currentTab === item.name ? item.activeIcon : item.icon" 
+            :src="getIconSrc(currentTab === item.name ? item.activeIcon : item.icon)" 
             class="tab-icon"
             mode="aspectFit"
           ></image>
@@ -186,14 +186,14 @@
       <view class="tabbar" v-else>
         <!-- 左侧图标 -->
         <view 
-          v-for="(item, index) in runnerTabs.filter((_, i) => i < 2)" 
+          v-for="(item, index) in currentTabs.filter((_, i) => i < 2)" 
           :key="index" 
           class="tab-item"
           :class="{ active: currentTab === item.name }"
           @click="switchTab(item.name)"
         >
           <image 
-            :src="currentTab === item.name ? item.activeIcon : item.icon" 
+            :src="getIconSrc(currentTab === item.name ? item.activeIcon : item.icon)" 
             class="tab-icon"
             mode="aspectFit"
           ></image>
@@ -207,28 +207,28 @@
         <view class="center-button-wrapper">
           <view 
             class="center-button runner" 
-            :class="{ active: currentTab === 'orders' }"
-            @click="switchTab('orders')"
+            :class="{ active: currentTab === centerButton.name }"
+            @click="switchTab(centerButton.name)"
           >
             <image 
-              src="https://cdn-icons-png.flaticon.com/128/2645/2645233.png" 
+              :src="getIconSrc(centerButton.icon)" 
               class="center-icon"
               mode="aspectFit"
             ></image>
           </view>
-          <text class="center-button-text">抢单大厅</text>
+          <text class="center-button-text">{{ centerButton.text }}</text>
         </view>
         
         <!-- 右侧图标 -->
         <view 
-          v-for="(item, index) in runnerTabs.filter((_, i) => i > 2)" 
+          v-for="(item, index) in currentTabs.filter((_, i) => i > 2)" 
           :key="index + 2" 
           class="tab-item"
           :class="{ active: currentTab === item.name }"
           @click="switchTab(item.name)"
         >
           <image 
-            :src="currentTab === item.name ? item.activeIcon : item.icon" 
+            :src="getIconSrc(currentTab === item.name ? item.activeIcon : item.icon)" 
             class="tab-icon"
             mode="aspectFit"
           ></image>
@@ -243,14 +243,22 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
+import { 
+  TabBarType, 
+  TabPageName, 
+  publisherTabConfig, 
+  runnerTabConfig, 
+  getCenterButton,
+  getVersionedIconUrl
+} from '@/utils/tabConfig'
 
 // 当前角色：publisher(发布者) 或 runner(跑腿者)
-const currentRole = ref('publisher')
+const currentRole = ref(TabBarType.PUBLISHER)
 
 // 当前激活的Tab
-const currentTab = ref('home')
+const currentTab = ref(TabPageName.HOME)
 
 // 系统信息相关变量
 const statusBarHeight = ref(20)
@@ -259,85 +267,59 @@ const safeAreaInsetBottom = ref(0)
 // 下拉刷新状态
 const isRefreshing = ref(false)
 
-// 发布者导航栏配置
-const publisherTabs = [
-  { 
-    name: 'home', 
-    text: '首页', 
-    icon: 'https://cdn-icons-png.flaticon.com/128/1946/1946488.png', 
-    activeIcon: 'https://cdn-icons-png.flaticon.com/128/1946/1946436.png' 
-  },
-  { 
-    name: 'tasks', 
-    text: '我的任务', 
-    icon: 'https://cdn-icons-png.flaticon.com/128/2098/2098561.png', 
-    activeIcon: 'https://cdn-icons-png.flaticon.com/128/2355/2355330.png' 
-  },
-  { 
-    name: 'publish', 
-    text: '发布任务', 
-    icon: 'https://cdn-icons-png.flaticon.com/128/4315/4315445.png', 
-    activeIcon: 'https://cdn-icons-png.flaticon.com/128/4315/4315445.png' 
-  },
-  { 
-    name: 'disputes', 
-    text: '纠纷大厅', 
-    icon: 'https://cdn-icons-png.flaticon.com/128/1585/1585464.png', 
-    activeIcon: 'https://cdn-icons-png.flaticon.com/128/1585/1585527.png' 
-  },
-  { 
-    name: 'mine', 
-    text: '我的', 
-    icon: 'https://cdn-icons-png.flaticon.com/128/1077/1077114.png', 
-    activeIcon: 'https://cdn-icons-png.flaticon.com/128/1077/1077063.png' 
-  }
-]
+// 获取中间按钮配置
+const centerButton = computed(() => getCenterButton(currentRole.value))
 
-// 跑腿者导航栏配置
-const runnerTabs = [
-  { 
-    name: 'home', 
-    text: '首页', 
-    icon: 'https://cdn-icons-png.flaticon.com/128/1946/1946488.png', 
-    activeIcon: 'https://cdn-icons-png.flaticon.com/128/1946/1946436.png' 
-  },
-  { 
-    name: 'current', 
-    text: '当前任务', 
-    icon: 'https://cdn-icons-png.flaticon.com/128/2838/2838779.png', 
-    activeIcon: 'https://cdn-icons-png.flaticon.com/128/2838/2838846.png' 
-  },
-  { 
-    name: 'orders', 
-    text: '抢单大厅', 
-    icon: 'https://cdn-icons-png.flaticon.com/128/2645/2645233.png', 
-    activeIcon: 'https://cdn-icons-png.flaticon.com/128/2645/2645233.png' 
-  },
-  { 
-    name: 'records', 
-    text: '我的接单', 
-    icon: 'https://cdn-icons-png.flaticon.com/128/2098/2098561.png', 
-    activeIcon: 'https://cdn-icons-png.flaticon.com/128/2355/2355330.png' 
-  },
-  { 
-    name: 'mine', 
-    text: '我的', 
-    icon: 'https://cdn-icons-png.flaticon.com/128/1077/1077114.png', 
-    activeIcon: 'https://cdn-icons-png.flaticon.com/128/1077/1077063.png' 
+// 获取当前导航栏配置
+const currentTabs = computed(() => {
+  return currentRole.value === TabBarType.PUBLISHER ? publisherTabConfig : runnerTabConfig
+})
+
+// 图标缓存对象
+const iconCache = ref({})
+
+// 从缓存获取图标URL
+const getIconSrc = (url) => {
+  // 给URL添加版本号，用于缓存控制
+  const versionedUrl = getVersionedIconUrl(url)
+  
+  // 检查缓存中是否有该图标
+  if (iconCache.value[versionedUrl] && iconCache.value[versionedUrl].localPath) {
+    try {
+      // 检查本地文件是否存在
+      const fs = uni.getFileSystemManager()
+      fs.accessSync(iconCache.value[versionedUrl].localPath)
+      return iconCache.value[versionedUrl].localPath
+    } catch (e) {
+      // 本地文件不存在，删除缓存记录并返回原始URL
+      console.warn('缓存的图片不存在:', versionedUrl)
+      delete iconCache.value[versionedUrl]
+      uni.setStorageSync('iconCache', iconCache.value)
+      return url
+    }
   }
-]
+  return url
+}
 
 // 初始化函数
 onMounted(() => {
   getSystemInfo()
   initRoleFromStorage()
+  loadIconCache()
   preloadTabIcons()
 })
 
 // 每次显示页面时执行
 onShow(() => {
-  // 可在此处刷新数据
+  // 刷新图标缓存
+  loadIconCache()
 })
+
+// 加载图标缓存
+const loadIconCache = () => {
+  const cache = uni.getStorageSync('iconCache') || {}
+  iconCache.value = cache
+}
 
 // 获取系统信息
 const getSystemInfo = () => {
@@ -362,17 +344,17 @@ const getSystemInfo = () => {
 // 从本地存储初始化角色
 const initRoleFromStorage = () => {
   const savedRole = uni.getStorageSync('userRole')
-  if (savedRole && (savedRole === 'publisher' || savedRole === 'runner')) {
+  if (savedRole && (savedRole === TabBarType.PUBLISHER || savedRole === TabBarType.RUNNER)) {
     currentRole.value = savedRole
   }
 }
 
 // 切换角色
 const switchRole = (role) => {
-  if (role !== 'publisher' && role !== 'runner') return
+  if (role !== TabBarType.PUBLISHER && role !== TabBarType.RUNNER) return
   
   currentRole.value = role
-  currentTab.value = 'home'
+  currentTab.value = TabPageName.HOME
   
   // 保存到本地存储
   uni.setStorageSync('userRole', role)
@@ -388,33 +370,33 @@ const switchTab = (tab) => {
 
 // 导航Tab处理逻辑
 const handleTabNavigation = (tab) => {
-  if (currentRole.value === 'publisher') {
+  if (currentRole.value === TabBarType.PUBLISHER) {
     switch(tab) {
-      case 'publish':
+      case TabPageName.PUBLISH:
         showMessage('发布任务功能待实现')
         break
-      case 'tasks':
+      case TabPageName.TASKS:
         showMessage('我的任务功能待实现')
         break
-      case 'disputes':
+      case TabPageName.DISPUTES:
         showMessage('纠纷大厅功能待实现')
         break
-      case 'mine':
+      case TabPageName.MINE:
         showMessage('个人中心功能待实现')
         break
     }
   } else {
     switch(tab) {
-      case 'orders':
+      case TabPageName.ORDERS:
         showMessage('抢单大厅功能待实现')
         break
-      case 'current':
+      case TabPageName.CURRENT:
         showMessage('当前任务功能待实现')
         break
-      case 'records':
+      case TabPageName.RECORDS:
         showMessage('我的接单功能待实现')
         break
-      case 'mine':
+      case TabPageName.MINE:
         showMessage('个人中心功能待实现')
         break
     }
@@ -466,35 +448,59 @@ const preloadTabIcons = () => {
   const iconUrls = new Set()
   
   // 添加发布者图标
-  publisherTabs.forEach(tab => {
+  publisherTabConfig.forEach(tab => {
     iconUrls.add(tab.icon)
     iconUrls.add(tab.activeIcon)
   })
   
   // 添加跑腿者图标
-  runnerTabs.forEach(tab => {
+  runnerTabConfig.forEach(tab => {
     iconUrls.add(tab.icon)
     iconUrls.add(tab.activeIcon)
   })
   
+  // 添加中间按钮图标
+  iconUrls.add(getCenterButton(TabBarType.PUBLISHER).icon)
+  iconUrls.add(getCenterButton(TabBarType.RUNNER).icon)
+  
   // 创建本地缓存对象
-  const iconCache = uni.getStorageSync('iconCache') || {}
   const currentTime = Date.now()
   // 清理过期缓存 (7天过期)
   const CACHE_EXPIRY = 7 * 24 * 60 * 60 * 1000 // 7天
   
-  Object.keys(iconCache).forEach(key => {
-    if (currentTime - iconCache[key].time > CACHE_EXPIRY) {
-      delete iconCache[key]
+  Object.keys(iconCache.value).forEach(key => {
+    if (currentTime - iconCache.value[key].time > CACHE_EXPIRY) {
+      try {
+        // 尝试删除本地文件
+        const fs = uni.getFileSystemManager()
+        fs.unlinkSync(iconCache.value[key].localPath)
+      } catch (e) {
+        // 忽略错误
+      }
+      delete iconCache.value[key]
     }
   })
   
+  // 更新缓存
+  uni.setStorageSync('iconCache', iconCache.value)
+  
   // 预加载并缓存每个图标
   iconUrls.forEach(url => {
+    // 给URL添加版本号
+    const versionedUrl = getVersionedIconUrl(url)
+    
     // 如果已有有效缓存，跳过下载
-    if (iconCache[url] && iconCache[url].localPath) {
-      console.log('使用缓存图标:', url)
-      return
+    if (iconCache.value[versionedUrl] && iconCache.value[versionedUrl].localPath) {
+      try {
+        // 验证本地文件存在
+        const fs = uni.getFileSystemManager()
+        fs.accessSync(iconCache.value[versionedUrl].localPath)
+        console.log('使用缓存图标:', url)
+        return
+      } catch (e) {
+        // 文件不存在，继续下载
+        console.warn('缓存的图片文件不存在，重新下载:', url)
+      }
     }
     
     // 下载图片到本地
@@ -502,23 +508,48 @@ const preloadTabIcons = () => {
       url: url,
       success: res => {
         if (res.statusCode === 200) {
-          // 获取图片信息
-          uni.getImageInfo({
-            src: res.tempFilePath,
-            success: info => {
-              // 保存到本地缓存
-              iconCache[url] = {
-                localPath: res.tempFilePath,
-                width: info.width,
-                height: info.height,
-                time: currentTime
+          // 将临时文件保存到应用缓存目录
+          const tempFilePath = res.tempFilePath
+          const fs = uni.getFileSystemManager()
+          
+          // 创建目录
+          try {
+            fs.mkdirSync(`${uni.env.USER_DATA_PATH}/icons`, true)
+          } catch (e) {
+            // 目录可能已存在，忽略错误
+          }
+          
+          // 生成唯一文件名
+          const fileName = `${uni.env.USER_DATA_PATH}/icons/${url.split('/').pop().split('?')[0]}_${Date.now()}.png`
+          
+          try {
+            // 保存文件
+            fs.saveFileSync(tempFilePath, fileName)
+            
+            // 获取图片信息
+            uni.getImageInfo({
+              src: fileName,
+              success: info => {
+                // 保存到本地缓存
+                iconCache.value[versionedUrl] = {
+                  localPath: fileName,
+                  width: info.width,
+                  height: info.height,
+                  time: currentTime,
+                  originalUrl: url
+                }
+                
+                // 更新存储
+                uni.setStorageSync('iconCache', iconCache.value)
+                console.log('图标缓存成功:', url)
+              },
+              fail: () => {
+                console.error('获取图片信息失败:', url)
               }
-              
-              // 更新存储
-              uni.setStorageSync('iconCache', iconCache)
-              console.log('图标缓存成功:', url)
-            }
-          })
+            })
+          } catch (e) {
+            console.error('保存文件失败:', e)
+          }
         }
       },
       fail: err => {
