@@ -26,42 +26,18 @@
             </el-icon>
             <span>首页</span>
           </el-menu-item>
-          <el-menu-item index="/admin/students">
-            <el-icon>
-              <User/>
-            </el-icon>
-            <span>学生管理</span>
-          </el-menu-item>
           <el-menu-item index="/admin/admins">
             <el-icon>
               <UserFilled/>
             </el-icon>
             <span>管理员管理</span>
           </el-menu-item>
-          <el-menu-item index="/admin/task-type">
+          <el-menu-item index="/admin/students">
             <el-icon>
-              <List/>
+              <User/>
             </el-icon>
-            <span>任务类型管理</span>
-          </el-menu-item> 
-          <el-menu-item index="/admin/task">
-            <el-icon>
-              <Document/>
-            </el-icon>
-            <span>任务管理</span>
-          </el-menu-item> 
-          <el-menu-item index="/admin/dispute">
-            <el-icon>
-              <Warning/>
-            </el-icon>
-            <span>纠纷管理</span> 
-          </el-menu-item> 
-          <el-menu-item index="/admin/dispute-type">
-            <el-icon>
-              <Warning/>
-            </el-icon>
-            <span>纠纷类型管理</span>
-          </el-menu-item> 
+            <span>学生管理</span>
+          </el-menu-item>
         </template>
       </el-menu>
 
