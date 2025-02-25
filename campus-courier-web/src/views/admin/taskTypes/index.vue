@@ -50,6 +50,7 @@
           row-class-name="table-row"
           border
           stripe
+          :height="tableHeight"
       >
         <!-- 图标列 -->
         <el-table-column prop="icon" label="图标" width="90" align="center">
@@ -217,7 +218,7 @@
 </template>
 
 <script setup>
-import {ref, reactive, onMounted, computed} from 'vue'
+import {ref, reactive, onMounted, computed, onUnmounted} from 'vue'
 import {useRouter} from 'vue-router'
 import {
   Document, Plus, Check, Close, Edit, Delete, Calendar, List,
@@ -249,6 +250,9 @@ const loading = ref(false)
 const total = ref(0)
 const currentPage = ref(1)
 const pageSize = ref(10)
+
+// 表格高度计算 - 增加这个方法
+const tableHeight = ref(500); // 默认高度
 
 // 表格样式
 const headerCellStyle = () => {
@@ -328,7 +332,36 @@ const selectStatus = (status) => {
 // 生命周期钩子
 onMounted(() => {
   fetchData()
+  // 计算表格高度
+  calcTableHeight()
+  // 监听窗口大小变化，重新计算表格高度
+  window.addEventListener('resize', calcTableHeight)
 })
+
+// 组件卸载时移除事件监听
+onUnmounted(() => {
+  window.removeEventListener('resize', calcTableHeight)
+})
+
+// 计算表格高度的方法
+const calcTableHeight = () => {
+  // 延迟执行以确保DOM已经渲染
+  setTimeout(() => {
+    const viewHeight = window.innerHeight;
+    // 减去顶部导航栏、搜索区域、分页区域、内边距等高度
+    const searchCard = document.querySelector('.search-card');
+    const paginationCard = document.querySelector('.pagination-card');
+    
+    let searchHeight = 0;
+    let paginationHeight = 0;
+    
+    if (searchCard) searchHeight = searchCard.offsetHeight;
+    if (paginationCard) paginationHeight = paginationCard.offsetHeight;
+    
+    // 计算表格高度 = 视口高度 - 其他区域高度 - 额外间距
+    tableHeight.value = viewHeight - 50 - searchHeight - paginationHeight - 60; // 50px顶部导航 + 60px额外间距
+  }, 100);
+}
 
 // 分页相关
 const handleSizeChange = (val) => {
@@ -453,6 +486,9 @@ const handleDelete = async (row) => {
 <style scoped>
 .task-type-manage {
   padding: 16px;
+  height: calc(100vh - 50px); /* 减去顶部导航栏高度 */
+  display: flex;
+  flex-direction: column;
 }
 
 .search-card {
@@ -616,6 +652,7 @@ const handleDelete = async (row) => {
   border: none;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  overflow: hidden; /* 确保溢出被隐藏 */
 }
 
 .table-card:hover {
@@ -624,25 +661,27 @@ const handleDelete = async (row) => {
 
 .table-card :deep(.el-card__body) {
   padding: 0;
+  height: 100%;
 }
 
 .table-card :deep(.el-table) {
-  /* 设置表格高度，使其在内容过多时可滚动，同时留出足够空间显示底部分页 */
-  max-height: calc(100vh - 300px);
+  /* 移除固定高度限制，让表格自动填充可用空间 */
+  height: 100%;
+  /* 确保表格区域可以滚动 */
+  overflow: visible;
 }
 
 .table-card :deep(.el-table__body-wrapper) {
-  overflow-y: auto !important;
-}
-
-/* 修复表格截断问题 */
-:deep(.el-table) {
-  overflow: hidden;
-}
-
-:deep(.el-table__body-wrapper) {
+  /* 确保表格内容可以垂直滚动 */
   overflow-y: auto !important;
   overflow-x: hidden;
+}
+
+/* 移除其他可能影响滚动的限制 */
+:deep(.el-table) {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 /* 保持这些样式以确保视觉效果正常 */
