@@ -1,0 +1,50 @@
+<view class="container">
+  <van-tabs active="{{ active }}" bind:change="onTabChange">
+    <van-tab title="进行中"></van-tab>
+    <van-tab title="已完成"></van-tab>
+  </van-tabs>
+
+  <scroll-view 
+    scroll-y 
+    class="order-list"
+    bindscrolltolower="onLoadMore"
+  >
+    <van-card
+      wx:for="{{ orders }}"
+      wx:key="id"
+      price="{{ item.reward }}"
+      title="{{ item.title }}"
+      desc="{{ item.description }}"
+      thumb="{{ item.thumb }}"
+    >
+      <view slot="tags">
+        <van-tag type="primary" wx:if="{{ item.payStatus === 1 }}">已支付</van-tag>
+        <van-tag type="warning" wx:else>待支付</van-tag>
+      </view>
+      <view slot="footer">
+        <view class="rating" wx:if="{{ item.rating }}">
+          <text>评分：</text>
+          <van-rate 
+            value="{{ item.rating }}" 
+            size="{{ 12 }}" 
+            color="#ffd21e"
+            void-icon="star"
+            void-color="#eee"
+            readonly
+          />
+        </view>
+        <view class="comment" wx:if="{{ item.comment }}">
+          评价：{{ item.comment }}
+        </view>
+      </view>
+    </van-card>
+
+    <!-- 加载提示 -->
+    <view class="loading" wx:if="{{ loading }}">
+      <van-loading size="24px">加载中...</van-loading>
+    </view>
+    <view class="no-more" wx:if="{{ orders.length >= total }}">
+      没有更多了
+    </view>
+  </scroll-view>
+</view> 

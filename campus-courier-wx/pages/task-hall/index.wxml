@@ -1,0 +1,71 @@
+<view class="container">
+  <!-- 搜索和筛选区域 -->
+  <view class="search-bar">
+    <van-search
+      value="{{ keyword }}"
+      placeholder="搜索任务"
+      bind:change="onSearchChange"
+      bind:search="onSearch"
+    />
+    <van-dropdown-menu>
+      <van-dropdown-item
+        value="{{ typeId }}"
+        options="{{ typeOptions }}"
+        bind:change="onTypeChange"
+      />
+    </van-dropdown-menu>
+  </view>
+
+  <!-- 任务列表 -->
+  <scroll-view 
+    scroll-y 
+    class="task-list"
+    bindscrolltolower="onLoadMore"
+  >
+    <van-card
+      wx:for="{{ tasks }}"
+      wx:key="id"
+      price="{{ item.reward }}"
+      title="{{ item.title }}"
+      desc="{{ item.description }}"
+      thumb="{{ item.thumb }}"
+    >
+      <view slot="footer">
+        <van-button size="small" type="primary" bind:click="onViewDetail" data-id="{{ item.id }}">查看详情</van-button>
+      </view>
+    </van-card>
+  </scroll-view>
+
+  <!-- 任务详情弹窗 -->
+  <van-dialog
+    use-slot
+    title="任务详情"
+    show="{{ showDetail }}"
+    bind:close="onCloseDetail"
+    confirmButtonText="接单"
+    bind:confirm="onTakeTask"
+  >
+    <view class="task-detail">
+      <view class="detail-item">
+        <text class="label">任务标题：</text>
+        <text>{{ currentTask.title }}</text>
+      </view>
+      <view class="detail-item">
+        <text class="label">任务类型：</text>
+        <text>{{ currentTask.typeName }}</text>
+      </view>
+      <view class="detail-item">
+        <text class="label">报酬：</text>
+        <text>¥{{ currentTask.reward }}</text>
+      </view>
+      <view class="detail-item">
+        <text class="label">截止时间：</text>
+        <text>{{ currentTask.deadline }}</text>
+      </view>
+      <view class="detail-item">
+        <text class="label">任务描述：</text>
+        <text>{{ currentTask.description }}</text>
+      </view>
+    </view>
+  </van-dialog>
+</view> 
