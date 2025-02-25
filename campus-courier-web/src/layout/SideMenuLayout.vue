@@ -425,7 +425,7 @@ onMounted(() => {
   overflow: hidden;
 
   .top-header {
-    height: 60px;
+    height: 50px;
     background: white;
     border-bottom: 1px solid #f0f0f0;
     padding: 0 24px;
@@ -433,13 +433,16 @@ onMounted(() => {
     align-items: center;
     justify-content: space-between;
     flex-shrink: 0;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03), 0 1px 6px -1px rgba(0, 0, 0, 0.02);
+    position: relative;
+    z-index: 100;
   }
 
   .main-content {
     flex: 1;
     overflow: hidden;
     position: relative;
-    height: calc(100vh - 60px);
+    height: calc(100vh - 50px);
   }
 }
 
@@ -448,29 +451,20 @@ onMounted(() => {
 }
 
 .top-header {
-  height: 64px;
-  background: white;
-  padding: 0 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03), 0 1px 6px -1px rgba(0, 0, 0, 0.02);
-  position: relative;
-  z-index: 100;
-
   .breadcrumb {
     display: flex;
     align-items: center;
     gap: 8px;
+    height: 100%;
 
     :deep(.el-breadcrumb__item) {
       display: flex;
       align-items: center;
-
+      
       .el-breadcrumb__inner {
         color: #4b5563;
         font-weight: 500;
-        padding: 4px 8px;
+        padding: 2px 8px;
         border-radius: 4px;
         transition: all 0.3s;
 

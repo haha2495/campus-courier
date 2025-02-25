@@ -67,7 +67,7 @@ body.app-page {
   height: 100%;
   position: relative;
   overflow-y: auto; /* 允许内容区域滚动 */
-  padding-top: 60px; /* 留出面包屑的空间 */
+  padding-top: 0; /* 移除顶部填充，因为布局组件已经有了合适的间距 */
 }
 
 /* 允许管理类页面组件滚动 */
