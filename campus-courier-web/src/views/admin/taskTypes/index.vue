@@ -55,8 +55,8 @@
 
     <!-- 中间表格区域 -->
     <el-card class="table-card">
-      <el-table 
-          :data="tableData" 
+      <el-table
+          :data="tableData"
           :height="tableHeight"
           v-loading="loading"
           :header-cell-style="{
@@ -74,30 +74,32 @@
           row-class-name="table-row"
       >
         <!-- ID列 -->
-        <el-table-column prop="id" label="ID" width="80" align="center" />
-        
+        <el-table-column prop="id" label="ID" width="80" align="center"/>
+
         <!-- 图标列 -->
         <el-table-column label="图标" width="80" align="center">
           <template #default="{ row }">
-            <el-avatar 
-                :size="36" 
-                :src="row.icon" 
+            <el-avatar
+                :size="36"
+                :src="row.icon"
                 class="type-icon"
             >
-              <el-icon><Document /></el-icon>
+              <el-icon>
+                <Document/>
+              </el-icon>
             </el-avatar>
           </template>
         </el-table-column>
-        
+
         <!-- 类型名称列 -->
-        <el-table-column prop="typeName" label="类型名称" min-width="120" />
-        
+        <el-table-column prop="typeName" label="类型名称" min-width="120"/>
+
         <!-- 描述列 -->
-        <el-table-column prop="description" label="描述" min-width="200" show-overflow-tooltip />
-        
+        <el-table-column prop="description" label="描述" min-width="200" show-overflow-tooltip/>
+
         <!-- 优先级列 -->
-        <el-table-column prop="priority" label="优先级" width="100" align="center" />
-        
+        <el-table-column prop="priority" label="优先级" width="100" align="center"/>
+
         <!-- 状态列 -->
         <el-table-column label="状态" width="100" align="center">
           <template #default="{ row }">
@@ -106,39 +108,39 @@
             </el-tag>
           </template>
         </el-table-column>
-        
+
         <!-- 创建时间列 -->
-        <el-table-column prop="createTime" label="创建时间" width="180" />
-        
+        <el-table-column prop="createTime" label="创建时间" width="180"/>
+
         <!-- 操作列 -->
         <el-table-column label="操作" width="200" fixed="right">
           <template #default="{ row }">
             <el-button size="small" type="primary" text @click="handleEdit(row)">
               编辑
             </el-button>
-            <el-button 
-              v-if="row.status === 0" 
-              size="small" 
-              type="success" 
-              text
-              @click="handleEnable(row)"
+            <el-button
+                v-if="row.status === 0"
+                size="small"
+                type="success"
+                text
+                @click="handleEnable(row)"
             >
               启用
             </el-button>
-            <el-button 
-              v-else 
-              size="small" 
-              type="warning" 
-              text
-              @click="handleDisable(row)"
+            <el-button
+                v-else
+                size="small"
+                type="warning"
+                text
+                @click="handleDisable(row)"
             >
               禁用
             </el-button>
-            <el-button 
-              size="small" 
-              type="danger" 
-              text
-              @click="handleDelete(row)"
+            <el-button
+                size="small"
+                type="danger"
+                text
+                @click="handleDelete(row)"
             >
               删除
             </el-button>
@@ -146,7 +148,7 @@
         </el-table-column>
       </el-table>
     </el-card>
-    
+
     <!-- 底部分页区域 - 独立卡片 -->
     <el-card class="pagination-card">
       <div class="pagination-container">
@@ -166,9 +168,11 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, computed } from 'vue'
-import { useRouter } from 'vue-router'
-import { Document, Search, RefreshRight, Plus } from '@element-plus/icons-vue'
+import {ref, reactive, onMounted, computed} from 'vue'
+import {useRouter} from 'vue-router'
+import {Document, Search, RefreshRight, Plus} from '@element-plus/icons-vue'
+import {pageTaskTypes} from '@/api/taskType'
+import {ElMessage, ElMessageBox} from 'element-plus'
 
 const router = useRouter()
 
@@ -190,16 +194,36 @@ const tableHeight = computed(() => {
   return window.innerHeight - 360 // 调整高度以适应独立的分页卡片
 })
 
+// 查询任务类型数据
+const fetchData = async () => {
+  loading.value = true
+  try {
+    const params = {
+      pageNum: currentPage.value,
+      pageSize: pageSize.value,
+      status: searchForm.status
+    }
+
+    const res = await pageTaskTypes(params)
+    tableData.value = res.records || []
+    total.value = res.total || 0
+  } catch (error) {
+    console.error('查询任务类型出错:', error)
+    ElMessage.error('系统异常，请稍后重试')
+  } finally {
+    loading.value = false
+  }
+}
+
 // 生命周期钩子
 onMounted(() => {
-  // 这里暂时不加载数据，只是创建界面结构
-  // 后续可以添加数据加载逻辑
+  fetchData()
 })
 
 // 搜索
 const handleSearch = () => {
   currentPage.value = 1
-  // 这里暂时不实现搜索逻辑
+  fetchData()
 }
 
 // 重置搜索
@@ -212,12 +236,12 @@ const handleReset = () => {
 // 分页相关
 const handleSizeChange = (val) => {
   pageSize.value = val
-  // 这里暂时不实现分页逻辑
+  fetchData()
 }
 
 const handleCurrentChange = (val) => {
   currentPage.value = val
-  // 这里暂时不实现分页逻辑
+  fetchData()
 }
 
 // 添加任务类型
@@ -229,23 +253,40 @@ const handleAdd = () => {
 const handleEdit = (row) => {
   router.push({
     path: '/admin/task-types/form',
-    query: { id: row.id }
+    query: {id: row.id}
   })
 }
 
 // 启用任务类型
 const handleEnable = (row) => {
   // 这里暂时不实现启用逻辑
+  ElMessage.success('启用功能待实现')
 }
 
 // 禁用任务类型
 const handleDisable = (row) => {
   // 这里暂时不实现禁用逻辑
+  ElMessage.success('禁用功能待实现')
 }
 
 // 删除任务类型
 const handleDelete = (row) => {
-  // 这里暂时不实现删除逻辑
+  ElMessageBox.confirm(
+      `确定要删除任务类型 "${row.typeName}" 吗?`,
+      '删除确认',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }
+  )
+      .then(() => {
+        // 这里暂时不实现删除逻辑
+        ElMessage.success('删除功能待实现')
+      })
+      .catch(() => {
+        // 用户取消删除操作
+      })
 }
 </script>
 
