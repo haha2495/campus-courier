@@ -46,124 +46,152 @@
           :data="tableData"
           :height="tableHeight"
           v-loading="loading"
-          :header-cell-style="{
-            background: '#f8fafc',
-            color: '#475569',
-            fontWeight: '600',
-            fontSize: '14px',
-            height: '50px',
-          }"
-          :cell-style="{
-            fontSize: '14px',
-            color: '#1f2937',
-            padding: '16px 0',
-          }"
+          :header-cell-style="headerCellStyle"
+          :cell-style="cellStyle"
           row-class-name="table-row"
           border
           stripe
       >
         <!-- 图标列 -->
-        <el-table-column label="图标" width="100" align="center">
-          <template #default="{ row }">
-            <div class="icon-container">
-              <el-avatar
-                  :size="40"
-                  :src="row.icon"
-                  class="type-icon"
-              >
-                <el-icon>
-                  <Document/>
-                </el-icon>
-              </el-avatar>
+        <el-table-column prop="icon" label="图标" width="90" align="center">
+          <template v-slot:header>
+            <div class="column-header">
+              <el-icon class="header-icon"><Picture /></el-icon>
+              <span class="header-text">图标</span>
             </div>
+          </template>
+          <template #default="scope">
+            <el-image
+              :src="scope.row.icon"
+              fit="contain"
+              style="width: 40px; height: 40px"
+              class="type-icon"
+            />
           </template>
         </el-table-column>
 
         <!-- 类型名称列 -->
-        <el-table-column prop="typeName" label="类型名称" min-width="120">
-          <template #default="{ row }">
-            <div class="type-name">{{ row.typeName }}</div>
+        <el-table-column prop="typeName" label="类型名称" min-width="120" align="left">
+          <template v-slot:header>
+            <div class="column-header">
+              <el-icon class="header-icon"><InfoFilled /></el-icon>
+              <span class="header-text">类型名称</span>
+            </div>
+          </template>
+          <template #default="scope">
+            <span class="type-name">{{ scope.row.typeName }}</span>
           </template>
         </el-table-column>
 
         <!-- 描述列 -->
-        <el-table-column prop="description" label="描述" min-width="280" show-overflow-tooltip>
-          <template #default="{ row }">
-            <div class="description-cell">{{ row.description }}</div>
+        <el-table-column prop="description" label="描述" min-width="280" align="left">
+          <template v-slot:header>
+            <div class="column-header">
+              <el-icon class="header-icon"><Document /></el-icon>
+              <span class="header-text">描述</span>
+            </div>
+          </template>
+          <template #default="scope">
+            <div class="description-cell">{{ scope.row.description }}</div>
           </template>
         </el-table-column>
 
         <!-- 优先级列 -->
-        <el-table-column label="优先级" width="100" align="center">
-          <template #default="{ row }">
-            <div class="priority-badge" :style="`--priority-color: ${getPriorityColor(row.priority)}`">
-              {{ row.priority }}
+        <el-table-column prop="priority" label="优先级" width="90" align="center">
+          <template v-slot:header>
+            <div class="column-header">
+              <el-icon class="header-icon"><Sort /></el-icon>
+              <span class="header-text">优先级</span>
             </div>
+          </template>
+          <template #default="scope">
+            <el-tag 
+              :type="getPriorityType(scope.row.priority)" 
+              effect="plain" 
+              class="priority-tag"
+            >
+              {{ scope.row.priority }}
+            </el-tag>
           </template>
         </el-table-column>
 
         <!-- 状态列 -->
-        <el-table-column label="状态" width="100" align="center">
-          <template #default="{ row }">
-            <el-tag 
-                :type="row.status === 1 ? 'success' : 'danger'" 
-                size="small"
-                effect="light"
-                class="status-tag"
+        <el-table-column prop="status" label="状态" width="90" align="center">
+          <template v-slot:header>
+            <div class="column-header">
+              <el-icon class="header-icon"><CircleCheck /></el-icon>
+              <span class="header-text">状态</span>
+            </div>
+          </template>
+          <template #default="scope">
+            <el-tag
+              :type="scope.row.status === 1 ? 'success' : 'danger'"
+              effect="light"
+              class="status-tag"
             >
-              <el-icon v-if="row.status === 1" class="status-icon"><Check /></el-icon>
-              <el-icon v-else class="status-icon"><Close /></el-icon>
-              {{ row.status === 1 ? '启用' : '禁用' }}
+              {{ scope.row.status === 1 ? '启用' : '禁用' }}
             </el-tag>
           </template>
         </el-table-column>
 
         <!-- 创建时间列 -->
-        <el-table-column label="创建时间" width="180">
-          <template #default="{ row }">
+        <el-table-column prop="createTime" label="创建时间" width="180" align="center">
+          <template v-slot:header>
+            <div class="column-header">
+              <el-icon class="header-icon"><Calendar /></el-icon>
+              <span class="header-text">创建时间</span>
+            </div>
+          </template>
+          <template #default="scope">
             <div class="time-cell">
-              <el-icon><Calendar /></el-icon>
-              <span>{{ formatDate(row.createTime) }}</span>
+              <el-icon><Timer /></el-icon>
+              <span>{{ scope.row.createTime }}</span>
             </div>
           </template>
         </el-table-column>
 
         <!-- 操作列 -->
-        <el-table-column label="操作" width="170" fixed="right">
-          <template #default="{ row }">
-            <div class="operation-buttons">
-              <!-- 编辑按钮 -->
-              <el-tooltip content="编辑" placement="top" :effect="tooltipEffect">
-                <el-button circle size="small" type="primary" @click="handleEdit(row)" class="op-icon-btn">
-                  <el-icon><Edit /></el-icon>
-                </el-button>
-              </el-tooltip>
-
-              <!-- 启用/禁用按钮 -->
-              <el-tooltip :content="row.status === 0 ? '启用' : '禁用'" placement="top" :effect="tooltipEffect">
+        <el-table-column label="操作" width="170" align="center" fixed="right">
+          <template v-slot:header>
+            <div class="column-header">
+              <el-icon class="header-icon"><SetUp /></el-icon>
+              <span class="header-text">操作</span>
+            </div>
+          </template>
+          <template #default="scope">
+            <div class="operation-cell">
+              <el-tooltip :content="'编辑'" placement="top" :effect="tooltipEffect">
                 <el-button
-                    circle
-                    size="small"
-                    :type="row.status === 0 ? 'success' : 'warning'"
-                    @click="row.status === 0 ? handleEnable(row) : handleDisable(row)"
-                    class="op-icon-btn"
-                >
-                  <el-icon v-if="row.status === 0"><Check /></el-icon>
-                  <el-icon v-else><Close /></el-icon>
-                </el-button>
+                  circle
+                  type="primary"
+                  :icon="Edit"
+                  @click="handleEdit(scope.row)"
+                  class="op-icon-btn"
+                />
               </el-tooltip>
-
-              <!-- 删除按钮 -->
-              <el-tooltip content="删除" placement="top" :effect="tooltipEffect">
+              
+              <el-tooltip 
+                :content="scope.row.status === 0 ? '启用' : '禁用'" 
+                placement="top" 
+                :effect="tooltipEffect"
+              >
                 <el-button
-                    circle
-                    size="small"
-                    type="danger"
-                    @click="handleDelete(row)"
-                    class="op-icon-btn"
-                >
-                  <el-icon><Delete /></el-icon>
-                </el-button>
+                  circle
+                  :type="scope.row.status === 0 ? 'success' : 'warning'"
+                  :icon="scope.row.status === 0 ? Check : Close"
+                  @click="scope.row.status === 0 ? handleEnable(scope.row) : handleDisable(scope.row)"
+                  class="op-icon-btn"
+                />
+              </el-tooltip>
+              
+              <el-tooltip :content="'删除'" placement="top" :effect="tooltipEffect">
+                <el-button
+                  circle
+                  type="danger"
+                  :icon="Delete"
+                  @click="handleDelete(scope.row)"
+                  class="op-icon-btn"
+                />
               </el-tooltip>
             </div>
           </template>
@@ -192,7 +220,10 @@
 <script setup>
 import {ref, reactive, onMounted, computed} from 'vue'
 import {useRouter} from 'vue-router'
-import {Document, Plus, Check, Close, Edit, Delete, Calendar, List} from '@element-plus/icons-vue'
+import {
+  Document, Plus, Check, Close, Edit, Delete, Calendar, List,
+  Picture, InfoFilled, Sort, CircleCheck, Timer, SetUp
+} from '@element-plus/icons-vue'
 import {pageTaskTypes} from '@/api/taskType'
 import {ElMessage, ElMessageBox} from 'element-plus'
 
@@ -225,12 +256,36 @@ const tableHeight = computed(() => {
   return window.innerHeight - 360 // 调整高度以适应独立的分页卡片
 })
 
-// 根据优先级获取颜色
-const getPriorityColor = (priority) => {
-  if (priority >= 80) return '#f56c6c'; // 高优先级红色
-  if (priority >= 50) return '#e6a23c'; // 中高优先级橙色
-  if (priority >= 30) return '#409eff'; // 中优先级蓝色
-  return '#67c23a'; // 低优先级绿色
+// 表格样式
+const headerCellStyle = () => {
+  return {
+    backgroundColor: '#f8fafc',
+    color: '#64748b',
+    fontWeight: '400',
+    padding: '14px 8px',
+    height: '52px',
+    fontSize: '14px',
+    transition: 'all 0.3s',
+    borderBottom: '1px solid #e2e8f0',
+    overflow: 'visible'
+  }
+}
+
+const cellStyle = () => {
+  return {
+    padding: '14px 8px',
+    height: '65px',
+    transition: 'all 0.2s',
+    overflow: 'visible'
+  }
+}
+
+// 优先级颜色
+const getPriorityType = (priority) => {
+  if (priority >= 90) return 'danger'
+  if (priority >= 80) return 'warning'
+  if (priority >= 70) return 'primary'
+  return 'success'
 }
 
 // 格式化日期时间
@@ -530,7 +585,7 @@ const handleDelete = (row) => {
 
 .table-row:hover {
   background-color: #f0f7ff !important;
-  transform: translateY(-2px);
+  transform: translateY(-1px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
@@ -556,7 +611,7 @@ const handleDelete = (row) => {
 }
 
 .type-icon:hover {
-  transform: scale(1.15) rotate(5deg);
+  transform: scale(1.08);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
@@ -700,66 +755,69 @@ const handleDelete = (row) => {
 }
 
 /* 操作按钮样式 */
-.operation-buttons {
+.operation-cell {
   display: flex;
+  justify-content: center;
   gap: 12px;
-  justify-content: center;
-}
-
-.op-btn {
-  border-radius: 6px;
-  padding: 6px 10px;
-  transition: all 0.3s ease;
-  display: flex;
   align-items: center;
-  gap: 4px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  overflow: visible;
+  padding: 0 6px;
+  height: 100%;
 }
 
-.op-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* 图标按钮样式 */
 .op-icon-btn {
-  --btn-size: 32px;
-  width: var(--btn-size);
-  height: var(--btn-size);
-  display: flex;
-  align-items: center;
+  display: inline-flex;
   justify-content: center;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  align-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+  transition: all 0.3s ease;
+  overflow: visible;
   position: relative;
-  overflow: hidden;
+  background: transparent !important;
+  z-index: 1;
 }
 
 .op-icon-btn:hover {
-  transform: translateY(-3px) scale(1.1);
-  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15);
+  border-color: #5e81ac;
+  color: #5e81ac;
+  transform: scale(1.03);
+  box-shadow: 0 2px 8px rgba(94, 129, 172, 0.15);
+  z-index: 9;
 }
 
 .op-icon-btn:active {
-  transform: translateY(0) scale(0.95);
+  transform: scale(0.98);
+  box-shadow: 0 1px 3px rgba(94, 129, 172, 0.1);
 }
 
-.op-icon-btn::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  transition: width 0.4s ease, height 0.4s ease;
+/* 表头样式 */
+.column-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  white-space: nowrap;
+  line-height: 1;
+  overflow: visible;
+  padding: 2px 0;
+  position: relative;
+  z-index: 1;
 }
 
-.op-icon-btn:hover::before {
-  width: 120%;
-  height: 120%;
+.el-table .el-table__header-wrapper {
+  overflow: visible;
+}
+
+.el-table .el-table__header {
+  overflow: visible;
+}
+
+.el-table .el-table__header th {
+  overflow: visible;
 }
 
 /* 分页卡片样式 */
@@ -781,7 +839,7 @@ const handleDelete = (row) => {
 @keyframes fadeIn {
   0% {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(5px);
   }
   100% {
     opacity: 1;
@@ -804,4 +862,90 @@ const handleDelete = (row) => {
 :deep(.el-table__row:nth-child(8)) { animation-delay: 0.4s; }
 :deep(.el-table__row:nth-child(9)) { animation-delay: 0.45s; }
 :deep(.el-table__row:nth-child(10)) { animation-delay: 0.5s; }
+
+/* 表头样式 */
+.header-icon {
+  font-size: 16px;
+  color: #5e81ac;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-text {
+  font-weight: 400;
+  color: #64748b;
+}
+
+/* 表格样式 */
+.task-type-table {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  
+  :deep(.el-table__header-wrapper) {
+    th {
+      transition: all 0.3s;
+      position: relative;
+      overflow: visible;
+      
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, #5e81ac, #88c0d0);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.3s;
+      }
+      
+      &:hover {
+        background-color: #e6f0ff !important;
+        
+        &::after {
+          transform: scaleX(1);
+        }
+        
+        .column-header {
+          transform: translateY(-2px);
+          
+          .el-icon {
+            transform: scale(1.2);
+            color: #5e81ac;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* 修复表格截断问题 */
+:deep(.el-table) {
+  overflow: visible;
+}
+
+:deep(.el-table__body), 
+:deep(.el-table__footer), 
+:deep(.el-table__header) {
+  overflow: visible !important;
+}
+
+:deep(.el-table__body-wrapper), 
+:deep(.el-table__footer-wrapper), 
+:deep(.el-table__header-wrapper) {
+  overflow: visible !important;
+}
+
+:deep(.el-table__body td), 
+:deep(.el-table__footer td), 
+:deep(.el-table__header th) {
+  overflow: visible !important;
+}
+
+:deep(.cell) {
+  overflow: visible !important;
+}
 </style> 

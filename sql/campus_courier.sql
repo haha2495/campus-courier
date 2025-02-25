@@ -11,7 +11,7 @@
  Target Server Version : 80031
  File Encoding         : 65001
 
- Date: 23/02/2025 14:36:12
+ Date: 25/02/2025 19:41:26
 */
 
 SET NAMES utf8mb4;
@@ -102,7 +102,7 @@ CREATE TABLE `sys_student_record`  (
   `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '详细内容',
   `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 55 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '学生记录表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 56 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '学生记录表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_student_record
@@ -130,5 +130,67 @@ INSERT INTO `sys_student_record` VALUES (20, 17, 4, '账号被禁用', '2025-02-
 INSERT INTO `sys_student_record` VALUES (21, 17, 2, '重置密码为：20200102L', '2025-02-15 10:29:08');
 INSERT INTO `sys_student_record` VALUES (22, 17, 3, '账号被启用', '2025-02-16 04:00:29');
 INSERT INTO `sys_student_record` VALUES (55, 17, 2, '重置密码为：20200102L', '2025-02-23 06:30:59');
+
+-- ----------------------------
+-- Table structure for sys_task_types
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_task_types`;
+CREATE TABLE `sys_task_types`  (
+  `id` int(0) NOT NULL AUTO_INCREMENT COMMENT '任务类型ID',
+  `type_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '类型名称',
+  `icon` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '类型图标',
+  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '类型描述',
+  `priority` int(0) NOT NULL DEFAULT 0 COMMENT '优先级(数字越大优先级越高)',
+  `status` tinyint(1) NOT NULL DEFAULT 1 COMMENT '状态(0-禁用,1-启用)',
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '任务类型表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_task_types
+-- ----------------------------
+INSERT INTO `sys_task_types` VALUES (1, '外卖配送', 'https://cdn-icons-png.flaticon.com/128/7835/7835563.png', '提供专业的外卖配送服务，满足校园内快递相关需求，快速便捷。', 20, 1, '2025-02-25 19:19:47');
+INSERT INTO `sys_task_types` VALUES (2, '快递代取', 'https://cdn-icons-png.flaticon.com/128/2271/2271048.png', '帮助取回快递包裹，指定时间送达', 95, 1, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (3, '代寄快递', 'https://cdn-icons-png.flaticon.com/128/4305/4305512.png', '帮助打包并寄送快递，提供全流程服务', 88, 1, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (4, '生鲜配送', 'https://cdn-icons-png.flaticon.com/128/3724/3724788.png', '新鲜水果蔬菜配送到宿舍', 75, 0, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (5, '大件物流', 'https://cdn-icons-png.flaticon.com/128/3028/3028626.png', '大型物品搬运和配送服务', 82, 1, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (6, '快递柜代取', 'https://cdn-icons-png.flaticon.com/128/8872/8872558.png', '帮助从校内自提柜取件', 90, 1, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (7, '文档打印', 'https://cdn-icons-png.flaticon.com/128/3094/3094837.png', '黑白/彩色文档打印及装订服务', 85, 1, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (8, '照片打印', 'https://cdn-icons-png.flaticon.com/128/1484/1484262.png', '高质量照片冲印服务', 70, 1, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (9, '海报印刷', 'https://cdn-icons-png.flaticon.com/128/1355/1355394.png', '大型海报、展板设计与打印', 65, 0, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (10, '论文打印', 'https://cdn-icons-png.flaticon.com/128/3497/3497086.png', '毕业论文打印及装订全套服务', 88, 1, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (11, '证件照打印', 'https://cdn-icons-png.flaticon.com/128/2659/2659360.png', '标准证件照拍摄与打印', 78, 0, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (12, '食堂打饭', 'https://cdn-icons-png.flaticon.com/128/1147/1147805.png', '校内食堂餐点配送到宿舍或教学楼', 92, 1, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (13, '奶茶外卖', 'https://cdn-icons-png.flaticon.com/128/5742/5742527.png', '校内外奶茶店饮品配送服务', 94, 1, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (14, '夜宵配送', 'https://cdn-icons-png.flaticon.com/128/6147/6147137.png', '深夜食品、零食配送服务', 86, 1, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (15, '水果配送', 'https://cdn-icons-png.flaticon.com/128/3194/3194591.png', '新鲜水果购买与配送', 76, 0, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (16, '蛋糕订制', 'https://cdn-icons-png.flaticon.com/128/3348/3348089.png', '生日、节日蛋糕预订与配送', 72, 1, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (17, '资料代借', 'https://cdn-icons-png.flaticon.com/128/2232/2232688.png', '图书馆图书代借代还服务', 83, 1, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (18, '笔记整理', 'https://cdn-icons-png.flaticon.com/128/2119/2119751.png', '课堂笔记整理与分享', 77, 0, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (19, '考研资料', 'https://cdn-icons-png.flaticon.com/128/3049/3049490.png', '考研复习资料收集与分享', 80, 1, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (20, '自习位代抢', 'https://cdn-icons-png.flaticon.com/128/3028/3028155.png', '图书馆、自习室座位预占服务', 89, 1, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (21, '作业辅导', 'https://cdn-icons-png.flaticon.com/128/2641/2641409.png', '各学科作业解答与辅导', 81, 0, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (22, '宿舍代收', 'https://cdn-icons-png.flaticon.com/128/1670/1670080.png', '宿舍物品接收与保管服务', 87, 1, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (23, '代跑腿', 'https://cdn-icons-png.flaticon.com/128/2382/2382533.png', '校内外各类跑腿、办事服务', 93, 1, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (24, '洗衣服务', 'https://cdn-icons-png.flaticon.com/128/2438/2438078.png', '衣物代送洗衣店与取回服务', 79, 0, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (25, '充值服务', 'https://cdn-icons-png.flaticon.com/128/4722/4722922.png', '校园卡、水电费等充值服务', 84, 1, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (26, '搬运服务', 'https://cdn-icons-png.flaticon.com/128/4216/4216805.png', '宿舍搬迁、大型物品搬运', 74, 1, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (27, '运动陪练', 'https://cdn-icons-png.flaticon.com/128/2964/2964514.png', '各类运动项目陪练服务', 68, 0, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (28, '场地预约', 'https://cdn-icons-png.flaticon.com/128/2043/2043006.png', '体育场地代预约服务', 73, 1, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (29, '体育用品', 'https://cdn-icons-png.flaticon.com/128/706/706164.png', '体育用品租借与配送', 67, 1, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (30, '跑步陪跑', 'https://cdn-icons-png.flaticon.com/128/4070/4070388.png', '晨跑/夜跑陪跑与指导服务', 63, 0, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (31, '电影票代订', 'https://cdn-icons-png.flaticon.com/128/3658/3658959.png', '校内外电影票预订服务', 71, 1, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (32, '游戏陪玩', 'https://cdn-icons-png.flaticon.com/128/3097/3097980.png', '各类电子游戏陪玩服务', 69, 0, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (33, '摄影服务', 'https://cdn-icons-png.flaticon.com/128/5585/5585517.png', '校园内专业摄影与后期服务', 66, 1, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (34, 'K歌陪唱', 'https://cdn-icons-png.flaticon.com/128/9409/9409969.png', 'KTV陪唱与预订服务', 60, 0, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (35, '自习室预约', 'https://cdn-icons-png.flaticon.com/128/4336/4336543.png', '校内自习室、研讨室预约服务', 86, 1, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (36, '失物代寻', 'https://cdn-icons-png.flaticon.com/128/3209/3209207.png', '校内失物招领与查找服务', 81, 1, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (37, '校园卡充值', 'https://cdn-icons-png.flaticon.com/128/5064/5064969.png', '校园卡线上/线下充值服务', 91, 1, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (38, '校园引导', 'https://cdn-icons-png.flaticon.com/128/5167/5167630.png', '校园导览与新生引导服务', 64, 0, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (39, '证明代办', 'https://cdn-icons-png.flaticon.com/128/2666/2666505.png', '学生证明文件代办服务', 78, 1, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (40, '维修服务', 'https://cdn-icons-png.flaticon.com/128/4359/4359846.png', '电子设备、家具等维修服务', 77, 0, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (41, '咨询解答', 'https://cdn-icons-png.flaticon.com/128/5726/5726775.png', '校园生活各类问题咨询服务', 75, 1, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (42, '代领物资', 'https://cdn-icons-png.flaticon.com/128/2382/2382629.png', '校内各类物资代领服务', 82, 1, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (43, '代跑签到', 'https://cdn-icons-png.flaticon.com/128/4712/4712142.png', '课程、活动代签到服务', 70, 0, '2025-02-25 11:40:16');
 
 SET FOREIGN_KEY_CHECKS = 1;
