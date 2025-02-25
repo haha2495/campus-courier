@@ -55,116 +55,48 @@
               </div>
             </el-form-item>
             
-            <!-- 类型图标 -->
+            <!-- 简化后的类型图标选择 -->
             <el-form-item label="类型图标" prop="icon">
-              <div class="icon-selection-container">
-                <!-- 图标选择方式切换 -->
-                <el-tabs v-model="iconSelectionMode" class="icon-tabs" type="border-card">
-                  <el-tab-pane label="选择精美图标" name="select">
-                    <!-- 图标选择小提示 -->
-                    <div class="selection-tip">
-                      <el-alert
-                        title="选择一个能代表你任务类型的精美图标"
-                        type="info"
-                        :closable="false"
-                        show-icon
-                      >
-                        <template #default>
-                          我们准备了140+精美图标，涵盖校园生活的方方面面
-                        </template>
-                      </el-alert>
-                    </div>
-                    
-                    <div class="icon-categories">
-                      <div class="category-title">图标分类</div>
-                      <el-radio-group v-model="currentCategory" size="large">
-                        <el-radio-button 
-                          v-for="category in iconCategories" 
-                          :key="category.value" 
-                          :label="category.value"
-                          class="category-button"
-                        >
-                          {{ getCategoryEmoji(category.value) }} {{ category.label }}
-                        </el-radio-button>
-                      </el-radio-group>
-                    </div>
-                    
-                    <div class="icon-grid">
-                      <el-scrollbar height="300px">
-                        <div class="icon-list">
-                          <div 
-                            v-for="icon in filteredIcons" 
-                            :key="icon.name"
-                            class="icon-item"
-                            :class="{ 'is-selected': formData.icon === icon.url }"
-                            @click="selectIcon(icon)"
-                            :data-icon="icon.name"
-                          >
-                            <div class="icon-wrapper">
-                              <img :src="icon.url" class="icon-preview" :alt="icon.name">
-                              <div class="hover-effect"></div>
-                            </div>
-                            <div class="icon-name">{{ icon.name }}</div>
-                          </div>
-                        </div>
-                      </el-scrollbar>
-                    </div>
-                    
-                    <div class="icon-search">
-                      <el-input
-                        v-model="iconSearchText"
-                        placeholder="搜索图标，例如：快递、打印、代课..."
-                        :prefix-icon="Search"
-                        clearable
-                        class="search-input"
-                      />
-                    </div>
-                  </el-tab-pane>
-                  
-                  <el-tab-pane label="上传自定义图标" name="upload">
-                    <div class="upload-container">
-                      <el-upload
-                        class="avatar-uploader"
-                        action="#"
-                        :http-request="uploadIcon"
-                        :show-file-list="false"
-                        :before-upload="beforeIconUpload"
-                        drag
-                      >
-                        <div v-if="formData.icon && iconSelectionMode === 'upload'" class="avatar-preview">
-                          <el-avatar :size="120" :src="formData.icon" />
-                        </div>
-                        <template v-else>
-                          <el-icon class="avatar-uploader-icon"><Plus /></el-icon>
-                          <div class="upload-text">
-                            <p>点击或拖拽图片到此处上传</p>
-                            <p class="upload-subtext">自定义你的专属图标</p>
-                          </div>
-                        </template>
-                      </el-upload>
-                      <div class="upload-tip">
-                        <div class="tip-header">
-                          <el-icon><InfoFilled /></el-icon>
-                          <span>上传提示</span>
-                        </div>
-                        <p>支持JPG、PNG格式，建议尺寸100x100px</p>
-                        <p>图标将显示在任务类型列表和任务详情中</p>
-                        <p>精美的图标能提升用户体验，建议使用浅色背景</p>
-                      </div>
-                    </div>
-                  </el-tab-pane>
-                </el-tabs>
+              <div class="icon-compact-selection">
+                <!-- 已选图标预览 -->
+                <div class="selected-icon-area" v-if="formData.icon">
+                  <img :src="formData.icon" class="selected-icon-img" alt="Selected Icon">
+                  <div class="icon-info">
+                    <div class="icon-title">已选择图标</div>
+                    <div class="icon-name">{{ getSelectedIconName() }}</div>
+                  </div>
+                </div>
                 
-                <!-- 当前选中的图标预览 -->
-                <div class="selected-icon-preview" v-if="formData.icon">
-                  <div class="preview-header">
-                    <div class="preview-title">已选图标</div>
-                    <el-tag type="success" effect="dark" size="small">预览效果</el-tag>
-                  </div>
-                  <div class="preview-card">
-                    <img :src="formData.icon" class="selected-icon-image" alt="Selected Icon">
-                    <div class="preview-name">{{ formData.typeName || '任务类型名称' }}</div>
-                  </div>
+                <!-- 选择图标按钮 -->
+                <div class="icon-actions">
+                  <el-button 
+                    @click="openIconDialog"
+                    type="primary" 
+                    :icon="formData.icon ? 'Edit' : 'Plus'"
+                    class="select-icon-btn"
+                  >
+                    {{ formData.icon ? '更换图标' : '选择图标' }}
+                  </el-button>
+                  <el-button 
+                    v-if="formData.icon" 
+                    @click="uploadCustomIcon"
+                    plain
+                  >
+                    上传自定义图标
+                  </el-button>
+                </div>
+                
+                <div class="icon-tip" v-if="!formData.icon">
+                  <el-alert
+                    title="请选择一个能代表此任务类型的图标"
+                    type="info"
+                    :closable="false"
+                    show-icon
+                  >
+                    <template #default>
+                      好的图标能帮助用户快速识别任务类型
+                    </template>
+                  </el-alert>
                 </div>
               </div>
             </el-form-item>
@@ -260,6 +192,188 @@
         </div>
       </div>
     </el-card>
+    
+    <!-- 图标选择弹窗 -->
+    <el-dialog
+      v-model="iconDialogVisible"
+      title="选择任务类型图标"
+      width="70%"
+      class="icon-selection-dialog"
+      :destroy-on-close="false"
+      :close-on-click-modal="false"
+    >
+      <div class="icon-dialog-content">
+        <!-- 图标选择方式切换 -->
+        <el-tabs v-model="iconSelectionMode" class="icon-tabs" type="border-card">
+          <el-tab-pane label="选择精美图标" name="select">
+            <!-- 图标选择小提示 -->
+            <div class="selection-tip">
+              <el-alert
+                title="选择一个能代表你任务类型的精美图标"
+                type="info"
+                :closable="false"
+                show-icon
+              >
+                <template #default>
+                  我们准备了140+精美图标，涵盖校园生活的方方面面
+                </template>
+              </el-alert>
+            </div>
+            
+            <div class="icon-categories">
+              <div class="category-title">图标分类</div>
+              <el-radio-group v-model="currentCategory" size="large">
+                <el-radio-button 
+                  v-for="category in iconCategories" 
+                  :key="category.value" 
+                  :label="category.value"
+                  class="category-button"
+                >
+                  {{ getCategoryEmoji(category.value) }} {{ category.label }}
+                </el-radio-button>
+              </el-radio-group>
+            </div>
+            
+            <div class="icon-grid">
+              <el-scrollbar height="300px">
+                <div class="icon-list">
+                  <div 
+                    v-for="icon in filteredIcons" 
+                    :key="icon.name"
+                    class="icon-item"
+                    :class="{ 'is-selected': formData.icon === icon.url }"
+                    @click="selectIconAndClose(icon)"
+                    :data-icon="icon.name"
+                  >
+                    <div class="icon-wrapper">
+                      <img :src="icon.url" class="icon-preview" :alt="icon.name">
+                      <div class="hover-effect"></div>
+                    </div>
+                    <div class="icon-name">{{ icon.name }}</div>
+                  </div>
+                </div>
+              </el-scrollbar>
+            </div>
+            
+            <div class="icon-search">
+              <el-input
+                v-model="iconSearchText"
+                placeholder="搜索图标，例如：快递、打印、代课..."
+                :prefix-icon="Search"
+                clearable
+                class="search-input"
+              />
+            </div>
+          </el-tab-pane>
+          
+          <el-tab-pane label="上传自定义图标" name="upload">
+            <div class="upload-container">
+              <el-upload
+                class="avatar-uploader"
+                action="#"
+                :http-request="uploadIcon"
+                :show-file-list="false"
+                :before-upload="beforeIconUpload"
+                drag
+              >
+                <div v-if="formData.icon && iconSelectionMode === 'upload'" class="avatar-preview">
+                  <el-avatar :size="120" :src="formData.icon" />
+                </div>
+                <template v-else>
+                  <el-icon class="avatar-uploader-icon"><Plus /></el-icon>
+                  <div class="upload-text">
+                    <p>点击或拖拽图片到此处上传</p>
+                    <p class="upload-subtext">自定义你的专属图标</p>
+                  </div>
+                </template>
+              </el-upload>
+              <div class="upload-tip">
+                <div class="tip-header">
+                  <el-icon><InfoFilled /></el-icon>
+                  <span>上传提示</span>
+                </div>
+                <p>支持JPG、PNG格式，建议尺寸100x100px</p>
+                <p>图标将显示在任务类型列表和任务详情中</p>
+                <p>精美的图标能提升用户体验，建议使用浅色背景</p>
+              </div>
+            </div>
+          </el-tab-pane>
+        </el-tabs>
+        
+        <!-- 选择预览区域 -->
+        <div class="dialog-preview-area">
+          <div class="dialog-preview-title">实时预览</div>
+          <div class="dialog-preview-card">
+            <div class="preview-icon-container">
+              <img :src="formData.icon || 'https://cdn-icons-png.flaticon.com/128/2897/2897230.png'" 
+                class="preview-icon" alt="Icon Preview">
+            </div>
+            <div class="preview-text">
+              <div class="preview-type-name">{{ formData.typeName || '任务类型名称' }}</div>
+              <div class="preview-description">{{ truncateDescription(formData.description) || '任务类型描述信息' }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="iconDialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="confirmIconSelection">
+            确认选择
+          </el-button>
+        </span>
+      </template>
+    </el-dialog>
+
+    <!-- 自定义图标上传弹窗 -->
+    <el-dialog
+      v-model="uploadDialogVisible"
+      title="上传自定义图标"
+      width="500px"
+      :destroy-on-close="false"
+      :close-on-click-modal="false"
+    >
+      <div class="upload-dialog-content">
+        <el-upload
+          class="custom-icon-uploader"
+          action="#"
+          :http-request="uploadCustomIconHandler"
+          :show-file-list="false"
+          :before-upload="beforeIconUpload"
+          drag
+        >
+          <div v-if="tempUploadIcon" class="upload-preview">
+            <el-avatar :size="100" :src="tempUploadIcon" />
+          </div>
+          <template v-else>
+            <el-icon class="upload-icon"><Plus /></el-icon>
+            <div class="upload-text">
+              <p>点击或拖拽图片到此处上传</p>
+              <p class="upload-subtext">支持JPG、PNG格式</p>
+            </div>
+          </template>
+        </el-upload>
+        
+        <div class="upload-instructions">
+          <p><el-icon><InfoFilled /></el-icon> 上传说明：</p>
+          <ul>
+            <li>推荐使用简洁明了的图标</li>
+            <li>图标尺寸建议100x100像素</li>
+            <li>图标将作为识别任务类型的主要视觉元素</li>
+          </ul>
+        </div>
+      </div>
+      
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="cancelUpload">取消</el-button>
+          <el-button type="primary" @click="confirmUpload" :disabled="!tempUploadIcon">
+            确认使用
+          </el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -267,13 +381,18 @@
 import { ref, reactive, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Back, Plus, Search, InfoFilled } from '@element-plus/icons-vue'
+import { Back, Plus, Search, InfoFilled, Edit } from '@element-plus/icons-vue'
 import { IconCategoryEnum, PresetIconsEnum } from '@/utils/enums/iconEnums'
 
 const route = useRoute()
 const router = useRouter()
 const formRef = ref(null)
 const submitting = ref(false)
+
+// 弹窗相关状态
+const iconDialogVisible = ref(false)
+const uploadDialogVisible = ref(false)
+const tempUploadIcon = ref('')
 
 // 判断是新增还是编辑模式
 const isEdit = computed(() => {
@@ -324,6 +443,62 @@ const iconCategories = IconCategoryEnum
 
 // 预设图标库 - 使用枚举
 const presetIcons = reactive(PresetIconsEnum)
+
+// 获取已选择图标的名称
+const getSelectedIconName = () => {
+  if (!formData.icon) return ''
+  
+  const selectedIcon = presetIcons.find(icon => icon.url === formData.icon)
+  return selectedIcon ? selectedIcon.name : '自定义图标'
+}
+
+// 打开图标选择弹窗
+const openIconDialog = () => {
+  iconDialogVisible.value = true
+}
+
+// 打开自定义图标上传弹窗
+const uploadCustomIcon = () => {
+  tempUploadIcon.value = ''
+  uploadDialogVisible.value = true
+}
+
+// 处理自定义图标上传
+const uploadCustomIconHandler = (options) => {
+  const file = options.file
+  const reader = new FileReader()
+  reader.readAsDataURL(file)
+  reader.onload = () => {
+    tempUploadIcon.value = reader.result
+  }
+}
+
+// 确认使用上传的图标
+const confirmUpload = () => {
+  if (tempUploadIcon.value) {
+    formData.icon = tempUploadIcon.value
+    // 重置其他自动填充状态
+    formData.lastSelectedIconName = ''
+    uploadDialogVisible.value = false
+  }
+}
+
+// 取消上传
+const cancelUpload = () => {
+  tempUploadIcon.value = ''
+  uploadDialogVisible.value = false
+}
+
+// 截断描述文本（用于预览）
+const truncateDescription = (text) => {
+  if (!text) return ''
+  return text.length > 60 ? text.substring(0, 60) + '...' : text
+}
+
+// 确认图标选择
+const confirmIconSelection = () => {
+  iconDialogVisible.value = false
+}
 
 // 根据分类获取对应的表情符号
 const getCategoryEmoji = (category) => {
@@ -386,6 +561,12 @@ const filteredIcons = computed(() => {
   
   return result
 })
+
+// 选择预设图标并关闭弹窗
+const selectIconAndClose = (icon) => {
+  selectIcon(icon)
+  iconDialogVisible.value = false
+}
 
 // 选择预设图标
 const selectIcon = (icon) => {
@@ -463,6 +644,7 @@ const uploadIcon = (options) => {
   reader.readAsDataURL(file)
   reader.onload = () => {
     formData.icon = reader.result
+    iconDialogVisible.value = false
     // 实际项目中，这里应该调用上传API，获取返回的URL
     // 然后将URL赋值给formData.icon
   }
@@ -672,14 +854,202 @@ onMounted(async () => {
   padding-left: 2px;
 }
 
-/* 图标选择器样式 */
-.icon-selection-container {
+/* 新增：简化的图标选择区域 */
+.icon-compact-selection {
   display: flex;
   flex-direction: column;
-  gap: 25px;
+  gap: 15px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.selected-icon-area {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #ebeef5;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05);
   margin-bottom: 10px;
 }
 
+.selected-icon-img {
+  width: 60px;
+  height: 60px;
+  margin-right: 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.icon-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.icon-title {
+  font-size: 14px;
+  color: #909399;
+  margin-bottom: 5px;
+}
+
+.icon-name {
+  font-size: 16px;
+  font-weight: 500;
+  color: #303133;
+}
+
+.icon-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.select-icon-btn {
+  min-width: 140px;
+}
+
+.icon-tip {
+  margin-top: 10px;
+}
+
+/* 图标选择弹窗样式 */
+.icon-dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.icon-selection-dialog :deep(.el-dialog__body) {
+  padding: 15px 20px;
+}
+
+.icon-selection-dialog :deep(.el-dialog__title) {
+  font-weight: 600;
+  color: #303133;
+}
+
+.dialog-preview-area {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f5f7fa;
+  border-radius: 8px;
+  border: 1px solid #e4e7ed;
+}
+
+.dialog-preview-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #606266;
+  margin-bottom: 15px;
+}
+
+.dialog-preview-card {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05);
+}
+
+.preview-icon-container {
+  margin-right: 20px;
+}
+
+.preview-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+}
+
+.preview-text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.preview-type-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #303133;
+}
+
+.preview-description {
+  font-size: 14px;
+  color: #606266;
+  max-width: 600px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 自定义图标上传弹窗样式 */
+.upload-dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 10px;
+}
+
+.custom-icon-uploader {
+  width: 220px;
+  height: 200px;
+  border: 2px dashed #d9d9d9;
+  border-radius: 8px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fafafa;
+  transition: all 0.3s;
+}
+
+.custom-icon-uploader:hover {
+  border-color: #409eff;
+  background-color: #f5f7fa;
+}
+
+.upload-preview {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.upload-icon {
+  font-size: 40px;
+  color: #c0c4cc;
+  margin-bottom: 10px;
+}
+
+.upload-instructions {
+  background-color: #f5f7fa;
+  border-radius: 8px;
+  padding: 15px;
+  color: #606266;
+  font-size: 14px;
+}
+
+.upload-instructions p {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.upload-instructions ul {
+  padding-left: 20px;
+  line-height: 1.8;
+}
+
+/* 图标选择器样式 */
 .icon-tabs {
   width: 100%;
   border-radius: 8px;
@@ -883,51 +1253,6 @@ onMounted(async () => {
   color: #909399;
 }
 
-/* 选中图标预览 */
-.selected-icon-preview {
-  display: flex;
-  flex-direction: column;
-  margin-top: 15px;
-  padding: 15px;
-  background-color: #f5f7fa;
-  border-radius: 8px;
-  border: 1px solid #e4e7ed;
-}
-
-.preview-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-}
-
-.preview-title {
-  font-size: 15px;
-  font-weight: 500;
-  color: #606266;
-}
-
-.preview-card {
-  display: flex;
-  align-items: center;
-  background-color: white;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px 0 rgba(0,0,0,0.05);
-}
-
-.selected-icon-image {
-  width: 50px;
-  height: 50px;
-  margin-right: 15px;
-}
-
-.preview-name {
-  font-size: 16px;
-  font-weight: 500;
-  color: #303133;
-}
-
 /* 优先级样式 */
 .priority-container {
   display: flex;
@@ -1017,6 +1342,24 @@ onMounted(async () => {
   }
 }
 
+/* 自动填充提示样式 */
+.auto-filled-hint {
+  color: #67c23a;
+  font-weight: 500;
+  margin-left: 5px;
+}
+
+.auto-fill-alert {
+  margin: 0 0 20px 0;
+  border-radius: 8px;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 /* 响应式调整 */
 @media (max-width: 768px) {
   .icon-list {
@@ -1035,23 +1378,19 @@ onMounted(async () => {
   .form-card {
     margin: 10px auto 30px;
   }
-}
-
-/* 自动填充提示样式 */
-.auto-filled-hint {
-  color: #67c23a;
-  font-weight: 500;
-  margin-left: 5px;
-}
-
-.auto-fill-alert {
-  margin: 0 0 20px 0;
-  border-radius: 8px;
-  animation: fadeIn 0.5s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+  
+  .icon-selection-dialog {
+    width: 95% !important;
+  }
+  
+  .dialog-preview-card {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .preview-icon-container {
+    margin-right: 0;
+    margin-bottom: 15px;
+  }
 }
 </style>
