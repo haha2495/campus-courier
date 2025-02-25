@@ -54,4 +54,34 @@ public class SysTaskTypeServiceImpl implements SysTaskTypeService {
         // 调用Handler执行分页查询
         return taskTypeHandler.pageTaskTypes(request);
     }
+    
+    /**
+     * 启用任务类型
+     *
+     * @param id 任务类型ID
+     * @return 操作是否成功
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean enableTaskType(Integer id) {
+        log.info("启用任务类型, ID: {}", id);
+        
+        // 调用Handler执行启用操作
+        return taskTypeHandler.enableTaskType(id);
+    }
+    
+    /**
+     * 禁用任务类型
+     *
+     * @param id 任务类型ID
+     * @return 操作是否成功
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean disableTaskType(Integer id) {
+        log.info("禁用任务类型, ID: {}", id);
+        
+        // 调用Handler执行禁用操作
+        return taskTypeHandler.disableTaskType(id);
+    }
 } 

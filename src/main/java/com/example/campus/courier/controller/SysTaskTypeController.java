@@ -11,10 +11,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 任务类型控制器
@@ -59,5 +56,39 @@ public class SysTaskTypeController extends BaseController {
             return Result.forbidden();
         }
         return Result.success(taskTypeService.pageTaskTypes(request), "查询成功");
+    }
+    
+    /**
+     * 启用任务类型
+     *
+     * @param id 任务类型ID
+     * @return 响应结果
+     */
+    @PostMapping("/enable/{id}")
+    @Operation(summary = "启用任务类型", description = "将任务类型状态设置为启用")
+    public Result<Boolean> enableTaskType(
+            @PathVariable @Parameter(description = "任务类型ID") Integer id) {
+        // 检查当前用户是否为管理员
+        if (!isAdmin()) {
+            return Result.forbidden();
+        }
+        return Result.success(taskTypeService.enableTaskType(id), "启用任务类型成功");
+    }
+    
+    /**
+     * 禁用任务类型
+     *
+     * @param id 任务类型ID
+     * @return 响应结果
+     */
+    @PostMapping("/disable/{id}")
+    @Operation(summary = "禁用任务类型", description = "将任务类型状态设置为禁用")
+    public Result<Boolean> disableTaskType(
+            @PathVariable @Parameter(description = "任务类型ID") Integer id) {
+        // 检查当前用户是否为管理员
+        if (!isAdmin()) {
+            return Result.forbidden();
+        }
+        return Result.success(taskTypeService.disableTaskType(id), "禁用任务类型成功");
     }
 } 

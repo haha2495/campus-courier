@@ -26,4 +26,20 @@ public interface SysTaskTypeService {
      * @return 任务类型分页数据
      */
     PageResult<SysTaskType> pageTaskTypes(TaskTypePageRequest request);
+    
+    /**
+     * 启用任务类型
+     *
+     * @param id 任务类型ID
+     * @return 操作是否成功
+     */
+    boolean enableTaskType(Integer id);
+    
+    /**
+     * 禁用任务类型
+     *
+     * @param id 任务类型ID
+     * @return 操作是否成功
+     */
+    boolean disableTaskType(Integer id);
 } 

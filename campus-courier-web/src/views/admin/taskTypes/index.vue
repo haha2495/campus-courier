@@ -224,7 +224,7 @@ import {
   Document, Plus, Check, Close, Edit, Delete, Calendar, List,
   Picture, InfoFilled, Sort, CircleCheck, Timer, SetUp
 } from '@element-plus/icons-vue'
-import {pageTaskTypes} from '@/api/taskType'
+import {pageTaskTypes, enableTaskType, disableTaskType} from '@/api/taskType'
 import {ElMessage, ElMessageBox} from 'element-plus'
 
 const router = useRouter()
@@ -361,23 +361,61 @@ const handleEdit = (row) => {
 }
 
 // 启用任务类型
-const handleEnable = (row) => {
-  // 这里暂时不实现启用逻辑
-  ElMessage({
-    message: '启用功能待实现',
-    type: 'success',
-    duration: 2000
-  })
+const handleEnable = async (row) => {
+  try {
+    const res = await enableTaskType(row.id)
+    if (res) {
+      ElMessage({
+        message: '任务类型启用成功',
+        type: 'success',
+        duration: 2000
+      })
+      // 刷新数据
+      fetchData()
+    } else {
+      ElMessage.error('任务类型启用失败')
+    }
+  } catch (error) {
+    console.error('启用任务类型出错:', error)
+    ElMessage.error('系统异常，请稍后重试')
+  }
 }
 
 // 禁用任务类型
-const handleDisable = (row) => {
-  // 这里暂时不实现禁用逻辑
-  ElMessage({
-    message: '禁用功能待实现',
-    type: 'warning',
-    duration: 2000
-  })
+const handleDisable = async (row) => {
+  try {
+    // 确认禁用
+    await ElMessageBox.confirm(
+      `确定要禁用任务类型 "${row.typeName}" 吗?`,
+      '禁用确认',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }
+    )
+    
+    // 调用禁用接口
+    const res = await disableTaskType(row.id)
+    if (res) {
+      ElMessage({
+        message: '任务类型禁用成功',
+        type: 'success',
+        duration: 2000
+      })
+      // 刷新数据
+      fetchData()
+    } else {
+      ElMessage.error('任务类型禁用失败')
+    }
+  } catch (error) {
+    if (error === 'cancel') {
+      // 用户取消操作，不做处理
+      return
+    }
+    console.error('禁用任务类型出错:', error)
+    ElMessage.error('系统异常，请稍后重试')
+  }
 }
 
 // 删除任务类型

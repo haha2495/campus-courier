@@ -26,3 +26,27 @@ export function pageTaskTypes(data) {
     })
 }
 
+/**
+ * 启用任务类型
+ * @param {Number} id - 任务类型ID
+ * @returns {Promise}
+ */
+export function enableTaskType(id) {
+    return request({
+        url: `/task/types/enable/${id}`,
+        method: 'post'
+    })
+}
+
+/**
+ * 禁用任务类型
+ * @param {Number} id - 任务类型ID
+ * @returns {Promise}
+ */
+export function disableTaskType(id) {
+    return request({
+        url: `/task/types/disable/${id}`,
+        method: 'post'
+    })
+}
+
