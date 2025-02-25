@@ -167,7 +167,10 @@
 
 <script setup>
 import { ref, reactive, onMounted, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { Document, Search, RefreshRight, Plus } from '@element-plus/icons-vue'
+
+const router = useRouter()
 
 // 搜索表单
 const searchForm = reactive({
@@ -219,12 +222,15 @@ const handleCurrentChange = (val) => {
 
 // 添加任务类型
 const handleAdd = () => {
-  // 这里暂时不实现添加逻辑
+  router.push('/admin/task-types/form')
 }
 
 // 编辑任务类型
 const handleEdit = (row) => {
-  // 这里暂时不实现编辑逻辑
+  router.push({
+    path: '/admin/task-types/form',
+    query: { id: row.id }
+  })
 }
 
 // 启用任务类型

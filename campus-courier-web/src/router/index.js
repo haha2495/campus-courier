@@ -45,6 +45,15 @@ const routes = [
                 },
             },
             {
+                path: "task-types/form",
+                name: "TaskTypeForm",
+                component: () => import("../views/admin/taskTypes/form.vue"),
+                meta: {
+                    title: "任务类型表单",
+                    requiresAuth: true,
+                },
+            },
+            {
                 path: "profile",
                 name: "AdminProfile",
                 component: () => import("../views/admin/profile/index.vue"),
