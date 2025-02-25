@@ -32,22 +32,71 @@
         
         <!-- 类型图标 -->
         <el-form-item label="类型图标" prop="icon">
-          <div class="icon-upload-container">
-            <el-upload
-              class="avatar-uploader"
-              action="#"
-              :http-request="uploadIcon"
-              :show-file-list="false"
-              :before-upload="beforeIconUpload"
-            >
-              <div v-if="formData.icon" class="avatar-preview">
-                <el-avatar :size="80" :src="formData.icon" />
-              </div>
-              <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
-            </el-upload>
-            <div class="upload-tip">
-              <p>支持JPG、PNG格式，建议尺寸100x100px</p>
-              <p>图标将显示在任务类型列表和任务详情中</p>
+          <div class="icon-selection-container">
+            <!-- 图标选择方式切换 -->
+            <el-tabs v-model="iconSelectionMode" class="icon-tabs">
+              <el-tab-pane label="选择图标" name="select">
+                <div class="icon-categories">
+                  <el-radio-group v-model="currentCategory" size="small">
+                    <el-radio-button v-for="category in iconCategories" :key="category.value" :label="category.value">
+                      {{ category.label }}
+                    </el-radio-button>
+                  </el-radio-group>
+                </div>
+                
+                <div class="icon-grid">
+                  <el-scrollbar height="250px">
+                    <div class="icon-list">
+                      <div 
+                        v-for="icon in filteredIcons" 
+                        :key="icon.name"
+                        class="icon-item"
+                        :class="{ 'is-selected': formData.icon === icon.url }"
+                        @click="selectIcon(icon)"
+                      >
+                        <img :src="icon.url" class="icon-preview" :alt="icon.name">
+                        <div class="icon-name">{{ icon.name }}</div>
+                      </div>
+                    </div>
+                  </el-scrollbar>
+                </div>
+                
+                <div class="icon-search">
+                  <el-input
+                    v-model="iconSearchText"
+                    placeholder="搜索图标"
+                    prefix-icon="Search"
+                    clearable
+                  />
+                </div>
+              </el-tab-pane>
+              
+              <el-tab-pane label="上传图标" name="upload">
+                <div class="upload-container">
+                  <el-upload
+                    class="avatar-uploader"
+                    action="#"
+                    :http-request="uploadIcon"
+                    :show-file-list="false"
+                    :before-upload="beforeIconUpload"
+                  >
+                    <div v-if="formData.icon && iconSelectionMode === 'upload'" class="avatar-preview">
+                      <el-avatar :size="80" :src="formData.icon" />
+                    </div>
+                    <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
+                  </el-upload>
+                  <div class="upload-tip">
+                    <p>支持JPG、PNG格式，建议尺寸100x100px</p>
+                    <p>图标将显示在任务类型列表和任务详情中</p>
+                  </div>
+                </div>
+              </el-tab-pane>
+            </el-tabs>
+            
+            <!-- 当前选中的图标预览 -->
+            <div class="selected-icon-preview" v-if="formData.icon">
+              <div class="preview-title">已选图标</div>
+              <img :src="formData.icon" class="selected-icon-image" alt="Selected Icon">
             </div>
           </div>
         </el-form-item>
@@ -98,10 +147,11 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Back, Plus } from '@element-plus/icons-vue'
+import { Back, Plus, Search } from '@element-plus/icons-vue'
+import { IconCategoryEnum, PresetIconsEnum } from '@/utils/enums/iconEnums'
 
 const route = useRoute()
 const router = useRouter()
@@ -129,6 +179,9 @@ const rules = reactive({
     { required: true, message: '请输入任务类型名称', trigger: 'blur' },
     { min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur' }
   ],
+  icon: [
+    { required: true, message: '请选择或上传任务类型图标', trigger: 'change' }
+  ],
   description: [
     { required: true, message: '请输入任务类型描述', trigger: 'blur' },
     { max: 200, message: '长度不能超过 200 个字符', trigger: 'blur' }
@@ -140,6 +193,34 @@ const rules = reactive({
     { required: true, message: '请选择状态', trigger: 'change' }
   ]
 })
+
+// 图标选择相关状态
+const iconSelectionMode = ref('select') // 'select' 或 'upload'
+const currentCategory = ref('delivery')
+const iconSearchText = ref('')
+
+// 图标分类 - 使用枚举
+const iconCategories = IconCategoryEnum
+
+// 预设图标库 - 使用枚举
+const presetIcons = reactive(PresetIconsEnum)
+
+// 根据分类和搜索文本过滤图标
+const filteredIcons = computed(() => {
+  let result = presetIcons.filter(icon => icon.category === currentCategory.value)
+  
+  if (iconSearchText.value) {
+    const searchTerm = iconSearchText.value.toLowerCase()
+    result = result.filter(icon => icon.name.toLowerCase().includes(searchTerm))
+  }
+  
+  return result
+})
+
+// 选择预设图标
+const selectIcon = (icon) => {
+  formData.icon = icon.url
+}
 
 // 返回列表页
 const goBack = () => {
@@ -175,6 +256,17 @@ const uploadIcon = (options) => {
     // 然后将URL赋值给formData.icon
   }
 }
+
+// 切换图标选择模式时重置一些状态
+watch(iconSelectionMode, (newMode) => {
+  if (newMode === 'select' && !formData.icon) {
+    // 如果切换到选择模式且当前没有选择图标，可以设置一个默认图标
+    if (filteredIcons.value.length > 0) {
+      // 可选择不自动选择默认图标
+      // selectIcon(filteredIcons.value[0])
+    }
+  }
+})
 
 // 提交表单
 const submitForm = async () => {
@@ -215,7 +307,7 @@ onMounted(async () => {
       Object.assign(formData, {
         id: id,
         typeName: '示例任务类型',
-        icon: '',
+        icon: 'https://cdn-icons-png.flaticon.com/128/2271/2271048.png', // 使用预设图标之一
         description: '这是一个示例任务类型的描述信息',
         priority: 10,
         status: 1
@@ -250,7 +342,74 @@ onMounted(async () => {
   color: #1f2937;
 }
 
-.icon-upload-container {
+/* 图标选择器样式 */
+.icon-selection-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.icon-tabs {
+  width: 100%;
+}
+
+.icon-categories {
+  margin-bottom: 15px;
+}
+
+.icon-grid {
+  margin-bottom: 15px;
+}
+
+.icon-list {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  padding: 8px;
+}
+
+.icon-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: 1px solid transparent;
+}
+
+.icon-item:hover {
+  background-color: #f5f7fa;
+  border-color: #e4e7ed;
+}
+
+.icon-item.is-selected {
+  background-color: #ecf5ff;
+  border-color: #409eff;
+}
+
+.icon-preview {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 6px;
+}
+
+.icon-name {
+  font-size: 12px;
+  color: #606266;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.icon-search {
+  margin-top: 15px;
+}
+
+.upload-container {
   display: flex;
   align-items: flex-start;
   gap: 20px;
@@ -295,6 +454,28 @@ onMounted(async () => {
   color: #909399;
   font-size: 12px;
   line-height: 1.5;
+}
+
+.selected-icon-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 15px;
+  padding: 15px;
+  background-color: #f5f7fa;
+  border-radius: 6px;
+}
+
+.preview-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #606266;
+  margin-bottom: 10px;
+}
+
+.selected-icon-image {
+  width: 60px;
+  height: 60px;
 }
 
 .form-item-tip {
