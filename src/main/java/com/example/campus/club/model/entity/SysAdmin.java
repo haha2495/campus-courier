@@ -15,26 +15,26 @@ import java.time.LocalDateTime;
 @TableName("sys_admin")
 @Schema(description = "系统管理员")
 public class SysAdmin {
-    
+
     @TableId(type = IdType.AUTO)
     @Schema(description = "主键ID")
     private Integer id;
-    
+
     @Schema(description = "用户名")
     private String username;
-    
+
     @Schema(description = "密码")
     private String password;
-    
+
     @Schema(description = "昵称")
     private String nickname;
-    
+
     @Schema(description = "头像URL")
     private String avatar;
-    
+
     @Schema(description = "状态：1-正常，0-禁用")
     private Boolean status;
-    
+
     @Schema(description = "创建时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;
@@ -45,8 +45,8 @@ public class SysAdmin {
      * @param username 用户名
      * @param password 密码（未加密）
      * @param nickname 昵称
-     * @param avatar 头像URL
-     * @param status 状态
+     * @param avatar   头像URL
+     * @param status   状态
      * @return 当前对象
      */
     public SysAdmin init(String username, String password, String nickname, String avatar, Boolean status) {
@@ -59,7 +59,4 @@ public class SysAdmin {
         return this;
     }
 
-    public static void main(String[] args) {
-        System.out.println(DigestUtils.md5DigestAsHex("123456".getBytes(StandardCharsets.UTF_8)));
-    }
-} 
+}

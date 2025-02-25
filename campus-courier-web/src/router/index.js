@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from "vue-router";
+import {createRouter, createWebHistory} from "vue-router";
 
 // 布局组件
 import SideMenuLayout from "../layout/SideMenuLayout.vue";
@@ -9,109 +9,72 @@ import Login from "../views/login/index.vue";
 // 首页组件
 import AdminHome from "../views/admin/home/index.vue";
 
-import TaskTypeManage from '../views/task/TaskTypeManage.vue'
-import TaskManage from '../views/task/TaskManage.vue'
-import DisputeManage from '../views/dispute/DisputeManage.vue'
-import DisputeTypeManage from '../views/dispute/DisputeTypeManage.vue'
-
 const routes = [
-  {
-    path: "/login",
-    name: "Login",
-    component: Login,
-  },
-  // 管理员路由
-  {
-    path: "/admin",
-    component: SideMenuLayout,
-    children: [
-      {
-        path: "home",
-        name: "AdminHome",
-        component: AdminHome,
-      },
-      {
-        path: "admins",
-        name: "AdminManage",
-        component: () => import("../views/admin/admins/index.vue"),
-      },
-      {
-        path: "students",
-        name: "StudentManage",
-        component: () => import("../views/admin/students/index.vue"),
-      },
-      {
-        path: "profile",
-        name: "AdminProfile",
-        component: () => import("../views/admin/profile/index.vue"),
-        meta: {
-          title: "个人信息",
-          requiresAuth: true,
-        },
-      },
-      {
-        path: 'task-type',
-        name: 'TaskType',
-        component: TaskTypeManage,
-        meta: {
-          title: '任务类型管理'
-        }
-      },
-      {
-        path: 'task',
-        name: 'Task',
-        component: TaskManage,
-        meta: {
-          title: '任务管理'
-        }
-      },
-      {
-        path: 'dispute',
-        name: 'Dispute',
-        component: DisputeManage,
-        meta: {
-          title: '纠纷管理'
-        }
-      },
-      {
-        path: 'dispute-type',
-        name: 'DisputeType',
-        component: DisputeTypeManage,
-        meta: {
-          title: '纠纷类型管理'
-        }
-      }
-    ],
-  },
-  // 根路径重定向到登录页
-  {
-    path: "/",
-    redirect: "/login",
-  },
+    {
+        path: "/login",
+        name: "Login",
+        component: Login,
+    },
+    // 管理员路由
+    {
+        path: "/admin",
+        component: SideMenuLayout,
+        children: [
+            {
+                path: "home",
+                name: "AdminHome",
+                component: AdminHome,
+            },
+            {
+                path: "admins",
+                name: "AdminManage",
+                component: () => import("../views/admin/admins/index.vue"),
+            },
+            {
+                path: "students",
+                name: "StudentManage",
+                component: () => import("../views/admin/students/index.vue"),
+            },
+            {
+                path: "profile",
+                name: "AdminProfile",
+                component: () => import("../views/admin/profile/index.vue"),
+                meta: {
+                    title: "个人信息",
+                    requiresAuth: true,
+                },
+            },
+        ],
+    },
+    // 根路径重定向到登录页
+    {
+        path: "/",
+        redirect: "/login",
+    },
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
-  routes,
+    history: createWebHistory(),
+    routes,
 });
 
 // 路由守卫
 router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
-  // 如果访问的不是登录页，且没有token，则重定向到登录页
-  if (to.path !== "/login" && !token) {
-    next("/login");
-    return;
-  }
+    // 如果访问的不是登录页，且没有token，则重定向到登录页
+    if (to.path !== "/login" && !token) {
+        next("/login");
+        return;
+    }
 
-  // 如果已登录还访问登录页，则重定向到管理员首页
-  if (to.path === "/login" && token) {
-    next("/admin/home");
-    return;
-  }
+    // 如果已登录还访问登录页，则重定向到管理员首页
+    if (to.path === "/login" && token) {
+        next("/admin/home");
+        return;
+    }
 
-  next();
+    next();
 });
 
 export default router;

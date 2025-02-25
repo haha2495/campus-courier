@@ -14,7 +14,7 @@ public class SwaggerConfig {
     public OpenAPI openAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("现代合作社农业管理系统接口文档")
+                        .title("校园跑腿系统接口文档")
                         .description("提供系统所有相关接口的文档")
                         .version("1.0")
                         .contact(new Contact()
