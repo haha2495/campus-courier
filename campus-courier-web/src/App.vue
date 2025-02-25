@@ -1,11 +1,30 @@
 <script setup>
 // 不需要 HelloWorld 组件
+import { onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+
+// 判断当前是否为管理页面并设置对应的body类
+onMounted(() => {
+  const route = useRoute();
+  const isAdminPage = route.path.includes('/admin');
+  
+  if (isAdminPage) {
+    document.body.classList.add('admin-page');
+    document.body.classList.remove('app-page');
+  } else {
+    document.body.classList.add('app-page');
+    document.body.classList.remove('admin-page');
+  }
+});
 </script>
 
 <template>
   <router-view v-slot="{ Component }">
     <transition name="zoom-fade" mode="out-in" appear>
-      <component :is="Component" class="page-component" />
+      <component 
+        :is="Component" 
+        :class="['page-component', $route.path.includes('/admin') ? 'admin-component' : '']" 
+      />
     </transition>
   </router-view>
 </template>
@@ -21,6 +40,16 @@ html,
 body {
   width: 100%;
   height: 100%;
+  /* 移除强制overflow:hidden，改为只在非管理页面使用 */
+}
+
+/* 允许管理页面滚动，如任务类型表单页面 */
+body.admin-page {
+  overflow-y: auto !important;
+}
+
+/* 默认仍保持原有效果 */
+body.app-page {
   overflow: hidden;
 }
 
@@ -38,6 +67,14 @@ body {
   position: absolute;
   left: 0;
   top: 0;
+}
+
+/* 允许管理类页面组件滚动 */
+.page-component.admin-component {
+  position: relative;
+  height: auto;
+  min-height: 100%;
+  overflow-y: auto;
 }
 
 /* 新的缩放淡入淡出动画 - 更流畅，无卡顿 */
