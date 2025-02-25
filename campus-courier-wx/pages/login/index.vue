@@ -1,5 +1,5 @@
 <template>
-  <view class="login-container">
+  <view class="login-container" :class="{ 'fade-out': isPageFading }">
     <!-- 动态背景元素 -->
     <view class="animated-bg">
       <!-- 顶部装饰元素 -->
@@ -22,7 +22,7 @@
     </view>
 
     <!-- 登录卡片 -->
-    <view class="login-card">
+    <view class="login-card" :class="{ 'success-animation': loginSuccess }">
       <!-- 标题区域 -->
       <view class="header">
         <view class="logo-container">
@@ -63,7 +63,7 @@
       </view>
 
       <!-- 表单区域 -->
-      <view class="form-container">
+      <view class="form-container" v-if="!loginSuccess">
         <u--form
           :model="formData"
           ref="uForm"
@@ -113,6 +113,15 @@
           ></u-button>
         </view>
       </view>
+      
+      <!-- 登录成功动画 -->
+      <view class="success-container" v-if="loginSuccess">
+        <view class="success-icon">
+          <text class="success-emoji">✅</text>
+        </view>
+        <text class="success-text">登录成功</text>
+        <text class="success-hint">正在进入校园跑腿系统...</text>
+      </view>
     </view>
     
     <!-- 底部装饰元素 -->
@@ -131,12 +140,16 @@ import {userApi} from '@/api/user'
 
 // 表单数据
 const formData = reactive({
-  studentNo: '',
-  password: ''
+  studentNo: '20220202',
+  password: '20220202L'
 })
 
 // 加载状态
 const loading = ref(false)
+
+// 登录成功状态
+const loginSuccess = ref(false)
+const isPageFading = ref(false)
 
 // 注册状态
 const registerStatus = reactive({
@@ -213,6 +226,21 @@ const startCourierAnimation = () => {
   console.log('Courier animation started')
 }
 
+// 跳转到首页（带动画）
+const navigateToHome = () => {
+  // 先显示页面淡出效果
+  isPageFading.value = true
+  
+  // 延迟执行页面跳转
+  setTimeout(() => {
+    uni.reLaunch({
+      url: '/pages/index/index',
+      animationType: 'fade-in',
+      animationDuration: 300
+    })
+  }, 800) // 与CSS动画时长匹配
+}
+
 // 登录方法
 const handleLogin = () => {
   // 先检查表单实例是否存在
@@ -235,12 +263,21 @@ const handleLogin = () => {
         if (res.code === 200) {
           // 保存token
           uni.setStorageSync('token', res.data.token)
-
-          uni.$u.toast('登录成功')
-          // 跳转到首页
-          uni.reLaunch({
-            url: '/pages/index/index'
-          })
+          
+          // 显示登录成功动画
+          loading.value = false
+          loginSuccess.value = true
+          
+          // 播放成功音效（可选）
+          const successSound = uni.createInnerAudioContext()
+          successSound.src = '/static/sounds/success.mp3' // 需要添加这个音频文件
+          successSound.play()
+          
+          // 延迟跳转
+          setTimeout(() => {
+            // 执行带动画的页面跳转
+            navigateToHome()
+          }, 1200)
         } else {
           // 显示具体的错误信息
           registerStatus.show = true
@@ -263,6 +300,8 @@ const handleLogin = () => {
             registerStatus.color = '#ff4d4f'
             registerStatus.class = 'status-disabled'
           }
+          
+          loading.value = false
         }
       } catch (err) {
         console.error('登录失败:', err)
@@ -271,7 +310,6 @@ const handleLogin = () => {
         registerStatus.icon = 'error-circle'
         registerStatus.color = '#ff4d4f'
         registerStatus.class = 'status-error'
-      } finally {
         loading.value = false
       }
     } else {
@@ -295,6 +333,11 @@ const handleLogin = () => {
   align-items: center;
   justify-content: center;
   padding: 40rpx;
+  transition: opacity 0.8s ease;
+  
+  &.fade-out {
+    opacity: 0;
+  }
 }
 
 /* 动态背景元素 */
@@ -430,6 +473,15 @@ const handleLogin = () => {
   position: relative;
   z-index: 10;
   max-width: 650rpx;
+  transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55), 
+              box-shadow 0.6s ease,
+              background 0.6s ease;
+  
+  &.success-animation {
+    transform: scale(1.05);
+    box-shadow: 0 30rpx 60rpx rgba(105, 121, 248, 0.2);
+    background: rgba(255, 255, 255, 0.95);
+  }
   
   .header {
     display: flex;
@@ -563,6 +615,49 @@ const handleLogin = () => {
       margin-top: 40rpx;
     }
   }
+  
+  /* 登录成功动画 */
+  .success-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40rpx 0;
+    animation: fadeIn 0.5s ease-out;
+    
+    .success-icon {
+      width: 160rpx;
+      height: 160rpx;
+      background: linear-gradient(45deg, #11998e, #38ef7d);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 40rpx;
+      box-shadow: 0 15rpx 30rpx rgba(56, 239, 125, 0.3);
+      animation: success-pulse 2s infinite;
+      
+      .success-emoji {
+        font-size: 80rpx;
+      }
+    }
+    
+    .success-text {
+      font-size: 44rpx;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 20rpx;
+      background: linear-gradient(to right, #11998e, #38ef7d);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+    
+    .success-hint {
+      font-size: 28rpx;
+      color: #666;
+      animation: blink 1.5s ease-in-out infinite;
+    }
+  }
 }
 
 /* 底部装饰 */
@@ -634,6 +729,21 @@ const handleLogin = () => {
   }
 }
 
+@keyframes success-pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 15rpx 30rpx rgba(56, 239, 125, 0.3);
+  }
+  50% {
+    transform: scale(1.1);
+    box-shadow: 0 20rpx 40rpx rgba(56, 239, 125, 0.4);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 15rpx 30rpx rgba(56, 239, 125, 0.3);
+  }
+}
+
 @keyframes moveRight {
   0% {
     left: -10%;
@@ -664,6 +774,26 @@ const handleLogin = () => {
   }
   50% {
     transform: translateY(-20rpx);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes blink {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
   }
 }
 </style> 
