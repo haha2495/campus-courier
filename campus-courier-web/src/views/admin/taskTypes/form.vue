@@ -40,12 +40,18 @@
                   maxlength="50"
                   show-word-limit
                   class="fancy-input"
+                  @input="() => { if(formData.lastSelectedIconName === formData.typeName) formData.lastSelectedIconName = '' }"
                 >
                   <template #prefix>
                     <div class="input-prefix-icon">📝</div>
                   </template>
                 </el-input>
-                <div class="input-hint">好的名称能让同学们一目了然，例如"快递代取"、"证件照打印"</div>
+                <div class="input-hint">
+                  好的名称能让同学们一目了然，例如"快递代取"、"证件照打印"
+                  <span v-if="formData.lastSelectedIconName" class="auto-filled-hint">
+                    (已根据所选图标自动填充，可以修改)
+                  </span>
+                </div>
               </div>
             </el-form-item>
             
@@ -174,9 +180,13 @@
                   show-word-limit
                   :rows="4"
                   class="fancy-textarea"
+                  @input="() => formData.isDefaultDescription = false"
                 />
                 <div class="input-hint">
                   好的描述能提高接单效率，例如："提供专业的快递代取服务，包括校内所有快递点"
+                  <span v-if="formData.isDefaultDescription" class="auto-filled-hint">
+                    (已自动生成默认描述，可以修改)
+                  </span>
                 </div>
               </div>
             </el-form-item>
@@ -225,6 +235,17 @@
               </div>
             </el-form-item>
             
+            <!-- 自动填充提示 -->
+            <el-alert
+              v-if="showAutoFillTip"
+              title="已根据您选择的图标自动填充名称和描述"
+              type="success"
+              description="我们根据您选择的图标自动生成了任务类型名称和描述，您可以直接使用或进行修改。"
+              :closable="true"
+              show-icon
+              class="auto-fill-alert"
+            />
+            
             <!-- 提交按钮 -->
             <el-form-item>
               <div class="form-actions">
@@ -266,7 +287,10 @@ const formData = reactive({
   icon: '',
   description: '',
   priority: 10,
-  status: 1
+  status: 1,
+  // 新增：用于智能自动填充的辅助字段
+  lastSelectedIconName: '',
+  isDefaultDescription: false
 })
 
 // 表单验证规则
@@ -366,6 +390,24 @@ const filteredIcons = computed(() => {
 // 选择预设图标
 const selectIcon = (icon) => {
   formData.icon = icon.url
+  
+  // 智能自动填充：当任务类型名称为空或与之前选择的图标名称相同时，自动更新名称
+  if (!formData.typeName || formData.lastSelectedIconName === formData.typeName) {
+    formData.typeName = icon.name
+    formData.lastSelectedIconName = icon.name
+  }
+  
+  // 智能自动填充：当描述为空或是默认描述时，自动生成描述
+  if (!formData.description || formData.isDefaultDescription) {
+    // 获取图标分类的中文名称
+    const categoryObj = iconCategories.find(cat => cat.value === icon.category)
+    const categoryName = categoryObj ? categoryObj.label : '通用'
+    
+    // 生成默认描述
+    formData.description = `提供专业的${icon.name}服务，满足校园内${categoryName}相关需求，快速便捷。`
+    formData.isDefaultDescription = true
+  }
+  
   // 添加选择动画效果的类名
   const iconElement = document.querySelector(`.icon-item[data-icon="${icon.name}"]`)
   if (iconElement) {
@@ -374,7 +416,16 @@ const selectIcon = (icon) => {
       iconElement.classList.remove('icon-selected-animation')
     }, 500)
   }
+  
+  // 显示自动填充提示
+  showAutoFillTip.value = true
+  setTimeout(() => {
+    showAutoFillTip.value = false
+  }, 3000)
 }
+
+// 新增：自动填充提示状态
+const showAutoFillTip = ref(false)
 
 // 返回列表页
 const goBack = () => {
@@ -984,5 +1035,23 @@ onMounted(async () => {
   .form-card {
     margin: 10px auto 30px;
   }
+}
+
+/* 自动填充提示样式 */
+.auto-filled-hint {
+  color: #67c23a;
+  font-weight: 500;
+  margin-left: 5px;
+}
+
+.auto-fill-alert {
+  margin: 0 0 20px 0;
+  border-radius: 8px;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 </style>
