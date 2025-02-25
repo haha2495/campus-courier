@@ -88,7 +88,7 @@
        - 方法名：小驼峰命名，如 `getUserById`
        - 变量名：小驼峰命名，如 `userId`
        - 常量名：全大写下划线分隔，如 `MAX_COUNT`
-       - 包名：全小写，如 `com.example.campus.club`
+       - 包名：全小写，如 `com.example.campus.courier`
 
     5. MyBatis-Plus规范：
        - Handler层继承ServiceImpl<Mapper, Entity>，处理数据库操作
