@@ -36,6 +36,15 @@ const routes = [
                 component: () => import("../views/admin/students/index.vue"),
             },
             {
+                path: "task-types",
+                name: "TaskTypeManage",
+                component: () => import("../views/admin/taskTypes/index.vue"),
+                meta: {
+                    title: "任务类型管理",
+                    requiresAuth: true,
+                },
+            },
+            {
                 path: "profile",
                 name: "AdminProfile",
                 component: () => import("../views/admin/profile/index.vue"),

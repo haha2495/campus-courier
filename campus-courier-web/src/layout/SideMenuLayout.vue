@@ -38,6 +38,12 @@
             </el-icon>
             <span>学生管理</span>
           </el-menu-item>
+          <el-menu-item index="/admin/task-types">
+            <el-icon>
+              <List/>
+            </el-icon>
+            <span>任务类型管理</span>
+          </el-menu-item>
         </template>
       </el-menu>
 
@@ -96,7 +102,7 @@
 <script setup>
 import {onMounted, onUnmounted, ref, watch} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
-import {HomeFilled, School, User, UserFilled} from '@element-plus/icons-vue'
+import {HomeFilled, School, User, UserFilled, List} from '@element-plus/icons-vue'
 import {ElMessage} from 'element-plus'
 import {adminLogout, getCurrentAdmin} from '@/api/admin'
 import {getCurrentStudent, studentLogout} from '@/api/student'
