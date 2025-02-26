@@ -5,9 +5,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.campus.courier.mapper.SysTaskMapper;
 import com.example.campus.courier.model.entity.SysTask;
+import com.example.campus.courier.model.enums.TaskStatusEnum;
 import com.example.campus.courier.model.request.task.TaskQueryRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * 任务数据处理层
@@ -41,5 +44,18 @@ public class SysTaskHandler extends ServiceImpl<SysTaskMapper, SysTask> {
         
         // 执行分页查询并返回结果
         return page(page, queryWrapper);
+    }
+
+    /**
+     * 获取抢单大厅任务列表
+     * 查询所有待接单的任务，按发布时间倒序排序
+     *
+     * @return 任务列表
+     */
+    public List<SysTask> getTaskHallList() {
+        return lambdaQuery()
+                .eq(SysTask::getStatus, TaskStatusEnum.PENDING.getCode())
+                .orderByDesc(SysTask::getCreateTime)
+                .list();
     }
 } 

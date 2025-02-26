@@ -131,4 +131,39 @@ public class SysTaskServiceImpl implements SysTaskService {
 
         return success;
     }
+
+    /**
+     * 获取抢单大厅任务列表
+     * 查询所有待接单的任务，按发布时间倒序排序
+     *
+     * @return 任务列表
+     */
+    @Override
+    public List<TaskDTO> getTaskHallList() {
+        // 1. 获取所有待接单的任务
+        List<SysTask> tasks = sysTaskHandler.getTaskHallList();
+        
+        if (tasks.isEmpty()) {
+            return List.of();
+        }
+
+        // 2. 获取所有任务类型ID
+        List<Integer> typeIds = tasks.stream()
+                .map(SysTask::getTaskTypeId)
+                .distinct()
+                .collect(Collectors.toList());
+
+        // 3. 查询任务类型信息
+        List<SysTaskType> taskTypes = sysTaskTypeHandler.getTaskTypesByIds(typeIds);
+        Map<Integer, SysTaskType> typeMap = taskTypes.stream()
+                .collect(Collectors.toMap(SysTaskType::getId, type -> type));
+
+        // 4. 组装DTO
+        return tasks.stream().map(task -> {
+            TaskDTO dto = new TaskDTO();
+            dto.setTask(task);
+            dto.setTaskType(typeMap.get(task.getTaskTypeId()));
+            return dto;
+        }).collect(Collectors.toList());
+    }
 } 

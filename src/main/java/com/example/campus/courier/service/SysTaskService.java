@@ -6,6 +6,8 @@ import com.example.campus.courier.model.request.task.TaskAddRequest;
 import com.example.campus.courier.model.request.task.TaskQueryRequest;
 import com.example.campus.courier.model.response.PageResult;
 
+import java.util.List;
+
 /**
  * 任务服务接口
  */
@@ -37,4 +39,12 @@ public interface SysTaskService {
      * @return 操作是否成功
      */
     boolean cancelTask(Long taskId, Integer userId);
+
+    /**
+     * 获取抢单大厅任务列表
+     * 查询所有待接单的任务，按发布时间倒序排序
+     *
+     * @return 任务列表
+     */
+    List<TaskDTO> getTaskHallList();
 } 

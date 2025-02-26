@@ -14,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * 任务控制器
  */
@@ -63,5 +65,17 @@ public class SysTaskController extends BaseController {
             @Parameter(description = "任务ID") 
             @PathVariable("taskId") Long taskId) {
         return Result.success(sysTaskService.cancelTask(taskId, getLoginUserId()));
+    }
+
+    /**
+     * 获取抢单大厅任务列表
+     * 查询所有待接单的任务，按发布时间倒序排序
+     *
+     * @return 任务列表
+     */
+    @GetMapping("/hall")
+    @Operation(summary = "获取抢单大厅任务列表")
+    public Result<List<TaskDTO>> getTaskHallList() {
+        return Result.success(sysTaskService.getTaskHallList());
     }
 } 
