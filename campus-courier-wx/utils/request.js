@@ -65,3 +65,16 @@ export const http = (options) => {
         })
     })
 }
+
+/**
+ * 封装的请求函数
+ * @param {Object} options - 请求配置
+ * @param {string} options.url - 请求地址
+ * @param {string} options.method - 请求方法，默认GET
+ * @param {Object} options.data - 请求数据
+ * @param {Object} options.header - 请求头
+ * @returns {Promise} 返回Promise对象
+ */
+export default function request(options) {
+    return http(options)
+}

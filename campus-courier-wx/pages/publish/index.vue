@@ -9,19 +9,116 @@
     </view>
 
     <!-- 页面内容 -->
-    <scroll-view scroll-y class="publish-content" :style="{ top: contentTopValue + 'px' }">
+    <scroll-view 
+      scroll-y="true" 
+      class="publish-content" 
+      :style="{ top: contentTopValue + 'px' }" 
+      :scroll-top="scrollTop"
+      @scroll="onScroll"
+      scroll-with-animation
+      id="scrollView"
+    >
       <!-- 任务类型选择 -->
-      <view class="section-title">选择任务类型</view>
-      <view class="task-types">
+      <view class="section-title">
+        <text>选择任务类型</text>
+        <text class="type-count" v-if="taskTypes.length > 0">({{ taskTypes.length }})</text>
+      </view>
+      
+      <!-- 任务类型搜索框 -->
+      <view class="search-box" v-if="taskTypes.length > 9">
+        <u-icon name="search" size="40rpx" color="#999"></u-icon>
+        <input 
+          type="text" 
+          placeholder="搜索任务类型" 
+          v-model="searchText"
+          confirm-type="search"
+          class="search-input"
+        />
+        <u-icon name="close-circle-fill" size="40rpx" color="#999" v-if="searchText" @click="clearSearch"></u-icon>
+      </view>
+
+      <!-- 骨架屏 - 加载中 -->
+      <view class="skeleton-container" v-if="isLoading">
         <view 
-          v-for="(type, index) in taskTypes" 
-          :key="index" 
-          class="task-type-item"
-          :class="{ 'active': selectedTaskType === type.value }"
-          @click="selectTaskType(type.value)"
+          v-for="i in 6" 
+          :key="i" 
+          class="skeleton-item"
         >
-          <view class="type-icon">{{ type.icon }}</view>
-          <text class="type-name">{{ type.name }}</text>
+          <view class="skeleton-circle"></view>
+          <view class="skeleton-text"></view>
+        </view>
+      </view>
+
+      <!-- 任务类型列表 -->
+      <view v-else>
+        <swiper 
+          class="types-swiper"
+          :current="currentPage - 1"
+          @change="onSwiperChange"
+          :indicator-dots="false"
+          :duration="300"
+          :circular="true"
+          :style="{ height: '450rpx' }"
+        >
+          <swiper-item v-for="page in Math.ceil(filteredTaskTypes.length / pageSize)" :key="page">
+            <view class="task-types">
+              <view 
+                v-for="(type, index) in getPageTaskTypes(page)"
+                :key="type.id"
+                class="task-type-item"
+                :class="{ 'active': selectedTaskType === type.id.toString() }"
+                @click="selectTaskType(type.id.toString())"
+              >
+                <!-- 只保留图标和名称展示 -->
+                <image 
+                  v-if="type.icon && type.icon.includes('http')" 
+                  :src="type.icon" 
+                  class="type-icon-image" 
+                  mode="aspectFit"
+                ></image>
+                <view class="type-icon" v-else>{{ type.icon || '🔍' }}</view>
+                <text class="type-name">{{ type.typeName }}</text>
+              </view>
+            </view>
+          </swiper-item>
+        </swiper>
+      </view>
+      
+      <!-- 分页指示器 -->
+      <view class="pagination" v-if="totalPages > 1">
+        <view 
+          v-for="i in totalPages" 
+          :key="i"
+          class="page-dot"
+          :class="{ 'active': currentPage === i }"
+          @click="changePage(i)"
+        ></view>
+      </view>
+      
+      <!-- 没有任务类型的提示 -->
+      <view class="empty-types" v-if="taskTypes.length === 0 && !isLoading">
+        <view class="empty-icon">🔍</view>
+        <text class="empty-text">暂无可用任务类型</text>
+      </view>
+      
+      <!-- 选中的任务类型描述 -->
+      <view class="type-description" v-if="selectedTaskTypeObj && selectedTaskTypeObj.description">
+        <view class="description-header">
+          <view class="header-icon">
+            <image 
+              v-if="selectedTaskTypeObj.icon && selectedTaskTypeObj.icon.includes('http')" 
+              :src="selectedTaskTypeObj.icon" 
+              class="header-icon-image" 
+              mode="aspectFit"
+            ></image>
+            <text v-else>{{ selectedTaskTypeObj.icon || 'ℹ️' }}</text>
+          </view>
+          <view class="header-text">
+            <text class="description-title">{{ selectedTaskTypeObj.typeName }} 说明</text>
+          </view>
+        </view>
+        <view class="description-content">
+          <text class="description-text">{{ selectedTaskTypeObj.description }}</text>
         </view>
       </view>
       
@@ -152,7 +249,8 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, computed } from 'vue'
+import { ref, reactive, onMounted, computed, watch, nextTick } from 'vue'
+import { getEnabledTaskTypes } from '@/api/taskType'
 
 // 状态栏高度
 const statusBarHeight = ref(20)
@@ -172,6 +270,45 @@ const containerClass = computed(() => {
 
 // 任务类型选择
 const selectedTaskType = ref('')
+const isLoading = ref(true)
+const searchText = ref('')
+const currentPage = ref(1)
+const pageSize = 9 // 每页显示的任务类型数
+
+// 任务类型列表
+const taskTypes = ref([])
+
+// 计算过滤后的任务类型
+const filteredTaskTypes = computed(() => {
+  let filtered = taskTypes.value
+  
+  // 如果有搜索文本，则过滤
+  if (searchText.value) {
+    filtered = filtered.filter(type => 
+      type.typeName.toLowerCase().includes(searchText.value.toLowerCase())
+    )
+  }
+  
+  console.log('过滤后的任务类型数量:', filtered.length)
+  return filtered
+})
+
+// 计算总页数
+const totalPages = computed(() => {
+  if (searchText.value) {
+    // 搜索时的页数
+    const filtered = taskTypes.value.filter(type => 
+      type.typeName.toLowerCase().includes(searchText.value.toLowerCase())
+    )
+    return Math.ceil(filtered.length / pageSize)
+  }
+  return Math.ceil(taskTypes.value.length / pageSize)
+})
+
+// 搜索文本变化时，重置页码
+watch(searchText, () => {
+  currentPage.value = 1
+})
 
 // 表单数据
 const taskForm = reactive({
@@ -185,19 +322,83 @@ const taskForm = reactive({
   images: []
 })
 
-// 任务类型列表
-const taskTypes = [
-  { name: '校园跑腿', value: 'errand', icon: '🛵' },
-  { name: '快递代取', value: 'express', icon: '📦' },
-  { name: '食品外卖', value: 'food', icon: '🍔' },
-  { name: '校园专车', value: 'taxi', icon: '🚗' },
-  { name: '文印服务', value: 'print', icon: '📄' },
-  { name: '其他服务', value: 'other', icon: '🔍' }
-]
+// 滚动相关
+const scrollTop = ref(0)
+const lastScrollTop = ref(0)
 
-// 页面加载获取设备信息
+// 触摸相关变量
+const touchStartX = ref(0)
+const touchEndX = ref(0)
+const swipeThreshold = 50 // 触发滑动的最小距离
+const isSwipingLeft = ref(false)
+const isSwipingRight = ref(false)
+
+// 触摸开始事件
+const touchStart = (e) => {
+  touchStartX.value = e.touches[0].clientX
+}
+
+// 触摸结束事件
+const touchEnd = (e) => {
+  touchEndX.value = e.changedTouches[0].clientX
+  handleSwipe()
+  
+  // 重置滑动状态
+  setTimeout(() => {
+    isSwipingLeft.value = false
+    isSwipingRight.value = false
+  }, 300)
+}
+
+// 处理滑动
+const handleSwipe = () => {
+  // 如果只有一页，不处理滑动
+  if (totalPages.value <= 1) return
+  
+  const swipeDistance = touchEndX.value - touchStartX.value
+  
+  // 向左滑动（下一页）
+  if (swipeDistance < -swipeThreshold) {
+    isSwipingRight.value = true
+    nextPage()
+  }
+  
+  // 向右滑动（上一页）
+  if (swipeDistance > swipeThreshold) {
+    isSwipingLeft.value = true
+    prevPage()
+  }
+}
+
+// 下一页（给分页器按钮使用）
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++
+  } else {
+    // 从最后一页回到第一页
+    currentPage.value = 1
+  }
+}
+
+// 上一页（给分页器按钮使用）
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--
+  } else {
+    // 从第一页回到最后一页
+    currentPage.value = totalPages.value
+  }
+}
+
+// 滚动事件处理
+const onScroll = (e) => {
+  lastScrollTop.value = e.detail.scrollTop
+}
+
+// 页面加载获取设备信息和任务类型
 onMounted(() => {
   getSystemInfo()
+  getTaskTypes()
   
   // 添加短暂延迟，确保页面已经加载
   setTimeout(() => {
@@ -216,6 +417,63 @@ const getSystemInfo = () => {
   }
 }
 
+// 获取任务类型
+const getTaskTypes = async () => {
+  try {
+    isLoading.value = true
+    console.log('开始获取任务类型...')
+    const response = await getEnabledTaskTypes()
+    console.log('获取任务类型响应:', response)
+    
+    if (response && response.code === 200 && response.data) {
+      console.log('获取到的原始任务类型数据:', JSON.stringify(response.data).substring(0, 200) + '...')
+      
+      // 数据处理：确保图标数据格式一致
+      taskTypes.value = response.data.map(type => {
+        // 如果图标是URL但没有http前缀，添加前缀
+        if (type.icon && typeof type.icon === 'string' && !type.icon.startsWith('http') && !type.icon.startsWith('data:')) {
+          type.icon = type.icon.trim()
+          // 如果图标是emoji或其他非URL格式，保持原样
+          if (type.icon.length < 5 || !type.icon.includes('/')) {
+            // 保持原样，可能是emoji或其他字符
+          } else {
+            // 可能是相对路径URL，添加http前缀
+            type.icon = type.icon.startsWith('/') ? `https:${type.icon}` : `https://${type.icon}`
+          }
+        }
+        return type
+      })
+      
+      console.log('处理后的任务类型数量:', taskTypes.value.length)
+      
+      // 如果有任务类型，默认选择第一个
+      if (taskTypes.value.length > 0) {
+        selectedTaskType.value = taskTypes.value[0].id.toString()
+        console.log('已默认选择第一个任务类型:', selectedTaskType.value)
+      }
+    } else {
+      console.error('获取任务类型失败:', response)
+      showMessage('获取任务类型失败')
+    }
+  } catch (error) {
+    console.error('获取任务类型出错:', error)
+    showMessage('网络错误，请稍后重试')
+  } finally {
+    isLoading.value = false
+    console.log('任务类型加载完成，isLoading设为false')
+  }
+}
+
+// 切换页码
+const changePage = (page) => {
+  currentPage.value = page
+}
+
+// 清除搜索
+const clearSearch = () => {
+  searchText.value = ''
+}
+
 // 返回上一页
 const handleBack = () => {
   // 开始关闭动画
@@ -224,14 +482,29 @@ const handleBack = () => {
   // 动画结束后再执行返回操作
   setTimeout(() => {
     uni.navigateBack({
-      delta: 1
+      delta: 1,
+      animationType: 'slide-out-bottom',
+      animationDuration: 300
     })
-  }, 350) // 与transition时间匹配
+  }, 300)
 }
 
 // 选择任务类型
-const selectTaskType = (type) => {
-  selectedTaskType.value = type
+const selectTaskType = (typeId) => {
+  // 如果选择的是当前已选择的任务类型，不做任何处理
+  if (selectedTaskType.value === typeId) return
+  
+  // 更新选中的任务类型
+  selectedTaskType.value = typeId
+  
+  // 由于描述不在初始视图中，需要延迟滚动
+  setTimeout(() => {
+    if (selectedTaskTypeObj.value && selectedTaskTypeObj.value.description) {
+      // 计算合适的滚动位置（根据任务类型列表高度估算）
+      const typeSectionHeight = taskTypes.value.length > 9 ? 460 : 320
+      scrollTop.value = typeSectionHeight
+    }
+  }, 100)
 }
 
 // 选择位置
@@ -315,16 +588,97 @@ const submitTask = () => {
     return
   }
   
+  // 获取选中的任务类型名称
+  const selectedTypeObj = taskTypes.value.find(type => type.id.toString() === selectedTaskType.value)
+  const typeName = selectedTypeObj ? selectedTypeObj.typeName : '未知类型'
+  
+  // 构建提交的数据
+  const submitData = {
+    typeId: parseInt(selectedTaskType.value),
+    typeName: typeName,
+    title: taskForm.title,
+    description: taskForm.description,
+    pickupLocation: taskForm.pickupLocation,
+    deliveryLocation: taskForm.deliveryLocation,
+    expectedDeliveryTime: `${taskForm.deliveryDate} ${taskForm.deliveryTime}`,
+    reward: parseFloat(taskForm.reward),
+    images: taskForm.images
+  }
+  
   // 提交表单
-  showMessage('发布任务功能待实现')
-  console.log('任务表单数据:', {
-    type: selectedTaskType.value,
-    ...taskForm
+  showMessage('准备提交任务...')
+  console.log('任务表单数据:', submitData)
+  
+  // TODO: 实际提交到服务器
+  // 示例代码，等待后端任务发布接口完成后再实现
+  /*
+  uni.showLoading({
+    title: '发布中...'
   })
   
-  // TODO: 提交到服务器
-  // 提交成功后返回首页
-  // uni.navigateBack()
+  // 调用发布任务API
+  publishTask(submitData).then(res => {
+    if (res.data && res.data.code === 200) {
+      uni.hideLoading()
+      uni.showToast({
+        title: '发布成功',
+        icon: 'success',
+        duration: 2000
+      })
+      
+      // 延迟返回首页
+      setTimeout(() => {
+        handleBack()
+      }, 1500)
+    } else {
+      uni.hideLoading()
+      showMessage(res.data.message || '发布失败')
+    }
+  }).catch(err => {
+    uni.hideLoading()
+    showMessage('网络错误，请稍后重试')
+    console.error('发布任务失败:', err)
+  })
+  */
+  
+  // 临时：模拟提交成功
+  uni.showLoading({
+    title: '发布中...'
+  })
+  
+  setTimeout(() => {
+    uni.hideLoading()
+    uni.showToast({
+      title: '发布成功',
+      icon: 'success',
+      duration: 2000
+    })
+    
+    // 延迟返回首页
+    setTimeout(() => {
+      handleBack()
+    }, 1500)
+  }, 1500)
+}
+
+// 计算选中的任务类型对象
+const selectedTaskTypeObj = computed(() => {
+  if (!selectedTaskType.value) return null
+  return taskTypes.value.find(type => type.id.toString() === selectedTaskType.value) || null
+})
+
+// Swiper切换事件处理
+const onSwiperChange = (e) => {
+  currentPage.value = e.detail.current + 1
+}
+
+// 获取当前页的任务类型
+const getPageTaskTypes = (page) => {
+  const start = (page - 1) * pageSize
+  const end = start + pageSize
+  const result = filteredTaskTypes.value.slice(start, end)
+  console.log(`获取第${page}页任务类型: 从${start}到${end}, 共${result.length}个`)
+  return result
 }
 </script>
 
@@ -388,13 +742,14 @@ const submitTask = () => {
 
 // 页面主体内容
 .publish-content {
-  height: calc(100vh - var(--window-top));
+  height: calc(100vh - var(--window-top) - 10px);
   padding: 30rpx;
   box-sizing: border-box;
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
+  -webkit-overflow-scrolling: touch; /* 增强iOS滚动体验 */
 }
 
 // 任务类型选择
@@ -403,12 +758,24 @@ const submitTask = () => {
   font-weight: bold;
   color: #333;
   margin-bottom: 20rpx;
+  display: flex;
+  align-items: center;
+  
+  .type-count {
+    font-size: 24rpx;
+    color: #999;
+    margin-left: 10rpx;
+    font-weight: normal;
+  }
 }
 
 .task-types {
   display: flex;
   flex-wrap: wrap;
   margin: 0 -10rpx 40rpx;
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 .task-type-item {
@@ -443,6 +810,20 @@ const submitTask = () => {
     position: relative;
     z-index: 2;
     transition: transform 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60rpx;
+    height: 60rpx;
+  }
+  
+  .type-icon-image {
+    width: 60rpx;
+    height: 60rpx;
+    margin-bottom: 10rpx;
+    position: relative;
+    z-index: 2;
+    transition: transform 0.3s ease;
   }
   
   .type-name {
@@ -451,6 +832,11 @@ const submitTask = () => {
     position: relative;
     z-index: 2;
     transition: color 0.3s ease;
+    text-align: center;
+    max-width: 90%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   
   &:active {
@@ -461,7 +847,7 @@ const submitTask = () => {
     background: linear-gradient(135deg, #ff9500, #ff7d00);
     box-shadow: 0 6rpx 15rpx rgba(255, 149, 0, 0.2);
     
-    .type-icon {
+    .type-icon, .type-icon-image {
       transform: scale(1.1);
     }
     
@@ -695,7 +1081,7 @@ const submitTask = () => {
   align-items: center;
   justify-content: center;
   box-shadow: 0 10rpx 20rpx rgba(255, 149, 0, 0.2);
-  margin: 40rpx 0;
+  margin: 40rpx 0 calc(40rpx + env(safe-area-inset-bottom, 40rpx));
   position: relative;
   overflow: hidden;
   
@@ -745,5 +1131,183 @@ const submitTask = () => {
   100% {
     left: 100%;
   }
+}
+
+// 新增：搜索框样式
+.search-box {
+  display: flex;
+  align-items: center;
+  background-color: #f2f2f2;
+  border-radius: 16rpx;
+  padding: 10rpx 20rpx;
+  margin-bottom: 20rpx;
+  
+  .search-input {
+    flex: 1;
+    height: 60rpx;
+    font-size: 26rpx;
+    margin: 0 15rpx;
+  }
+}
+
+// 骨架屏
+.skeleton-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -10rpx 40rpx;
+}
+
+.skeleton-item {
+  width: calc(33.33% - 20rpx);
+  margin: 0 10rpx 20rpx;
+  height: 140rpx;
+  background-color: #f5f5f5;
+  border-radius: 16rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: skeleton-pulse 1.5s infinite ease-in-out;
+  
+  .skeleton-circle {
+    width: 60rpx;
+    height: 60rpx;
+    border-radius: 50%;
+    background-color: #e0e0e0;
+    margin-bottom: 15rpx;
+  }
+  
+  .skeleton-text {
+    width: 80rpx;
+    height: 20rpx;
+    background-color: #e0e0e0;
+    border-radius: 10rpx;
+  }
+}
+
+@keyframes skeleton-pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}
+
+// 分页指示器
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 12rpx;
+  margin-top: -20rpx;
+  margin-bottom: 30rpx;
+  
+  .page-dot {
+    width: 16rpx;
+    height: 16rpx;
+    border-radius: 50%;
+    background-color: #ddd;
+    transition: all 0.3s;
+    
+    &.active {
+      width: 30rpx;
+      border-radius: 8rpx;
+      background-color: #ff9500;
+    }
+  }
+}
+
+// 空状态
+.empty-types {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40rpx 0;
+  
+  .empty-icon {
+    font-size: 80rpx;
+    margin-bottom: 20rpx;
+  }
+  
+  .empty-text {
+    font-size: 28rpx;
+    color: #999;
+  }
+}
+
+// 任务类型描述
+.type-description {
+  margin-bottom: 30rpx;
+  background: linear-gradient(to right, #fff8e6, #fffcf2);
+  border-radius: 16rpx;
+  padding: 0;
+  box-shadow: 0 4rpx 12rpx rgba(255, 149, 0, 0.1);
+  overflow: hidden;
+  animation: fadeIn 0.3s ease-in-out;
+  border: 1rpx solid rgba(255, 149, 0, 0.2);
+  
+  .description-header {
+    display: flex;
+    align-items: center;
+    padding: 16rpx 20rpx;
+    background: linear-gradient(to right, #ff9500, #ffbb00);
+    
+    .header-icon {
+      width: 40rpx;
+      height: 40rpx;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15rpx;
+      
+      .header-icon-image {
+        width: 40rpx;
+        height: 40rpx;
+      }
+    }
+    
+    .header-text {
+      flex: 1;
+      
+      .description-title {
+        font-size: 26rpx;
+        color: #ffffff;
+        font-weight: 600;
+      }
+    }
+  }
+  
+  .description-content {
+    padding: 20rpx;
+    
+    .description-text {
+      font-size: 26rpx;
+      color: #666;
+      line-height: 1.6;
+      word-break: break-all;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// 新增swiper样式
+.types-swiper {
+  height: 450rpx !important; // 设置明确的高度，确保能容纳一行任务类型
+  width: 100%;
+  margin-bottom: 40rpx;
 }
 </style> 
