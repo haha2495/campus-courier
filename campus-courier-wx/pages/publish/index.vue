@@ -121,13 +121,321 @@
         </view>
       </view>
       
+      <!-- 表单部分 - 只有在选择了任务类型后显示 -->
+      <view v-if="selectedTaskType" class="form-container" :class="{'form-show': selectedTaskType}">
+        <!-- 任务详情卡片 -->
+        <view class="form-card">
+          <view class="card-header">
+            <u-icon name="file-text" size="32rpx" color="#ff9500"></u-icon>
+            <text class="card-title">任务详情</text>
+          </view>
+          
+          <view class="card-body">
+            <!-- 任务标题 -->
+            <view class="form-item">
+              <text class="form-label">任务标题</text>
+              <view class="input-container">
+                <input 
+                  type="text" 
+                  class="form-input" 
+                  placeholder="为任务起个简洁明了的标题吧~" 
+                  placeholder-class="placeholder"
+                  v-model="taskForm.title"
+                  maxlength="30"
+                  @focus="titleFocused = true"
+                  @blur="titleFocused = false"
+                />
+                <view class="input-icon" v-if="taskForm.title">
+                  <u-icon name="checkmark-circle" color="#36c892" size="32rpx"></u-icon>
+                </view>
+              </view>
+              <text class="input-counter" :class="{ 'input-warning': taskForm.title.length > 20 }">
+                {{ taskForm.title.length }}/30
+              </text>
+            </view>
+            
+            <!-- 任务描述 -->
+            <view class="form-item">
+              <text class="form-label">任务描述</text>
+              <view class="textarea-container">
+                <textarea 
+                  class="form-textarea" 
+                  placeholder="详细描述您的任务要求，让接单者更好理解~" 
+                  placeholder-class="placeholder"
+                  v-model="taskForm.description"
+                  maxlength="200"
+                  @focus="descriptionFocused = true"
+                  @blur="descriptionFocused = false"
+                />
+              </view>
+              <text class="input-counter" :class="{ 'input-warning': taskForm.description.length > 150 }">
+                {{ taskForm.description.length }}/200
+              </text>
+            </view>
+            
+            <!-- 取件地址 -->
+            <view class="form-item">
+              <text class="form-label">取件地址</text>
+              <view class="input-container" @click="showLocationPicker('pickup')">
+                <view class="input-prefix">
+                  <u-icon name="map" size="32rpx" color="#ff9500"></u-icon>
+                </view>
+                <text class="location-text" :class="{'location-placeholder': !taskForm.pickupLocation}">
+                  {{ taskForm.pickupLocation || '请输入取件地址' }}
+                </text>
+                <view class="input-suffix">
+                  <u-icon name="arrow-right" size="28rpx" color="#c0c4cc"></u-icon>
+                </view>
+              </view>
+            </view>
+            
+            <!-- 送达地址 -->
+            <view class="form-item">
+              <text class="form-label">送达地址</text>
+              <view class="input-container" @click="showLocationPicker('delivery')">
+                <view class="input-prefix">
+                  <u-icon name="map-fill" size="32rpx" color="#ff9500"></u-icon>
+                </view>
+                <text class="location-text" :class="{'location-placeholder': !taskForm.deliveryLocation}">
+                  {{ taskForm.deliveryLocation || '请输入送达地址' }}
+                </text>
+                <view class="input-suffix">
+                  <u-icon name="arrow-right" size="28rpx" color="#c0c4cc"></u-icon>
+                </view>
+              </view>
+            </view>
+            
+            <!-- 预期完成时间 -->
+            <view class="form-item">
+              <text class="form-label">预期完成时间</text>
+              <view class="time-picker">
+                <picker 
+                  mode="date" 
+                  :value="taskForm.deliveryDate"
+                  :start="currentDate"
+                  @change="onDateChange"
+                >
+                  <view class="input-container date-picker">
+                    <view class="input-prefix">
+                      <u-icon name="calendar" size="32rpx" color="#ff9500"></u-icon>
+                    </view>
+                    <text class="picker-text" :class="{'picker-placeholder': !taskForm.deliveryDate}">
+                      {{ taskForm.deliveryDate || '选择日期' }}
+                    </text>
+                    <view class="input-suffix">
+                      <u-icon name="arrow-down" size="28rpx" color="#c0c4cc"></u-icon>
+                    </view>
+                  </view>
+                </picker>
+                
+                <picker 
+                  mode="time" 
+                  :value="taskForm.deliveryTime" 
+                  @change="onTimeChange"
+                >
+                  <view class="input-container time-picker">
+                    <view class="input-prefix">
+                      <u-icon name="clock" size="32rpx" color="#ff9500"></u-icon>
+                    </view>
+                    <text class="picker-text" :class="{'picker-placeholder': !taskForm.deliveryTime}">
+                      {{ taskForm.deliveryTime || '选择时间' }}
+                    </text>
+                    <view class="input-suffix">
+                      <u-icon name="arrow-down" size="28rpx" color="#c0c4cc"></u-icon>
+                    </view>
+                  </view>
+                </picker>
+              </view>
+            </view>
+            
+            <!-- 物品估算信息 -->
+            <view class="form-item">
+              <text class="form-label">物品信息</text>
+              <view class="item-info-row">
+                <!-- 预估重量 -->
+                <view class="item-info-col">
+                  <view class="weight-input-wrapper">
+                    <input 
+                      type="digit" 
+                      class="weight-input" 
+                      placeholder="预估重量" 
+                      placeholder-class="placeholder"
+                      v-model="taskForm.estimatedWeight"
+                    />
+                    <text class="unit-label">kg</text>
+                  </view>
+                </view>
+                
+                <!-- 预估大小 -->
+                <view class="item-info-col">
+                  <picker 
+                    :value="sizeIndex" 
+                    :range="sizeOptions" 
+                    @change="onSizeChange"
+                  >
+                    <view class="size-picker">
+                      <text class="size-text" :class="{'size-placeholder': !taskForm.estimatedSize}">
+                        {{ taskForm.estimatedSize || '物品大小' }}
+                      </text>
+                      <view class="picker-arrow">
+                        <u-icon name="arrow-down" size="24rpx" color="#999"></u-icon>
+                      </view>
+                    </view>
+                  </picker>
+                </view>
+              </view>
+            </view>
+            
+            <!-- 任务报酬 -->
+            <view class="form-item">
+              <text class="form-label">任务报酬</text>
+              <view class="reward-input-wrapper">
+                <text class="currency-symbol">¥</text>
+                <input 
+                  type="digit" 
+                  class="reward-input" 
+                  placeholder="请输入悬赏金额" 
+                  placeholder-class="placeholder"
+                  v-model="taskForm.reward"
+                />
+              </view>
+            </view>
+            
+            <!-- 是否加急 -->
+            <view class="form-item">
+              <view class="urgent-header">
+                <text class="form-label">是否加急</text>
+                <switch 
+                  :checked="taskForm.urgent" 
+                  @change="onUrgentChange" 
+                  color="#ff9500"
+                  style="transform:scale(0.8)"
+                />
+              </view>
+              
+              <!-- 加急费用，只在加急时显示 -->
+              <view class="urgent-fee" v-if="taskForm.urgent">
+                <view class="reward-input-wrapper">
+                  <text class="currency-symbol">¥</text>
+                  <input 
+                    type="digit" 
+                    class="reward-input" 
+                    placeholder="加急费用" 
+                    placeholder-class="placeholder"
+                    v-model="taskForm.urgentReward"
+                  />
+                </view>
+              </view>
+            </view>
+            
+            <!-- 物品图片 -->
+            <view class="form-item">
+              <text class="form-label">物品图片</text>
+              <view class="upload-area">
+                <!-- 上传按钮 -->
+                <view class="upload-button" @click="chooseImage" v-if="taskForm.images.length < 3">
+                  <text class="upload-icon">+</text>
+                  <text class="upload-text">上传图片</text>
+                </view>
+                
+                <!-- 图片预览 -->
+                <view 
+                  class="image-preview" 
+                  v-for="(img, index) in taskForm.images" 
+                  :key="index"
+                >
+                  <image :src="img" class="preview-image" mode="aspectFill" />
+                  <view class="delete-icon" @click="deleteImage(index)">
+                    <u-icon name="close" size="24rpx" color="#fff"></u-icon>
+                  </view>
+                </view>
+              </view>
+              <text class="upload-hint">最多上传3张图片</text>
+            </view>
+            
+            <!-- 备注说明 -->
+            <view class="form-item">
+              <text class="form-label">备注说明</text>
+              <textarea 
+                class="form-textarea" 
+                placeholder="补充说明（选填）" 
+                placeholder-class="placeholder"
+                v-model="taskForm.notes"
+                maxlength="100"
+              />
+              <text class="input-counter">{{ taskForm.notes.length }}/100</text>
+            </view>
+          </view>
+        </view>
+        
+        <!-- 联系人信息卡片 -->
+        <view class="form-card">
+          <view class="card-header">
+            <u-icon name="account" size="32rpx" color="#ff9500"></u-icon>
+            <text class="card-title">联系人信息</text>
+          </view>
+          
+          <view class="card-body">
+            <!-- 联系人姓名 -->
+            <view class="form-item">
+              <text class="form-label">联系人姓名</text>
+              <view class="input-container">
+                <view class="input-prefix">
+                  <u-icon name="account" size="32rpx" color="#ff9500"></u-icon>
+                </view>
+                <input 
+                  type="text" 
+                  class="form-input with-prefix" 
+                  placeholder="您的尊姓大名" 
+                  placeholder-class="placeholder"
+                  v-model="taskForm.contactName"
+                  @focus="contactNameFocused = true"
+                  @blur="contactNameFocused = false"
+                />
+              </view>
+            </view>
+            
+            <!-- 联系电话 -->
+            <view class="form-item">
+              <text class="form-label">联系电话</text>
+              <view class="input-container">
+                <view class="input-prefix">
+                  <u-icon name="phone" size="32rpx" color="#ff9500"></u-icon>
+                </view>
+                <input 
+                  type="number" 
+                  class="form-input with-prefix" 
+                  placeholder="您的联系电话" 
+                  placeholder-class="placeholder"
+                  v-model="taskForm.contactPhone"
+                  maxlength="11"
+                  @focus="contactPhoneFocused = true; phoneError = false"
+                  @blur="validatePhone"
+                />
+              </view>
+              <text class="error-message" v-if="phoneError">请输入正确的11位手机号</text>
+            </view>
+          </view>
+        </view>
+      </view>
+      
       <!-- 提交按钮 -->
       <view 
         class="submit-button" 
-        :class="{ 'button-disabled': !selectedTaskType }"
+        :class="{ 
+          'button-disabled': !selectedTaskType || !isFormValid,
+          'button-can-submit': selectedTaskType && isFormValid
+        }"
         @click="submitTask"
       >
-        <text class="button-text">{{ selectedTaskType ? '发布任务' : '请先选择任务类型' }}</text>
+        <view class="button-content">
+          <u-icon v-if="selectedTaskType && isFormValid" name="checkmark-circle" color="#fff" size="34rpx" class="button-icon"></u-icon>
+          <text class="button-text">{{ 
+            !selectedTaskType ? '请先选择任务类型' : 
+            !isFormValid ? '请完善必填信息' : '发布任务' 
+          }}</text>
+        </view>
+        <view class="button-ripple" v-if="selectedTaskType && isFormValid"></view>
       </view>
     </scroll-view>
   </view>
@@ -190,6 +498,22 @@ const totalPages = computed(() => {
   return Math.ceil(taskTypes.value.length / pageSize)
 })
 
+// 表单状态控制
+const titleFocused = ref(false)
+const descriptionFocused = ref(false)
+const contactNameFocused = ref(false)
+const contactPhoneFocused = ref(false)
+const phoneError = ref(false)
+
+// 验证手机号
+const validatePhone = () => {
+  if (taskForm.contactPhone && !/^1\d{10}$/.test(taskForm.contactPhone)) {
+    phoneError.value = true
+  } else {
+    phoneError.value = false
+  }
+}
+
 // 搜索文本变化时，重置页码
 watch(searchText, () => {
   currentPage.value = 1
@@ -204,7 +528,37 @@ const taskForm = reactive({
   deliveryDate: '',
   deliveryTime: '',
   reward: '',
+  urgent: false,
+  urgentReward: '',
+  estimatedWeight: '',
+  estimatedSize: '',
+  notes: '',
+  contactName: '',
+  contactPhone: '',
   images: []
+})
+
+// 物品大小选项
+const sizeOptions = ['小件', '中件', '大件', '特大件']
+const sizeIndex = ref(0)
+
+// 表单验证
+const isFormValid = computed(() => {
+  // 必填字段验证
+  if (!taskForm.title) return false
+  if (!taskForm.description) return false
+  if (!taskForm.pickupLocation) return false
+  if (!taskForm.deliveryLocation) return false
+  if (!taskForm.deliveryDate || !taskForm.deliveryTime) return false
+  if (!taskForm.reward) return false
+  if (taskForm.urgent && !taskForm.urgentReward) return false
+  if (!taskForm.contactName) return false
+  if (!taskForm.contactPhone) return false
+  
+  // 电话号码格式验证 (简单验证)
+  if (!/^1\d{10}$/.test(taskForm.contactPhone)) return false
+  
+  return true
 })
 
 // 滚动相关
@@ -394,9 +748,20 @@ const selectTaskType = (typeId) => {
 
 // 选择位置
 const showLocationPicker = (type) => {
-  uni.showToast({
-    title: '位置选择功能开发中',
-    icon: 'none'
+  // 模拟选择位置，实际项目中应调用地图选择API
+  uni.showModal({
+    title: '输入地址',
+    editable: true,
+    placeholderText: type === 'pickup' ? '请输入取件地址' : '请输入送达地址',
+    success: (res) => {
+      if (res.confirm && res.content) {
+        if (type === 'pickup') {
+          taskForm.pickupLocation = res.content
+        } else {
+          taskForm.deliveryLocation = res.content
+        }
+      }
+    }
   })
 }
 
@@ -408,6 +773,21 @@ const onDateChange = (e) => {
 // 时间选择
 const onTimeChange = (e) => {
   taskForm.deliveryTime = e.detail.value
+}
+
+// 物品大小选择
+const onSizeChange = (e) => {
+  sizeIndex.value = e.detail.value
+  taskForm.estimatedSize = sizeOptions[e.detail.value]
+}
+
+// 加急开关切换
+const onUrgentChange = (e) => {
+  taskForm.urgent = e.detail.value
+  // 如果取消加急，清空加急费
+  if (!taskForm.urgent) {
+    taskForm.urgentReward = ''
+  }
 }
 
 // 选择图片
@@ -454,7 +834,7 @@ const submitTask = () => {
   }
   
   if (!taskForm.pickupLocation) {
-    showMessage('请选择取货地点')
+    showMessage('请选择取件地点')
     return
   }
   
@@ -473,6 +853,27 @@ const submitTask = () => {
     return
   }
   
+  if (taskForm.urgent && !taskForm.urgentReward) {
+    showMessage('请输入加急费用')
+    return
+  }
+  
+  if (!taskForm.contactName) {
+    showMessage('请输入联系人姓名')
+    return
+  }
+  
+  if (!taskForm.contactPhone) {
+    showMessage('请输入联系电话')
+    return
+  }
+  
+  // 电话号码格式验证
+  if (!/^1\d{10}$/.test(taskForm.contactPhone)) {
+    showMessage('请输入正确的手机号码')
+    return
+  }
+  
   // 获取选中的任务类型名称
   const selectedTypeObj = taskTypes.value.find(type => type.id.toString() === selectedTaskType.value)
   const typeName = selectedTypeObj ? selectedTypeObj.typeName : '未知类型'
@@ -483,10 +884,17 @@ const submitTask = () => {
     typeName: typeName,
     title: taskForm.title,
     description: taskForm.description,
-    pickupLocation: taskForm.pickupLocation,
-    deliveryLocation: taskForm.deliveryLocation,
-    expectedDeliveryTime: `${taskForm.deliveryDate} ${taskForm.deliveryTime}`,
+    pickupAddress: taskForm.pickupLocation,
+    deliveryAddress: taskForm.deliveryLocation,
+    expectedFinishTime: `${taskForm.deliveryDate} ${taskForm.deliveryTime}:00`,
     reward: parseFloat(taskForm.reward),
+    urgent: taskForm.urgent,
+    urgentReward: taskForm.urgent ? parseFloat(taskForm.urgentReward) : 0,
+    estimatedWeight: taskForm.estimatedWeight ? parseFloat(taskForm.estimatedWeight) : null,
+    estimatedSize: taskForm.estimatedSize || null,
+    contactName: taskForm.contactName,
+    contactPhone: taskForm.contactPhone,
+    notes: taskForm.notes || '',
     images: taskForm.images
   }
   
@@ -745,46 +1153,142 @@ const getPageTaskTypes = (page) => {
 
 // 表单样式
 .form-item {
-  margin-bottom: 30rpx;
-  background-color: #ffffff;
-  border-radius: 16rpx;
-  padding: 20rpx;
-  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.03);
+  margin-bottom: 24rpx;
+  position: relative;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+  
+  .form-label {
+    display: block;
+    font-size: 26rpx;
+    color: #333;
+    margin-bottom: 12rpx;
+    font-weight: 500;
+  }
+  
+  .input-counter {
+    position: absolute;
+    right: 10rpx;
+    bottom: 10rpx;
+    font-size: 22rpx;
+    color: #999;
+    transition: color 0.3s;
+    
+    &.input-warning {
+      color: #ff9500;
+    }
+  }
+  
+  .upload-hint {
+    font-size: 22rpx;
+    color: #999;
+    margin-top: 8rpx;
+    display: block;
+  }
+  
+  .error-message {
+    font-size: 24rpx;
+    color: #ff4d4f;
+    margin-top: 8rpx;
+    animation: fadeIn 0.3s;
+  }
 }
 
-.form-label {
-  display: block;
-  font-size: 26rpx;
-  color: #333;
-  margin-bottom: 15rpx;
-  font-weight: 500;
-}
-
-.form-input, .form-textarea {
-  width: 100%;
+.input-container, .textarea-container {
+  position: relative;
+  display: flex;
+  align-items: center;
   background-color: #f8f8f8;
   border-radius: 12rpx;
-  padding: 20rpx;
-  font-size: 28rpx;
-  color: #333;
-  box-sizing: border-box;
   border: 2rpx solid transparent;
   transition: all 0.3s;
+  overflow: hidden;
+  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.03);
   
-  &:focus {
+  &.focused {
     border-color: #ff9500;
     background-color: #fff;
-    box-shadow: 0 0 0 2rpx rgba(255, 149, 0, 0.1);
+    box-shadow: 0 4rpx 12rpx rgba(255, 149, 0, 0.1);
+  }
+  
+  &.input-error {
+    border-color: #ff4d4f;
+    background-color: #fff;
+    animation: shake 0.5s;
+  }
+  
+  .input-prefix {
+    padding: 0 16rpx 0 20rpx;
+    display: flex;
+    align-items: center;
+  }
+  
+  .input-icon {
+    padding: 0 20rpx 0 10rpx;
+  }
+}
+
+.textarea-container {
+  align-items: flex-start;
+}
+
+// 改进的表单输入项样式
+.form-input, .form-textarea {
+  flex: 1;
+  background-color: transparent;
+  padding: 22rpx 20rpx;
+  font-size: 28rpx;
+  color: #333;
+  border: none;
+  
+  &.with-prefix {
+    padding-left: 10rpx;
   }
 }
 
 .form-textarea {
+  width: 100%;
   min-height: 180rpx;
-  line-height: 1.5;
+  line-height: 1.6;
+  padding: 20rpx;
+  padding-bottom: 40rpx; // 留出计数器的空间
 }
 
-.placeholder {
-  color: #bbb;
+.location-text, .picker-text {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+  padding: 22rpx 0;
+  
+  &.location-placeholder, &.picker-placeholder {
+    color: #bbb;
+  }
+}
+
+.input-suffix {
+  padding: 0 20rpx 0 10rpx;
+}
+
+// 时间选择器样式优化
+.time-picker {
+  display: flex;
+  gap: 20rpx;
+  
+  picker {
+    flex: 1;
+  }
+  
+  .date-picker, .time-picker {
+    height: 86rpx;
+  }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5rpx); }
+  20%, 40%, 60%, 80% { transform: translateX(5rpx); }
 }
 
 // 位置选择器
@@ -804,32 +1308,6 @@ const getPageTaskTypes = (page) => {
   
   .location-icon {
     font-size: 32rpx;
-  }
-}
-
-// 时间选择器
-.time-picker {
-  display: flex;
-  gap: 20rpx;
-  
-  .picker-item {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #f8f8f8;
-    border-radius: 12rpx;
-    padding: 20rpx;
-    font-size: 28rpx;
-    
-    .picker-text {
-      color: #bbb;
-    }
-    
-    .picker-arrow {
-      font-size: 24rpx;
-      color: #999;
-    }
   }
 }
 
@@ -960,25 +1438,28 @@ const getPageTaskTypes = (page) => {
 // 提交按钮
 .submit-button {
   height: 90rpx;
-  background: linear-gradient(to right, #ff9500, #ff7d00);
+  background: linear-gradient(to right, #cccccc, #bbbbbb);
   border-radius: 45rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 10rpx 20rpx rgba(255, 149, 0, 0.2);
+  box-shadow: 0 10rpx 20rpx rgba(0, 0, 0, 0.1);
   margin: 40rpx 0 calc(40rpx + env(safe-area-inset-bottom, 40rpx));
   position: relative;
   overflow: hidden;
+  transition: all 0.3s ease;
   
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0));
-    animation: shine 2s infinite;
+  .button-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .button-icon {
+    margin-right: 10rpx;
+    animation: bounceIn 0.5s;
   }
   
   .button-text {
@@ -989,32 +1470,54 @@ const getPageTaskTypes = (page) => {
   
   &:active {
     transform: scale(0.98);
-    box-shadow: 0 5rpx 10rpx rgba(255, 149, 0, 0.2);
   }
   
-  &.button-disabled {
-    background: linear-gradient(to right, #cccccc, #bbbbbb);
-    box-shadow: 0 5rpx 10rpx rgba(0, 0, 0, 0.1);
-    
-    &::before {
-      display: none;
-    }
+  &.button-can-submit {
+    background: linear-gradient(to right, #ff9500, #ff7d00);
+    box-shadow: 0 10rpx 20rpx rgba(255, 149, 0, 0.2);
     
     &:active {
-      transform: none;
+      box-shadow: 0 5rpx 10rpx rgba(255, 149, 0, 0.2);
+    }
+    
+    .button-ripple {
+      position: absolute;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0));
+      animation: buttonRipple 2s infinite ease-in-out;
+      z-index: 1;
     }
   }
 }
 
-@keyframes shine {
+@keyframes buttonRipple {
   0% {
     left: -100%;
   }
-  20% {
+  50% {
     left: 100%;
   }
   100% {
     left: 100%;
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
   }
 }
 
@@ -1194,5 +1697,185 @@ const getPageTaskTypes = (page) => {
   height: 450rpx !important; // 设置明确的高度，确保能容纳一行任务类型
   width: 100%;
   margin-bottom: 40rpx;
+}
+
+// 表单容器样式
+.form-container {
+  opacity: 0;
+  transform: translateY(20rpx);
+  transition: all 0.4s ease;
+  
+  &.form-show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// 表单卡片样式
+.form-card {
+  background-color: #ffffff;
+  border-radius: 16rpx;
+  margin-bottom: 30rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 15rpx rgba(0, 0, 0, 0.05);
+  
+  .card-header {
+    display: flex;
+    align-items: center;
+    padding: 24rpx;
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #f0f0f0;
+    
+    .card-title {
+      font-size: 28rpx;
+      font-weight: bold;
+      color: #333;
+      margin-left: 12rpx;
+    }
+  }
+  
+  .card-body {
+    padding: 24rpx;
+  }
+}
+
+// 物品信息行样式
+.item-info-row {
+  display: flex;
+  gap: 20rpx;
+  
+  .item-info-col {
+    flex: 1;
+  }
+}
+
+// 预估重量输入框
+.weight-input-wrapper {
+  display: flex;
+  align-items: center;
+  background-color: #f8f8f8;
+  border-radius: 12rpx;
+  padding: 0 20rpx;
+  border: 2rpx solid transparent;
+  transition: all 0.3s;
+  
+  &:focus-within {
+    border-color: #ff9500;
+    background-color: #fff;
+    box-shadow: 0 0 0 2rpx rgba(255, 149, 0, 0.1);
+  }
+  
+  .weight-input {
+    flex: 1;
+    height: 80rpx;
+    font-size: 28rpx;
+    color: #333;
+    background-color: transparent;
+  }
+  
+  .unit-label {
+    font-size: 26rpx;
+    color: #999;
+    margin-left: 8rpx;
+  }
+}
+
+// 预估大小选择器
+.size-picker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f8f8f8;
+  border-radius: 12rpx;
+  padding: 22rpx 20rpx;
+  font-size: 28rpx;
+  
+  .size-text {
+    color: #333;
+    
+    &.size-placeholder {
+      color: #bbb;
+    }
+  }
+}
+
+// 加急设置样式
+.urgent-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16rpx;
+}
+
+.urgent-fee {
+  margin-top: 16rpx;
+  animation: fadeIn 0.3s;
+}
+
+// 改进的图片上传区域样式
+.upload-area {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+  margin-bottom: 8rpx;
+  
+  .upload-button {
+    width: 160rpx;
+    height: 160rpx;
+    background-color: #f8f8f8;
+    border-radius: 12rpx;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2rpx dashed #ddd;
+    transition: all 0.3s;
+    
+    &:active {
+      background-color: #f0f0f0;
+    }
+    
+    .upload-icon {
+      font-size: 48rpx;
+      color: #bbb;
+      line-height: 1;
+      margin-bottom: 10rpx;
+    }
+    
+    .upload-text {
+      font-size: 24rpx;
+      color: #bbb;
+    }
+  }
+  
+  .image-preview {
+    width: 160rpx;
+    height: 160rpx;
+    position: relative;
+    border-radius: 12rpx;
+    overflow: hidden;
+    border: 2rpx solid #f0f0f0;
+    
+    .preview-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .delete-icon {
+      position: absolute;
+      top: 6rpx;
+      right: 6rpx;
+      width: 36rpx;
+      height: 36rpx;
+      background-color: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      font-size: 24rpx;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+  }
 }
 </style> 
