@@ -247,6 +247,11 @@
         </view>
       </view>
     </view>
+
+    <!-- 添加一个固定位置的按钮导航到"我的任务"页面 -->
+    <view class="float-button" @click="goToMyTasks">
+      <text class="button-text">我的任务</text>
+    </view>
   </view>
 </template>
 
@@ -407,8 +412,8 @@ const handleTabNavigation = (tab) => {
         })
         break
       case TabPageName.TASKS:
-        // 跳转到我的任务页面
-        uni.switchTab({
+        // 跳转到我的任务页面 - 使用navigateTo而不是switchTab
+        uni.navigateTo({
           url: '/pages/my-tasks/index'
         })
         break
@@ -428,8 +433,8 @@ const handleTabNavigation = (tab) => {
         showMessage('当前任务功能待实现')
         break
       case TabPageName.RECORDS:
-        // 跑腿者的我的任务页面
-        uni.switchTab({
+        // 跑腿者的我的任务页面 - 使用navigateTo而不是switchTab
+        uni.navigateTo({
           url: '/pages/my-tasks/index'
         })
         break
@@ -453,8 +458,8 @@ const navigateTo = (page) => {
   }
   
   if (page === 'tasks') {
-    // 跳转到我的任务页面
-    uni.switchTab({
+    // 跳转到我的任务页面 - 使用navigateTo而不是switchTab
+    uni.navigateTo({
       url: '/pages/my-tasks/index'
     })
     return
@@ -629,6 +634,13 @@ const refreshIconCache = () => {
 const loadIconCache = () => {
   const cache = uni.getStorageSync('iconCache') || {}
   iconCache.value = cache
+}
+
+// 添加直接导航到"我的任务"页面的方法
+const goToMyTasks = () => {
+  uni.navigateTo({
+    url: '/pages/my-tasks/index'
+  })
 }
 </script>
 
@@ -1132,6 +1144,24 @@ const loadIconCache = () => {
   .empty-tips {
     font-size: 24rpx;
     color: #999;
+  }
+}
+
+// 添加浮动按钮样式
+.float-button {
+  position: fixed;
+  right: 30rpx;
+  bottom: 150rpx;
+  background-color: #ff9500;
+  color: white;
+  padding: 20rpx 30rpx;
+  border-radius: 40rpx;
+  box-shadow: 0 6rpx 16rpx rgba(255, 149, 0, 0.3);
+  z-index: 100;
+  
+  .button-text {
+    font-size: 28rpx;
+    font-weight: 500;
   }
 }
 </style>
