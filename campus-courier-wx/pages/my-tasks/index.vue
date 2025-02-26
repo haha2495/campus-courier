@@ -107,7 +107,7 @@
               </view>
               <view class="info-item">
                 <text class="info-label">截止时间：</text>
-                <text class="info-value">{{ formatTime(task.task.expectedFinishTime) }}</text>
+                <text class="info-value">{{ task.task.expectedFinishTime }}</text>
               </view>
             </view>
           </view>
@@ -149,21 +149,6 @@ const hasMoreData = ref(true)
 const currentPage = ref(1)
 const pageSize = 10
 const total = ref(0)
-
-// 格式化时间显示
-const formatTime = (timeString) => {
-  if (!timeString) return '';
-  const date = new Date(timeString);
-  
-  // 格式化为 YYYY-MM-DD HH:MM
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  const hours = String(date.getHours()).padStart(2, '0');
-  const minutes = String(date.getMinutes()).padStart(2, '0');
-  
-  return `${year}-${month}-${day} ${hours}:${minutes}`;
-}
 
 // 获取任务状态文本
 const getStatusText = (status) => {
