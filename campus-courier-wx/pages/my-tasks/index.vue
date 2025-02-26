@@ -21,6 +21,11 @@
         @refresherrefresh="refreshTasks"
         refresher-enabled
         :refresher-triggered="isRefreshing"
+        refresher-background="#f5f7fa"
+        :show-scrollbar="false"
+        enhanced
+        :bounces="true"
+        :scroll-anchoring="true"
     >
       <!-- 暂无数据提示 -->
       <view v-if="taskList.length === 0 && !isLoading" class="empty-container">
@@ -206,6 +211,12 @@ const refreshTasks = async () => {
   isRefreshing.value = true
   currentPage.value = 1
   await fetchTaskList()
+  
+  // 修复滑动问题：确保刷新状态正确重置
+  setTimeout(() => {
+    // 延迟重置刷新状态，确保UI有时间更新
+    isRefreshing.value = false
+  }, 300)
 }
 
 // 加载更多任务
@@ -274,6 +285,10 @@ const navigateToPublish = () => {
 // 页面加载时获取任务列表
 onMounted(() => {
   refreshTasks()
+  
+  // 获取系统状态栏高度并设置
+  const systemInfo = uni.getSystemInfoSync()
+  document.documentElement.style.setProperty('--status-bar-height', `${systemInfo.statusBarHeight}px`)
 })
 </script>
 
@@ -283,6 +298,9 @@ onMounted(() => {
   flex-direction: column;
   height: 100vh;
   background-color: #f5f7fa;
+  position: relative;
+  /* 添加安全区域，防止状态栏遮挡 */
+  padding-top: var(--status-bar-height, 20px);
 }
 
 .status-filter {
@@ -292,6 +310,9 @@ onMounted(() => {
   white-space: nowrap;
   overflow-x: auto;
   box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+  /* 增加z-index确保在顶部不被遮挡 */
+  position: relative;
+  z-index: 10;
 
   &::-webkit-scrollbar {
     display: none;
@@ -320,7 +341,11 @@ onMounted(() => {
 
 .task-list-scroll {
   flex: 1;
-  padding: 30rpx;
+  /* 修改左右padding为相同值，确保两侧间距一致 */
+  padding: 30rpx 30rpx;
+  /* 解决滑动问题 */
+  height: 100%;
+  box-sizing: border-box;
 }
 
 .loading-container {
@@ -572,5 +597,16 @@ onMounted(() => {
     opacity: 0.8;
     transform: scale(1.2);
   }
+}
+
+/* 修复刷新时的滑动问题 */
+@keyframes refreshCompleted {
+  from { transform: translateY(0); }
+  to { transform: translateY(0); }
+}
+
+/* 刷新完成后应用此动画，平滑过渡 */
+.refresh-completed {
+  animation: refreshCompleted 0.3s ease;
 }
 </style> 
