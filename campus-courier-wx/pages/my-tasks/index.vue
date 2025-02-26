@@ -2,12 +2,12 @@
   <view class="my-tasks-container">
     <!-- 状态筛选器 -->
     <view class="status-filter">
-      <view 
-        v-for="(status, index) in statusOptions" 
-        :key="index"
-        class="status-item"
-        :class="{ active: currentStatus === status.value }"
-        @click="filterByStatus(status.value)"
+      <view
+          v-for="(status, index) in statusOptions"
+          :key="index"
+          class="status-item"
+          :class="{ active: currentStatus === status.value }"
+          @click="filterByStatus(status.value)"
       >
         {{ status.label }}
       </view>
@@ -15,15 +15,15 @@
 
     <!-- 任务列表 -->
     <scroll-view
-      scroll-y
-      class="task-list-scroll"
-      @scrolltolower="loadMoreTasks"
-      @refresherrefresh="refreshTasks"
-      refresher-enabled
-      :refresher-triggered="isRefreshing"
+        scroll-y
+        class="task-list-scroll"
+        @scrolltolower="loadMoreTasks"
+        @refresherrefresh="refreshTasks"
+        refresher-enabled
+        :refresher-triggered="isRefreshing"
     >
       <!-- 暂无数据提示 -->
-      <view v-if="taskList.length === 0" class="empty-container">
+      <view v-if="taskList.length === 0 && !isLoading" class="empty-container">
         <view class="empty-animation">
           <view class="empty-courier-icon">🛵</view>
           <view class="empty-dots">
@@ -40,86 +40,221 @@
         </view>
       </view>
 
+      <!-- 加载中状态 -->
+      <view v-if="isLoading && taskList.length === 0" class="loading-container">
+        <u-loading-icon mode="circle" size="36"></u-loading-icon>
+        <text class="loading-text">加载中...</text>
+      </view>
+
       <!-- 任务卡片列表 -->
-      <view v-else class="task-list">
+      <view v-else-if="taskList.length > 0" class="task-list">
         <!-- 任务卡片 -->
-        <view 
-          v-for="(task, index) in taskList" 
-          :key="task.id"
-          class="task-card"
-          @click="navigateToTaskDetail(task.id)"
+        <view
+            v-for="task in taskList"
+            :key="task.task.id"
+            class="task-card"
+            @click="navigateToTaskDetail(task.task.id)"
         >
-          <!-- 任务卡片内容将在后续实现 -->
-          <view class="card-placeholder">任务卡片 {{ index + 1 }}</view>
+          <view class="card-header">
+            <view class="task-type">
+              <image class="type-icon" :src="task.taskType.icon" mode="aspectFit"></image>
+              <text>{{ task.taskType.name }}</text>
+            </view>
+            <view class="task-status" :style="getStatusStyle(task.task.status)">
+              {{ getStatusText(task.task.status) }}
+            </view>
+          </view>
+
+          <view class="card-body">
+            <view class="task-title">{{ task.task.title }}</view>
+            <view class="task-desc">{{ task.task.description }}</view>
+
+            <view class="task-info">
+              <view class="info-item">
+                <text class="info-label">赏金：</text>
+                <text class="info-value price">¥{{ task.task.price }}</text>
+              </view>
+              <view class="info-item">
+                <text class="info-label">截止时间：</text>
+                <text class="info-value">{{ task.task.deadline }}</text>
+              </view>
+            </view>
+          </view>
+
+          <view class="card-footer">
+            <view class="time-info">{{ task.task.createTime }}</view>
+            <view class="action-btn" v-if="canCancelTask(task.task.status)" @click.stop="cancelTask(task.task.id)">
+              取消任务
+            </view>
+          </view>
         </view>
       </view>
 
       <!-- 加载更多 -->
       <view v-if="taskList.length > 0" class="load-more">
-        {{ hasMoreData ? '加载中...' : '没有更多了' }}
+        <u-loadmore v-if="isLoadingMore" status="loading"/>
+        <u-loadmore v-else-if="!hasMoreData" status="nomore"/>
       </view>
     </scroll-view>
   </view>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import {onMounted, ref} from 'vue'
+import {cancelTask as apiCancelTask, getMyPublishedTasks} from '@/api/task'
+import {TASK_STATUS} from '@/constants/taskStatus'
 
 // 状态筛选选项
-const statusOptions = [
-  { label: '全部', value: 'all' },
-  { label: '待接单', value: 'pending' },
-  { label: '进行中', value: 'ongoing' },
-  { label: '已完成', value: 'completed' },
-  { label: '已取消', value: 'cancelled' }
-]
-const currentStatus = ref('all')
+const statusOptions = TASK_STATUS.getStatusOptions()
+const currentStatus = ref(null) // 使用null表示全部
 
 // 任务列表数据
 const taskList = ref([])
 const isRefreshing = ref(false)
+const isLoading = ref(false)
+const isLoadingMore = ref(false)
 const hasMoreData = ref(true)
 const currentPage = ref(1)
 const pageSize = 10
+const total = ref(0)
+
+// 获取任务状态文本
+const getStatusText = (status) => {
+  return TASK_STATUS.getStatusText(status)
+}
+
+// 获取任务状态样式
+const getStatusStyle = (status) => {
+  const colors = TASK_STATUS.getStatusColor(status)
+  return {
+    color: colors.text,
+    backgroundColor: colors.background
+  }
+}
+
+// 判断任务是否可以取消
+const canCancelTask = (status) => {
+  // 只有待接单状态的任务可以取消
+  return status === TASK_STATUS.PENDING
+}
 
 // 状态筛选
 const filterByStatus = (status) => {
+  if (currentStatus.value === status) return
+
   currentStatus.value = status
   refreshTasks()
 }
 
+// 获取任务列表数据
+const fetchTaskList = async () => {
+  try {
+    isLoading.value = currentPage.value === 1 && !isRefreshing.value
+    isLoadingMore.value = currentPage.value > 1
+
+    const params = {
+      pageNum: currentPage.value,
+      pageSize: pageSize
+    }
+
+    // 如果状态不为空，添加状态筛选条件
+    if (currentStatus.value !== null) {
+      params.status = currentStatus.value
+    }
+
+    // 调用后端API获取任务列表
+    const res = await getMyPublishedTasks(params)
+
+    console.log('任务列表接口返回：', res)
+
+    // 处理响应数据
+    if (res.data && res.data.records) {
+      // 如果是刷新或第一页，直接替换数据
+      if (currentPage.value === 1) {
+        taskList.value = res.data.records
+      } else {
+        // 否则追加数据
+        taskList.value = [...taskList.value, ...res.data.records]
+      }
+
+      // 更新总数
+      total.value = res.data.total
+
+      // 判断是否有更多数据
+      hasMoreData.value = taskList.value.length < total.value
+    } else {
+      if (currentPage.value === 1) {
+        taskList.value = []
+      }
+      hasMoreData.value = false
+    }
+  } catch (error) {
+    console.error('获取任务列表失败：', error)
+    uni.showToast({
+      title: '获取任务列表失败',
+      icon: 'none'
+    })
+  } finally {
+    isLoading.value = false
+    isRefreshing.value = false
+    isLoadingMore.value = false
+  }
+}
+
 // 刷新任务列表
-const refreshTasks = () => {
+const refreshTasks = async () => {
   isRefreshing.value = true
   currentPage.value = 1
-  
-  // 这里将来需要调用API获取任务列表
-  // fetchTaskList()
-  
-  // 模拟加载数据
-  setTimeout(() => {
-    taskList.value = [] // 先清空列表
-    isRefreshing.value = false
-    hasMoreData.value = true
-  }, 1000)
+  await fetchTaskList()
 }
 
 // 加载更多任务
-const loadMoreTasks = () => {
-  if (!hasMoreData.value) return
-  
+const loadMoreTasks = async () => {
+  if (!hasMoreData.value || isLoadingMore.value) return
+
   currentPage.value++
-  
-  // 这里将来需要调用API加载更多任务
-  // fetchMoreTasks()
-  
-  // 模拟加载数据
-  setTimeout(() => {
-    // 模拟没有更多数据
-    if (currentPage.value > 3) {
-      hasMoreData.value = false
-    }
-  }, 1000)
+  await fetchTaskList()
+}
+
+// 取消任务
+const cancelTask = async (taskId) => {
+  try {
+    uni.showModal({
+      title: '确认取消',
+      content: '确定要取消这个任务吗？取消后无法恢复。',
+      success: async (res) => {
+        if (res.confirm) {
+          uni.showLoading({title: '取消中...'})
+
+          try {
+            // 调用取消任务API
+            await apiCancelTask(taskId)
+
+            uni.showToast({
+              title: '任务已取消',
+              icon: 'success'
+            })
+            // 刷新任务列表
+            refreshTasks()
+          } catch (error) {
+            console.error('取消任务失败：', error)
+            uni.showToast({
+              title: '取消任务失败',
+              icon: 'none'
+            })
+          } finally {
+            uni.hideLoading()
+          }
+        }
+      }
+    })
+  } catch (error) {
+    console.error('取消任务失败：', error)
+    uni.showToast({
+      title: '取消任务失败',
+      icon: 'none'
+    })
+  }
 }
 
 // 跳转到任务详情
@@ -157,11 +292,11 @@ onMounted(() => {
   white-space: nowrap;
   overflow-x: auto;
   box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
-  
+
   &::-webkit-scrollbar {
     display: none;
   }
-  
+
   .status-item {
     padding: 10rpx 30rpx;
     margin-right: 20rpx;
@@ -170,13 +305,13 @@ onMounted(() => {
     background-color: #f5f7fa;
     border-radius: 30rpx;
     transition: all 0.3s;
-    
+
     &.active {
       background-color: #fff3e0;
       color: #ff9500;
       font-weight: 500;
     }
-    
+
     &:last-child {
       margin-right: 0;
     }
@@ -188,19 +323,33 @@ onMounted(() => {
   padding: 30rpx;
 }
 
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 0;
+
+  .loading-text {
+    font-size: 28rpx;
+    color: #999;
+    margin-top: 20rpx;
+  }
+}
+
 .empty-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding-top: 150rpx;
-  
+
   .empty-animation {
     position: relative;
     width: 200rpx;
     height: 200rpx;
     margin-bottom: 40rpx;
-    
+
     .empty-courier-icon {
       position: absolute;
       left: 0;
@@ -209,7 +358,7 @@ onMounted(() => {
       font-size: 60rpx;
       animation: drive 3s infinite;
     }
-    
+
     .empty-dots {
       position: absolute;
       bottom: 0;
@@ -217,7 +366,7 @@ onMounted(() => {
       right: 0;
       display: flex;
       justify-content: center;
-      
+
       .dot {
         width: 16rpx;
         height: 16rpx;
@@ -225,35 +374,35 @@ onMounted(() => {
         background-color: #cccccc;
         margin: 0 10rpx;
         opacity: 0.6;
-        
+
         &:nth-child(1) {
           animation: pulse 1.5s infinite 0.2s;
         }
-        
+
         &:nth-child(2) {
           animation: pulse 1.5s infinite 0.4s;
         }
-        
+
         &:nth-child(3) {
           animation: pulse 1.5s infinite 0.6s;
         }
       }
     }
   }
-  
+
   .empty-text {
     font-size: 34rpx;
     color: #666;
     margin-bottom: 15rpx;
     font-weight: 500;
   }
-  
+
   .empty-subtext {
     font-size: 28rpx;
     color: #999;
     margin-bottom: 40rpx;
   }
-  
+
   .empty-action {
     background: linear-gradient(to right, #ff9500, #ffbd5c);
     padding: 18rpx 40rpx;
@@ -261,13 +410,13 @@ onMounted(() => {
     display: flex;
     align-items: center;
     box-shadow: 0 6rpx 16rpx rgba(255, 149, 0, 0.3);
-    
+
     .action-text {
       color: #ffffff;
       font-size: 28rpx;
       font-weight: 500;
     }
-    
+
     .action-arrow {
       color: #ffffff;
       font-size: 28rpx;
@@ -288,27 +437,118 @@ onMounted(() => {
   box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
   overflow: hidden;
   transition: transform 0.2s, box-shadow 0.2s;
-  
+
   &:active {
     transform: scale(0.98);
     box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
   }
-  
-  .card-placeholder {
-    height: 180rpx;
+
+  .card-header {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
-    color: #999;
-    font-size: 28rpx;
+    padding: 20rpx 30rpx 0;
+
+    .task-type {
+      display: flex;
+      align-items: center;
+
+      .type-icon {
+        width: 32rpx;
+        height: 32rpx;
+        margin-right: 8rpx;
+      }
+
+      text {
+        font-size: 24rpx;
+        color: #333;
+      }
+    }
+
+    .task-status {
+      font-size: 24rpx;
+      padding: 6rpx 16rpx;
+      border-radius: 20rpx;
+    }
+  }
+
+  .card-body {
+    padding: 20rpx 30rpx;
+
+    .task-title {
+      font-size: 30rpx;
+      font-weight: 500;
+      color: #333;
+      margin-bottom: 10rpx;
+      // 超出一行省略
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 1;
+      overflow: hidden;
+    }
+
+    .task-desc {
+      font-size: 26rpx;
+      color: #666;
+      margin-bottom: 20rpx;
+      // 超出两行省略
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
+    }
+
+    .task-info {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10rpx;
+
+      .info-item {
+        display: flex;
+        align-items: center;
+
+        .info-label {
+          font-size: 24rpx;
+          color: #999;
+        }
+
+        .info-value {
+          font-size: 24rpx;
+          color: #666;
+
+          &.price {
+            color: #ff9500;
+            font-weight: 500;
+          }
+        }
+      }
+    }
+  }
+
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20rpx 30rpx;
+    border-top: 1rpx solid #f0f0f0;
+
+    .time-info {
+      font-size: 24rpx;
+      color: #999;
+    }
+
+    .action-btn {
+      font-size: 24rpx;
+      color: #ee0a24;
+      background-color: #feecef;
+      padding: 8rpx 20rpx;
+      border-radius: 20rpx;
+    }
   }
 }
 
 .load-more {
-  text-align: center;
-  font-size: 26rpx;
-  color: #999;
-  padding: 30rpx 0;
+  padding: 20rpx 0;
 }
 
 @keyframes drive {
