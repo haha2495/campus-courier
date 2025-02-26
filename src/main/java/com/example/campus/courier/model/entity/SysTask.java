@@ -1,8 +1,10 @@
 package com.example.campus.courier.model.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -11,12 +13,13 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 任务实体类
  */
 @Data
-@TableName("sys_task")
+@TableName(value = "sys_task",autoResultMap = true)
 @Schema(description = "任务实体")
 public class SysTask implements Serializable {
 
@@ -79,8 +82,9 @@ public class SysTask implements Serializable {
     @Schema(description = "联系电话")
     private String contactPhone;
 
-    @Schema(description = "物品信息(JSON格式)")
-    private String items;
+    @Schema(description = "图片(JSON格式)")
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private List<String> images;
 
     @Schema(description = "备注说明")
     private String notes;

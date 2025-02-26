@@ -361,10 +361,25 @@
                   class="image-preview" 
                   v-for="(img, index) in taskForm.images" 
                   :key="index"
+                  @click="previewImage(index)"
                 >
-                  <image :src="img" class="preview-image" mode="aspectFill" />
-                  <view class="delete-icon" @click="deleteImage(index)">
+                  <image 
+                    :src="img" 
+                    class="preview-image" 
+                    mode="aspectFill"
+                    @load="imageLoaded(index)"
+                    @error="imageError(index)"
+                  >
+                    <view class="image-loading" v-if="imageLoading[index]">
+                      <u-icon name="photo" size="40rpx" color="#ddd"></u-icon>
+                    </view>
+                  </image>
+                  <view class="delete-icon" @tap.stop="deleteImage(index)">
                     <u-icon name="close" size="24rpx" color="#fff"></u-icon>
+                  </view>
+                  <view class="image-error-overlay" v-if="imageErrors[index]">
+                    <u-icon name="error-circle" size="40rpx" color="#f56c6c"></u-icon>
+                    <text class="error-text">加载失败</text>
                   </view>
                 </view>
               </view>
@@ -464,6 +479,7 @@
 <script setup>
 import { ref, reactive, onMounted, computed, watch, nextTick } from 'vue'
 import { getEnabledTaskTypes } from '@/api/taskType'
+import { uploadApi } from '@/api/upload' // 导入上传API
 
 // 状态栏高度
 const statusBarHeight = ref(20)
@@ -806,6 +822,27 @@ const onUrgentChange = (e) => {
   }
 }
 
+// 预处理图片，确保能正确显示
+const preprocessImage = (imageUrl) => {
+  return new Promise((resolve, reject) => {
+    console.log('预处理图片:', imageUrl)
+    // 对于微信小程序，需要先下载图片到本地
+    uni.getImageInfo({
+      src: imageUrl,
+      success: (res) => {
+        console.log('图片信息获取成功:', res)
+        // 返回本地路径
+        resolve(res.path)
+      },
+      fail: (err) => {
+        console.error('图片信息获取失败:', err)
+        // 出错时仍然使用原始URL
+        resolve(imageUrl)
+      }
+    })
+  })
+}
+
 // 选择图片
 const chooseImage = () => {
   uni.chooseImage({
@@ -813,14 +850,122 @@ const chooseImage = () => {
     sizeType: ['compressed'],
     sourceType: ['album', 'camera'],
     success: (res) => {
-      taskForm.images = [...taskForm.images, ...res.tempFilePaths]
+      // 显示上传中的提示
+      uni.showLoading({
+        title: '上传中...',
+        mask: true
+      })
+
+      // 创建上传任务数组
+      const uploadTasks = res.tempFilePaths.map(filePath => {
+        return uploadApi.upload(filePath)
+          .then(fileUrl => {
+            console.log('文件上传成功, URL:', fileUrl)
+            // 预处理图片URL
+            return preprocessImage(fileUrl)
+          })
+          .catch(error => {
+            console.error('文件上传失败:', error)
+            uni.showToast({
+              title: '图片上传失败',
+              icon: 'none'
+            })
+            return null
+          })
+      })
+
+      // 并行上传所有图片
+      Promise.all(uploadTasks)
+        .then(results => {
+          // 过滤掉上传失败的图片（值为null的项）
+          const successUrls = results.filter(url => url !== null)
+          
+          // 更新图片加载状态数组
+          const newLoadingStates = successUrls.map(() => true)
+          imageLoading.value = [...imageLoading.value, ...newLoadingStates]
+          
+          // 重置错误状态数组
+          const newErrorStates = successUrls.map(() => false)
+          imageErrors.value = [...imageErrors.value, ...newErrorStates]
+          
+          // 将新上传的图片URL添加到已有的图片列表中
+          taskForm.images = [...taskForm.images, ...successUrls]
+          
+          console.log('上传后的图片数组:', JSON.stringify(taskForm.images))
+          
+          uni.hideLoading()
+          
+          if (successUrls.length > 0) {
+            uni.showToast({
+              title: '上传成功',
+              icon: 'success'
+            })
+          }
+        })
+        .catch(error => {
+          console.error('批量上传失败:', error)
+          uni.hideLoading()
+          uni.showToast({
+            title: '图片上传失败',
+            icon: 'none'
+          })
+        })
     }
+  })
+}
+
+// 图片加载状态
+const imageLoading = ref([])
+// 图片错误状态
+const imageErrors = ref([])
+
+// 图片加载完成
+const imageLoaded = (index) => {
+  console.log(`图片${index}加载完成`)
+  imageLoading.value[index] = false
+  imageErrors.value[index] = false
+}
+
+// 图片加载失败处理
+const imageError = (index) => {
+  console.error(`图片${index}加载失败:`, taskForm.images[index])
+  imageLoading.value[index] = false
+  imageErrors.value[index] = true
+  
+  // 图片重试机制：可能需要在微信小程序中进行特殊处理
+  // 有时网络图片无法直接加载，尝试转换成本地临时路径
+  uni.downloadFile({
+    url: taskForm.images[index],
+    success: (res) => {
+      if (res.statusCode === 200) {
+        console.log('图片下载成功，临时路径:', res.tempFilePath)
+        // 更新图片路径为临时本地路径
+        taskForm.images[index] = res.tempFilePath
+        // 重置状态，触发重新加载
+        imageLoading.value[index] = true
+        imageErrors.value[index] = false
+      }
+    },
+    fail: (err) => {
+      console.error('图片下载失败:', err)
+    }
+  })
+}
+
+// 预览图片
+const previewImage = (index) => {
+  console.log('预览图片，索引:', index, '图片URL:', taskForm.images[index])
+  uni.previewImage({
+    urls: taskForm.images,
+    current: taskForm.images[index]
   })
 }
 
 // 删除图片
 const deleteImage = (index) => {
   taskForm.images.splice(index, 1)
+  imageLoading.value.splice(index, 1)
+  imageErrors.value.splice(index, 1)
 }
 
 // 显示消息
@@ -911,12 +1056,12 @@ const submitTask = () => {
     contactName: taskForm.contactName,
     contactPhone: taskForm.contactPhone,
     notes: taskForm.notes || '',
-    images: taskForm.images
+    images: taskForm.images.length > 0 ? taskForm.images : []
   }
   
   // 提交表单
   showMessage('准备提交任务...')
-  console.log('任务表单数据:', submitData)
+  console.log('任务表单数据:', submitData);
   
   // TODO: 实际提交到服务器
   // 示例代码，等待后端任务发布接口完成后再实现
@@ -948,7 +1093,6 @@ const submitTask = () => {
     showMessage('网络错误，请稍后重试')
     console.error('发布任务失败:', err)
   })
-  */
   
   // 临时：模拟提交成功
   uni.showLoading({
@@ -968,7 +1112,9 @@ const submitTask = () => {
       handleBack()
     }, 1500)
   }, 1500)
+   */
 }
+
 
 // 计算选中的任务类型对象
 const selectedTaskTypeObj = computed(() => {
@@ -1417,6 +1563,26 @@ const getPageTaskTypes = (page) => {
       background-color: rgba(255, 77, 79, 0.8);
     }
   }
+
+  .image-error-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(245, 245, 245, 0.9);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    
+    .error-text {
+      font-size: 20rpx;
+      color: #f56c6c;
+      margin-top: 10rpx;
+    }
+  }
 }
 
 // 提交按钮增强
@@ -1814,6 +1980,20 @@ const getPageTaskTypes = (page) => {
       object-fit: cover;
     }
     
+    .image-loading {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(245, 245, 245, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      animation: pulse 1.5s infinite;
+    }
+    
     .delete-icon {
       position: absolute;
       top: 6rpx;
@@ -1827,7 +2007,29 @@ const getPageTaskTypes = (page) => {
       align-items: center;
       justify-content: center;
       border-radius: 50%;
+      z-index: 3;
+      
+      &:active {
+        transform: scale(0.9);
+        background-color: rgba(255, 77, 79, 0.8);
+      }
     }
+    
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0.6;
   }
 }
 
@@ -1899,10 +2101,5 @@ const getPageTaskTypes = (page) => {
     margin-left: 8rpx;
     transition: all 0.3s;
   }
-}
-
-// 删除或替换旧的reward-input-wrapper样式
-.reward-input-wrapper {
-  // 这个样式可以删除，已被money-input-wrapper替代
 }
 </style> 
