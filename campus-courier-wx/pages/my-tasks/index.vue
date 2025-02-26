@@ -67,7 +67,7 @@
           <view v-if="task.task.urgent" class="urgent-bubble">
             <text>加急</text>
           </view>
-          
+
           <!-- 卡片头部 - 类型和状态 -->
           <view class="card-header">
             <view class="task-type">
@@ -83,7 +83,7 @@
           <view class="card-body">
             <!-- 任务标题 -->
             <view class="task-title">{{ task.task.title }}</view>
-            
+
             <!-- 任务描述 -->
             <view class="task-desc">{{ task.task.description }}</view>
 
@@ -116,7 +116,10 @@
               <view class="info-item reward">
                 <text class="reward-icon">¥</text>
                 <text class="reward-value">{{ task.task.reward }}</text>
-                <text v-if="task.task.urgent && task.task.urgentReward" class="urgent-reward">+{{ task.task.urgentReward }}</text>
+                <text v-if="task.task.urgent && task.task.urgentReward" class="urgent-reward">+{{
+                    task.task.urgentReward
+                  }}
+                </text>
               </view>
               <view class="info-item time">
                 <text class="time-label">期望送达：</text>
@@ -167,24 +170,24 @@ const total = ref(0)
 const formatTime = (timeString) => {
   if (!timeString) return '';
   const date = new Date(timeString);
-  
+
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
   const hours = String(date.getHours()).padStart(2, '0');
   const minutes = String(date.getMinutes()).padStart(2, '0');
-  
+
   return `${year}-${month}-${day} ${hours}:${minutes}`;
 }
 
 // 格式化相对时间 (例如：刚刚、5分钟前、1小时前)
 const formatRelativeTime = (timeString) => {
   if (!timeString) return '';
-  
+
   const now = new Date();
   const date = new Date(timeString);
   const diff = Math.floor((now - date) / 1000); // 差值（秒）
-  
+
   if (diff < 60) {
     return '刚刚';
   } else if (diff < 3600) {
@@ -287,7 +290,7 @@ const refreshTasks = async () => {
   isRefreshing.value = true
   currentPage.value = 1
   await fetchTaskList()
-  
+
   // 修复滑动问题：确保刷新状态正确重置
   setTimeout(() => {
     // 延迟重置刷新状态，确保UI有时间更新
@@ -316,29 +319,22 @@ const cancelTask = async (taskId) => {
           try {
             // 调用取消任务API
             const res = await apiCancelTask(taskId)
-            
-            if (res.success) {
-              // 先显示成功提示
-              await uni.showToast({
-                title: '任务已取消',
-                icon: 'success',
-                duration: 1500
-              })
-              
-              // 等待提示显示完毕后再刷新列表
-              setTimeout(async () => {
-                // 重置页码和列表数据
-                currentPage.value = 1
-                taskList.value = []
-                // 重新获取列表数据
-                await fetchTaskList()
-              }, 500)
-            } else {
-              uni.showToast({
-                title: res.message || '取消任务失败',
-                icon: 'none'
-              })
-            }
+
+            // 先显示成功提示
+            await uni.showToast({
+              title: '任务已取消',
+              icon: 'success',
+              duration: 1500
+            })
+
+            // 等待提示显示完毕后再刷新列表
+            setTimeout(async () => {
+              // 重置页码和列表数据
+              currentPage.value = 1
+              taskList.value = []
+              // 重新获取列表数据
+              await fetchTaskList()
+            }, 500)
           } catch (error) {
             console.error('取消任务失败：', error)
             uni.showToast({
@@ -561,28 +557,28 @@ onMounted(() => {
   transition: all 0.3s ease;
   position: relative;
   border: 1px solid #f0f0f0;
-  
+
   &:active {
     transform: translateY(2rpx);
     box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
   }
-  
+
   // 加急任务卡片样式
   &.urgent-card {
     background: linear-gradient(to right, #fffafa, #fff7f7);
     border-left: 8rpx solid #ff4d4f;
     box-shadow: 0 4rpx 16rpx rgba(255, 77, 79, 0.15);
     border: 1px solid rgba(255, 77, 79, 0.2);
-    
+
     .card-header {
       border-bottom-color: rgba(255, 77, 79, 0.1);
     }
-    
+
     .card-footer {
       border-top-color: rgba(255, 77, 79, 0.1);
     }
   }
-  
+
   // 加急气泡标记
   .urgent-bubble {
     position: absolute;
@@ -596,7 +592,7 @@ onMounted(() => {
     border-radius: 20rpx;
     box-shadow: 0 4rpx 8rpx rgba(255, 77, 79, 0.3);
     z-index: 10;
-    
+
     &::after {
       content: '';
       position: absolute;
@@ -671,12 +667,12 @@ onMounted(() => {
 
     .address-info {
       margin-bottom: 16rpx;
-      
+
       .address-item {
         display: flex;
         align-items: center;
         margin-bottom: 10rpx;
-        
+
         .address-icon {
           width: 36rpx;
           height: 36rpx;
@@ -689,16 +685,16 @@ onMounted(() => {
           font-weight: bold;
           margin-right: 10rpx;
           flex-shrink: 0;
-          
+
           &.pickup-icon {
             background-color: #1989fa;
           }
-          
+
           &.delivery-icon {
             background-color: #07c160;
           }
         }
-        
+
         .address-value {
           font-size: 26rpx;
           color: #333;
@@ -710,23 +706,23 @@ onMounted(() => {
         }
       }
     }
-    
+
     .task-specs {
       display: flex;
       flex-wrap: wrap;
       margin-bottom: 16rpx;
-      
+
       .spec-item {
         display: flex;
         align-items: center;
         margin-right: 24rpx;
         margin-bottom: 8rpx;
-        
+
         .spec-label {
           font-size: 24rpx;
           color: #999;
         }
-        
+
         .spec-value {
           font-size: 24rpx;
           color: #333;
@@ -744,7 +740,7 @@ onMounted(() => {
       .info-item {
         display: flex;
         align-items: center;
-        
+
         &.reward {
           .reward-icon {
             font-size: 24rpx;
@@ -752,13 +748,13 @@ onMounted(() => {
             margin-right: 4rpx;
             font-weight: 700;
           }
-          
+
           .reward-value {
             font-size: 36rpx;
             color: #ff9500;
             font-weight: 700;
           }
-          
+
           .urgent-reward {
             font-size: 24rpx;
             color: #ff4d4f;
@@ -766,13 +762,13 @@ onMounted(() => {
             font-weight: 600;
           }
         }
-        
+
         &.time {
           .time-label {
             font-size: 24rpx;
             color: #999;
           }
-          
+
           .time-value {
             font-size: 24rpx;
             color: #333;
@@ -802,7 +798,7 @@ onMounted(() => {
       padding: 8rpx 20rpx;
       border-radius: 20rpx;
       transition: all 0.2s;
-      
+
       &:active {
         transform: scale(0.95);
         background-color: #fde2e5;
@@ -840,8 +836,12 @@ onMounted(() => {
 
 /* 修复刷新时的滑动问题 */
 @keyframes refreshCompleted {
-  from { transform: translateY(0); }
-  to { transform: translateY(0); }
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(0);
+  }
 }
 
 /* 刷新完成后应用此动画，平滑过渡 */
