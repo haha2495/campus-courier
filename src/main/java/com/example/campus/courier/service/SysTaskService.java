@@ -1,7 +1,10 @@
 package com.example.campus.courier.service;
 
+import com.example.campus.courier.model.dto.TaskDTO;
 import com.example.campus.courier.model.entity.SysTask;
 import com.example.campus.courier.model.request.task.TaskAddRequest;
+import com.example.campus.courier.model.request.task.TaskQueryRequest;
+import com.example.campus.courier.model.response.PageResult;
 
 /**
  * 任务服务接口
@@ -16,4 +19,13 @@ public interface SysTaskService {
      * @return 操作是否成功
      */
     boolean saveTask(TaskAddRequest request, Integer publisherId);
+    
+    /**
+     * 获取用户发布的任务列表
+     * 
+     * @param request 查询参数
+     * @param publisherId 发布者ID
+     * @return 任务列表分页结果
+     */
+    PageResult<TaskDTO> getPublishedTasks(TaskQueryRequest request, Integer publisherId);
 } 

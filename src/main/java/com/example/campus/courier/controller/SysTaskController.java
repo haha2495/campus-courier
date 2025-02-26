@@ -1,25 +1,27 @@
 package com.example.campus.courier.controller;
 
-import com.example.campus.courier.model.entity.SysTask;
+import com.example.campus.courier.model.dto.TaskDTO;
 import com.example.campus.courier.model.request.task.TaskAddRequest;
+import com.example.campus.courier.model.request.task.TaskQueryRequest;
+import com.example.campus.courier.model.response.PageResult;
 import com.example.campus.courier.model.response.Result;
 import com.example.campus.courier.service.SysTaskService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 任务控制器
  */
 @RestController
 @RequestMapping("/api/tasks")
+@Tag(name = "任务相关接口")
 @RequiredArgsConstructor
-@Tag(name = "任务管理", description = "任务相关接口")
+@Slf4j
 public class SysTaskController extends BaseController {
 
     private final SysTaskService sysTaskService;
@@ -27,23 +29,25 @@ public class SysTaskController extends BaseController {
     /**
      * 发布任务
      *
-     * @param request 任务发布请求参数
-     * @return 发布结果
+     * @param request 任务添加请求
+     * @return 操作结果
      */
     @PostMapping("/publish")
-    @Operation(summary = "发布任务", description = "用户发布新任务")
-    public Result<Boolean> publishTask(@RequestBody @Valid TaskAddRequest request) {
-        // 获取当前登录用户ID
-        Integer currentUserId = getLoginUserId();
-        
-        // 调用服务保存任务
-        boolean success = sysTaskService.saveTask(request, currentUserId);
-        
-        // 返回保存结果
-        if (success) {
-            return Result.success(true, "任务发布成功");
-        } else {
-            return Result.failed("任务发布失败");
-        }
+    @Operation(summary = "发布任务")
+    public Result<Boolean> publishTask(@RequestBody @Validated TaskAddRequest request) {
+        return Result.success(sysTaskService.saveTask(request, getLoginUserId()));
+    }
+
+    /**
+     * 查询当前用户发布的任务
+     *
+     * @param request 查询条件
+     * @return 任务列表分页结果
+     */
+    @GetMapping("/my-published")
+    @Operation(summary = "查询当前用户发布的任务")
+    public Result<PageResult<TaskDTO>> getMyPublishedTasks(
+            @Parameter(description = "查询条件") @Validated TaskQueryRequest request) {
+        return Result.success(sysTaskService.getPublishedTasks(request, getLoginUserId()));
     }
 } 

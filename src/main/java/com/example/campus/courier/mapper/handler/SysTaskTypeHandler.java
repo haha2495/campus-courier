@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -160,5 +161,15 @@ public class SysTaskTypeHandler extends ServiceImpl<SysTaskTypeMapper, SysTaskTy
         
         // 执行删除操作
         return removeById(id);
+    }
+
+    /**
+     * 根据ID列表批量查询任务类型
+     *
+     * @param typeIds 任务类型ID列表
+     * @return 任务类型列表
+     */
+    public List<SysTaskType> getTaskTypesByIds(Collection<Integer> typeIds) {
+        return listByIds(typeIds);
     }
 }
