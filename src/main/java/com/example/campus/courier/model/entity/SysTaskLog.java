@@ -3,6 +3,7 @@ package com.example.campus.courier.model.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.example.campus.courier.model.enums.TaskActionEnum;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -38,4 +39,20 @@ public class SysTaskLog implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @Schema(description = "操作时间")
     private LocalDateTime actionTime;
+    
+    /**
+     * 初始化任务日志
+     * 
+     * @param taskId 任务ID
+     * @param action 操作类型
+     * @param remark 备注说明
+     * @return 当前实体对象
+     */
+    public SysTaskLog init(Long taskId, TaskActionEnum action, String remark) {
+        this.taskId = taskId;
+        this.action = action.getCode();
+        this.remark = remark;
+        this.actionTime = LocalDateTime.now();
+        return this;
+    }
 } 

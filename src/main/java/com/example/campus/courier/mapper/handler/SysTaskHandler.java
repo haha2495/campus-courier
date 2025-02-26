@@ -1,6 +1,8 @@
 package com.example.campus.courier.mapper.handler;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.campus.courier.mapper.SysTaskMapper;
+import com.example.campus.courier.model.entity.SysTask;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -9,6 +11,6 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @RequiredArgsConstructor
-public class SysTaskHandler {
+public class SysTaskHandler extends ServiceImpl<SysTaskMapper, SysTask> {
     private final SysTaskMapper sysTaskMapper;
 } 
