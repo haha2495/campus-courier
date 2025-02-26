@@ -480,6 +480,7 @@
 import { ref, reactive, onMounted, computed, watch, nextTick } from 'vue'
 import { getEnabledTaskTypes } from '@/api/taskType'
 import { uploadApi } from '@/api/upload' // 导入上传API
+import { publishTask } from '@/api/task' // 导入发布任务API
 
 // 状态栏高度
 const statusBarHeight = ref(20)
@@ -1042,7 +1043,6 @@ const submitTask = () => {
   // 构建提交的数据
   const submitData = {
     typeId: parseInt(selectedTaskType.value),
-    typeName: typeName,
     title: taskForm.title,
     description: taskForm.description,
     pickupAddress: taskForm.pickupLocation,
@@ -1059,62 +1059,42 @@ const submitTask = () => {
     images: taskForm.images.length > 0 ? taskForm.images : []
   }
   
-  // 提交表单
-  showMessage('准备提交任务...')
-  console.log('任务表单数据:', submitData);
-  
-  // TODO: 实际提交到服务器
-  // 示例代码，等待后端任务发布接口完成后再实现
-  /*
+  // 显示加载状态
   uni.showLoading({
-    title: '发布中...'
+    title: '发布中...',
+    mask: true
   })
   
   // 调用发布任务API
-  publishTask(submitData).then(res => {
-    if (res.data && res.data.code === 200) {
+  publishTask(submitData)
+    .then(res => {
       uni.hideLoading()
-      uni.showToast({
-        title: '发布成功',
-        icon: 'success',
-        duration: 2000
-      })
       
-      // 延迟返回首页
-      setTimeout(() => {
-        handleBack()
-      }, 1500)
-    } else {
-      uni.hideLoading()
-      showMessage(res.data.message || '发布失败')
-    }
-  }).catch(err => {
-    uni.hideLoading()
-    showMessage('网络错误，请稍后重试')
-    console.error('发布任务失败:', err)
-  })
-  
-  // 临时：模拟提交成功
-  uni.showLoading({
-    title: '发布中...'
-  })
-  
-  setTimeout(() => {
-    uni.hideLoading()
-    uni.showToast({
-      title: '发布成功',
-      icon: 'success',
-      duration: 2000
+      if (res.code === 200) {
+        // 发布成功
+        uni.showToast({
+          title: '发布成功',
+          icon: 'success',
+          duration: 2000
+        })
+        
+        // 1.5秒后跳转到首页
+        setTimeout(() => {
+          uni.switchTab({
+            url: '/pages/index/index'
+          })
+        }, 1500)
+      } else {
+        // 发布失败
+        showMessage(res.message || '发布失败，请重试')
+      }
     })
-    
-    // 延迟返回首页
-    setTimeout(() => {
-      handleBack()
-    }, 1500)
-  }, 1500)
-   */
+    .catch(err => {
+      uni.hideLoading()
+      console.error('发布任务失败:', err)
+      showMessage('网络错误，请稍后重试')
+    })
 }
-
 
 // 计算选中的任务类型对象
 const selectedTaskTypeObj = computed(() => {

@@ -8,7 +8,7 @@
       <view class="decoration-element dot-3"></view>
       <view class="decoration-element dot-4"></view>
       <view class="decoration-element dot-5"></view>
-      
+
       <!-- 跑腿动画元素 -->
       <view class="courier-animation">
         <view class="courier-vehicle">🛵</view>
@@ -65,22 +65,22 @@
       <!-- 表单区域 -->
       <view class="form-container" v-if="!loginSuccess">
         <u--form
-          :model="formData"
-          ref="uForm"
-          labelPosition="left"
-          labelWidth="0"
+            :model="formData"
+            ref="uForm"
+            labelPosition="left"
+            labelWidth="0"
         >
           <!-- 用户名输入框 -->
           <view class="input-wrapper">
             <u-form-item prop="studentNo">
               <u--input
-                v-model="formData.studentNo"
-                border="none"
-                placeholder="输入学号/手机号"
-                placeholderStyle="color: #9399a6"
-                :customStyle="inputStyle"
-                prefixIcon="account"
-                prefixIconStyle="font-size: 40rpx; color: #6979f8"
+                  v-model="formData.studentNo"
+                  border="none"
+                  placeholder="输入学号/手机号"
+                  placeholderStyle="color: #9399a6"
+                  :customStyle="inputStyle"
+                  prefixIcon="account"
+                  prefixIconStyle="font-size: 40rpx; color: #6979f8"
               ></u--input>
             </u-form-item>
           </view>
@@ -89,14 +89,14 @@
           <view class="input-wrapper">
             <u-form-item prop="password">
               <u--input
-                v-model="formData.password"
-                type="password"
-                border="none"
-                placeholder="输入密码"
-                placeholderStyle="color: #9399a6"
-                :customStyle="inputStyle"
-                prefixIcon="lock"
-                prefixIconStyle="font-size: 40rpx; color: #6979f8"
+                  v-model="formData.password"
+                  type="password"
+                  border="none"
+                  placeholder="输入密码"
+                  placeholderStyle="color: #9399a6"
+                  :customStyle="inputStyle"
+                  prefixIcon="lock"
+                  prefixIconStyle="font-size: 40rpx; color: #6979f8"
               ></u--input>
             </u-form-item>
           </view>
@@ -105,15 +105,15 @@
         <!-- 登录按钮 -->
         <view class="action-area">
           <u-button
-            type="primary"
-            text="登 录"
-            :customStyle="buttonStyle"
-            @click="handleLogin"
-            :loading="loading"
+              type="primary"
+              text="登 录"
+              :customStyle="buttonStyle"
+              @click="handleLogin"
+              :loading="loading"
           ></u-button>
         </view>
       </view>
-      
+
       <!-- 登录成功动画 -->
       <view class="success-container" v-if="loginSuccess">
         <view class="success-icon">
@@ -123,7 +123,7 @@
         <text class="success-hint">正在进入校园跑腿系统...</text>
       </view>
     </view>
-    
+
     <!-- 底部装饰元素 -->
     <view class="bottom-decoration">
       <view class="campus-element building-1"></view>
@@ -215,7 +215,7 @@ onMounted(() => {
       uForm.value.setRules(rules)
     }
   })
-  
+
   // 添加动画启动
   startCourierAnimation()
 })
@@ -230,7 +230,7 @@ const startCourierAnimation = () => {
 const navigateToHome = () => {
   // 先显示页面淡出效果
   isPageFading.value = true
-  
+
   // 延迟执行页面跳转
   setTimeout(() => {
     uni.reLaunch({
@@ -262,17 +262,11 @@ const handleLogin = () => {
 
         if (res.code === 200) {
           // 保存token
-          uni.setStorageSync('token', res.data.token)
-          
+          uni.setStorageSync('token', res.data)
+
           // 显示登录成功动画
           loading.value = false
           loginSuccess.value = true
-          
-          // 播放成功音效（可选）
-          const successSound = uni.createInnerAudioContext()
-          successSound.src = '/static/sounds/success.mp3' // 需要添加这个音频文件
-          successSound.play()
-          
           // 延迟跳转
           setTimeout(() => {
             // 执行带动画的页面跳转
@@ -300,7 +294,7 @@ const handleLogin = () => {
             registerStatus.color = '#ff4d4f'
             registerStatus.class = 'status-disabled'
           }
-          
+
           loading.value = false
         }
       } catch (err) {
@@ -334,7 +328,7 @@ const handleLogin = () => {
   justify-content: center;
   padding: 40rpx;
   transition: opacity 0.8s ease;
-  
+
   &.fade-out {
     opacity: 0;
   }
@@ -348,12 +342,12 @@ const handleLogin = () => {
   width: 100%;
   height: 100%;
   z-index: 0;
-  
+
   .decoration-element {
     position: absolute;
     border-radius: 50%;
     opacity: 0.6;
-    
+
     &.dot-1 {
       width: 240rpx;
       height: 240rpx;
@@ -362,7 +356,7 @@ const handleLogin = () => {
       right: -100rpx;
       animation: float 8s ease-in-out infinite;
     }
-    
+
     &.dot-2 {
       width: 160rpx;
       height: 160rpx;
@@ -372,7 +366,7 @@ const handleLogin = () => {
       animation: float 6s ease-in-out infinite;
       animation-delay: 1s;
     }
-    
+
     &.dot-3 {
       width: 120rpx;
       height: 120rpx;
@@ -382,7 +376,7 @@ const handleLogin = () => {
       animation: float 10s ease-in-out infinite;
       animation-delay: 2s;
     }
-    
+
     &.dot-4 {
       width: 80rpx;
       height: 80rpx;
@@ -392,7 +386,7 @@ const handleLogin = () => {
       animation: float 7s ease-in-out infinite;
       animation-delay: 3s;
     }
-    
+
     &.dot-5 {
       width: 60rpx;
       height: 60rpx;
@@ -412,7 +406,7 @@ const handleLogin = () => {
   width: 100%;
   height: 120rpx;
   z-index: 1;
-  
+
   .courier-vehicle {
     position: absolute;
     font-size: 80rpx;
@@ -420,7 +414,7 @@ const handleLogin = () => {
     animation: moveRight 12s linear infinite;
     z-index: 3;
   }
-  
+
   .courier-track {
     position: absolute;
     top: 90rpx;
@@ -429,30 +423,30 @@ const handleLogin = () => {
     background: rgba(0, 0, 0, 0.05);
     z-index: 1;
   }
-  
+
   .courier-packages {
     position: absolute;
     width: 100%;
     height: 100%;
-    
+
     .package {
       position: absolute;
       font-size: 50rpx;
       opacity: 0;
       animation: showPackage 12s linear infinite;
-      
+
       &.package-1 {
         top: 20rpx;
         left: 80%;
         animation-delay: 4s;
       }
-      
+
       &.package-2 {
         top: 30rpx;
         left: 60%;
         animation-delay: 8s;
       }
-      
+
       &.package-3 {
         top: 10rpx;
         left: 40%;
@@ -473,22 +467,22 @@ const handleLogin = () => {
   position: relative;
   z-index: 10;
   max-width: 650rpx;
-  transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55), 
-              box-shadow 0.6s ease,
-              background 0.6s ease;
-  
+  transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55),
+  box-shadow 0.6s ease,
+  background 0.6s ease;
+
   &.success-animation {
     transform: scale(1.05);
     box-shadow: 0 30rpx 60rpx rgba(105, 121, 248, 0.2);
     background: rgba(255, 255, 255, 0.95);
   }
-  
+
   .header {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-bottom: 40rpx;
-    
+
     .logo-container {
       width: 120rpx;
       height: 120rpx;
@@ -500,12 +494,12 @@ const handleLogin = () => {
       margin-bottom: 30rpx;
       box-shadow: 0 10rpx 20rpx rgba(105, 121, 248, 0.3);
       transform: rotate(-5deg);
-      
+
       .logo-emoji {
         font-size: 60rpx;
       }
     }
-    
+
     .title {
       font-size: 44rpx;
       font-weight: bold;
@@ -515,24 +509,24 @@ const handleLogin = () => {
       -webkit-background-clip: text;
       color: transparent;
     }
-    
+
     .subtitle {
       font-size: 28rpx;
       color: #666;
       margin-bottom: 10rpx;
     }
   }
-  
+
   .features {
     display: flex;
     justify-content: space-around;
     margin-bottom: 40rpx;
-    
+
     .feature-item {
       display: flex;
       flex-direction: column;
       align-items: center;
-      
+
       .feature-icon {
         width: 80rpx;
         height: 80rpx;
@@ -542,30 +536,30 @@ const handleLogin = () => {
         justify-content: center;
         margin-bottom: 16rpx;
         animation: pulse 2s infinite;
-        
+
         &.lightning {
           background: linear-gradient(45deg, #ffde59, #ffa751);
           box-shadow: 0 6rpx 12rpx rgba(255, 167, 81, 0.3);
           animation-delay: 0s;
         }
-        
+
         &.wallet {
           background: linear-gradient(45deg, #0acffe, #495aff);
           box-shadow: 0 6rpx 12rpx rgba(73, 90, 255, 0.3);
           animation-delay: 0.4s;
         }
-        
+
         &.shield {
           background: linear-gradient(45deg, #11998e, #38ef7d);
           box-shadow: 0 6rpx 12rpx rgba(56, 239, 125, 0.3);
           animation-delay: 0.8s;
         }
-        
+
         .emoji {
           font-size: 40rpx;
         }
       }
-      
+
       .text {
         font-size: 26rpx;
         color: #333;
@@ -573,49 +567,49 @@ const handleLogin = () => {
       }
     }
   }
-  
+
   .status-container {
     margin-bottom: 30rpx;
-    
+
     .status-box {
       padding: 20rpx;
       border-radius: 16rpx;
       display: flex;
       align-items: center;
-      
+
       &.status-error {
         background-color: rgba(255, 77, 79, 0.1);
       }
-      
+
       &.status-pending {
         background-color: rgba(250, 173, 20, 0.1);
       }
-      
+
       &.status-rejected {
         background-color: rgba(255, 77, 79, 0.1);
       }
-      
+
       &.status-disabled {
         background-color: rgba(255, 77, 79, 0.1);
       }
-      
+
       .status-text {
         margin-left: 16rpx;
         font-size: 26rpx;
       }
     }
   }
-  
+
   .form-container {
     .input-wrapper {
       margin-bottom: 30rpx;
     }
-    
+
     .action-area {
       margin-top: 40rpx;
     }
   }
-  
+
   /* 登录成功动画 */
   .success-container {
     display: flex;
@@ -624,7 +618,7 @@ const handleLogin = () => {
     justify-content: center;
     padding: 40rpx 0;
     animation: fadeIn 0.5s ease-out;
-    
+
     .success-icon {
       width: 160rpx;
       height: 160rpx;
@@ -636,12 +630,12 @@ const handleLogin = () => {
       margin-bottom: 40rpx;
       box-shadow: 0 15rpx 30rpx rgba(56, 239, 125, 0.3);
       animation: success-pulse 2s infinite;
-      
+
       .success-emoji {
         font-size: 80rpx;
       }
     }
-    
+
     .success-text {
       font-size: 44rpx;
       font-weight: bold;
@@ -651,7 +645,7 @@ const handleLogin = () => {
       -webkit-background-clip: text;
       color: transparent;
     }
-    
+
     .success-hint {
       font-size: 28rpx;
       color: #666;
@@ -668,11 +662,11 @@ const handleLogin = () => {
   width: 100%;
   height: 160rpx;
   z-index: 1;
-  
+
   .campus-element {
     position: absolute;
     bottom: 0;
-    
+
     &.building-1 {
       width: 120rpx;
       height: 150rpx;
@@ -680,7 +674,7 @@ const handleLogin = () => {
       left: 10%;
       border-radius: 8rpx 8rpx 0 0;
     }
-    
+
     &.building-2 {
       width: 100rpx;
       height: 120rpx;
@@ -688,7 +682,7 @@ const handleLogin = () => {
       left: 25%;
       border-radius: 8rpx 8rpx 0 0;
     }
-    
+
     &.tree-1 {
       width: 60rpx;
       height: 90rpx;
@@ -696,7 +690,7 @@ const handleLogin = () => {
       right: 20%;
       border-radius: 50% 50% 0 0;
     }
-    
+
     &.tree-2 {
       width: 40rpx;
       height: 60rpx;

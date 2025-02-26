@@ -1,4 +1,4 @@
-import request from '../utils/request'
+import {http} from '../utils/request'
 
 /**
  * 任务类型相关API
@@ -9,20 +9,8 @@ import request from '../utils/request'
  * @returns {Promise} 返回请求Promise对象
  */
 export function getEnabledTaskTypes() {
-    return request({
+    return http({
         url: '/api/task/types/enabled',
         method: 'GET'
     })
 }
-
-/**
- * 根据ID获取任务类型详情
- * @param {Number} id 任务类型ID
- * @returns {Promise} 返回请求Promise对象
- */
-export function getTaskTypeDetail(id) {
-    return request({
-        url: `/api/task/types/detail/${id}`,
-        method: 'GET'
-    })
-} 
