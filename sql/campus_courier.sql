@@ -11,7 +11,7 @@
  Target Server Version : 80031
  File Encoding         : 65001
 
- Date: 25/02/2025 19:41:26
+ Date: 26/02/2025 17:36:36
 */
 
 SET NAMES utf8mb4;
@@ -132,6 +132,88 @@ INSERT INTO `sys_student_record` VALUES (22, 17, 3, '账号被启用', '2025-02-
 INSERT INTO `sys_student_record` VALUES (55, 17, 2, '重置密码为：20200102L', '2025-02-23 06:30:59');
 
 -- ----------------------------
+-- Table structure for sys_task
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_task`;
+CREATE TABLE `sys_task`  (
+  `id` int(0) NOT NULL AUTO_INCREMENT COMMENT '任务ID',
+  `task_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '任务编号',
+  `title` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '任务标题',
+  `description` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '任务详细描述',
+  `publisher_id` int(0) NOT NULL COMMENT '发布者用户ID',
+  `runner_id` int(0) NULL DEFAULT NULL COMMENT '接单者用户ID',
+  `task_type_id` int(0) NOT NULL COMMENT '任务类型ID',
+  `status` tinyint(0) NOT NULL DEFAULT 0 COMMENT '任务状态：0-待接单，1-已接单，2-进行中，3-待确认，4-已完成，5-已取消，6-已过期，7-存在纠纷',
+  `reward` decimal(10, 2) NOT NULL COMMENT '任务报酬',
+  `urgent` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否加急：0-否，1-是',
+  `urgent_reward` decimal(10, 2) NULL DEFAULT NULL COMMENT '加急费',
+  `pickup_address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '取件地址',
+  `delivery_address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '送达地址',
+  `estimated_weight` decimal(5, 2) NULL DEFAULT NULL COMMENT '预估重量(kg)',
+  `estimated_size` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '预估大小（如小、中、大）',
+  `expected_finish_time` datetime(0) NOT NULL COMMENT '预期完成时间',
+  `contact_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '联系人姓名',
+  `contact_phone` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '联系电话',
+  `images` json NULL COMMENT '图片(JSON格式)',
+  `notes` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注说明',
+  `create_time` datetime(0) NOT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '任务表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_task
+-- ----------------------------
+INSERT INTO `sys_task` VALUES (2, 'TASK2025022612520384', '帮我取肯德基晚餐', '在学校西门肯德基取一份晚餐，包含：1份原味鸡桶、2份薯条、1份可乐', 28, NULL, 1, 0, 15.00, 1, 5.00, '学校西门肯德基店', '第三宿舍楼B栋428', 2.50, '中件', '2025-02-26 19:00:00', '王同学', '13812345678', '[]', '请尽快送达，肯德基店已经下单，取餐码：A3842', '2025-02-26 12:52:03');
+INSERT INTO `sys_task` VALUES (3, 'TASK2025022612540912', '取快递5个（都是小件）', '有5个快递在菜鸟驿站，都是小件衣服，驿站柜台取件，取件码已经发到手机', 28, NULL, 2, 0, 20.00, 0, NULL, '北区菜鸟驿站', '研究生公寓3号楼503室', 3.00, '中件', '2025-02-26 18:00:00', '李研究生', '13923456789', '[]', '取件码会私发，请轻拿轻放，谢谢！', '2025-02-26 12:54:09');
+INSERT INTO `sys_task` VALUES (4, 'TASK2025022612562145', '食堂排队买饭', '今天晚饭时间食堂人很多，帮忙排队买份鱼香肉丝饭和一份紫菜汤', 28, NULL, 3, 0, 12.00, 1, 8.00, '第一食堂二楼', '教学楼B201', 1.00, '小件', '2025-02-26 17:30:00', '陈老师', '13687654321', '[]', '上课前需要吃到饭，请务必在5:30前送到', '2025-02-26 12:56:21');
+INSERT INTO `sys_task` VALUES (5, 'TASK2025022613014587', '帮搬新买的显示器', '刚买的27寸显示器需要从快递点搬到宿舍，比较重要小心轻放', 28, NULL, 5, 0, 35.00, 0, NULL, '南门京东快递点', '男生宿舍12栋305', 5.20, '大件', '2025-02-26 16:00:00', '张同学', '13598765432', '[]', '纸箱上有易碎标识，请小心搬运，不要磕碰', '2025-02-26 13:01:45');
+INSERT INTO `sys_task` VALUES (6, 'TASK2025022613043278', '收十本教材', '辅导员让去领教材，太重了搬不动，麻烦帮忙取一下', 28, NULL, 2, 0, 25.00, 0, NULL, '教材中心', '第二教学楼508', 8.00, '大件', '2025-02-26 17:00:00', '赵学委', '13776543210', '[]', '需要登记学号和姓名，会提前给你', '2025-02-26 13:04:32');
+INSERT INTO `sys_task` VALUES (7, 'TASK2025022613061953', '急需打印论文初稿', '有一份毕业论文初稿需要打印，共计35页，双面打印，彩色封面', 28, NULL, 7, 0, 15.00, 1, 10.00, '图书馆打印店', '研究生公寓5栋204', 0.20, '小件', '2025-02-26 15:30:00', '吴硕士', '13387654321', '[\"https://example.com/files/thesis.pdf\"]', '文件已经发到邮箱，请打印完整，需要装订', '2025-02-26 13:06:19');
+INSERT INTO `sys_task` VALUES (8, 'TASK2025022613082760', '宵夜烧烤外卖', '想吃烧烤，麻烦帮忙从校外带份宵夜，10串羊肉串，5串鸡翅，2份烤馕', 28, NULL, 14, 0, 20.00, 0, NULL, '校门口老王烧烤店', '第四宿舍楼A座506', 1.50, '小件', '2025-02-26 22:00:00', '刘夜猫', '13612345678', '[]', '记得多要些辣椒和烧烤酱，谢谢！', '2025-02-26 13:08:27');
+INSERT INTO `sys_task` VALUES (9, 'TASK2025022613101538', '明早占自习室座位', '明早有重要考试，需要占个靠窗座位复习，图书馆5楼自习室', 28, NULL, 20, 0, 30.00, 1, 15.00, '图书馆', '图书馆5楼东侧自习室', NULL, NULL, '2025-02-27 07:00:00', '孙考生', '13898765432', '[]', '请尽可能占到靠窗位置，放一本红色笔记本和一支笔作为标记', '2025-02-26 13:10:15');
+INSERT INTO `sys_task` VALUES (10, 'TASK2025022613123425', '帮带午餐盖饭', '上课没时间吃饭，帮忙带份黄焖鸡米饭，微辣，加个卤蛋', 28, NULL, 22, 0, 12.00, 0, NULL, '北门黄焖鸡米饭店', '教学楼C区304教室', 0.80, '小件', '2025-02-26 11:30:00', '钱同学', '13512345678', '[]', '送餐时请轻声，课堂不要打扰', '2025-02-26 13:12:34');
+INSERT INTO `sys_task` VALUES (11, 'TASK2025022613154267', '购买创新实验材料', '需要去文具店购买一些创新实验材料，清单已经列好', 28, NULL, 23, 0, 25.00, 0, NULL, '校外新华文具店', '工程学院实验楼204', 1.20, '中件', '2025-02-26 16:30:00', '杨教授', '13698765432', '[\"https://example.com/images/list.jpg\"]', '采购清单已上传，如有缺货请电话联系确认是否替换', '2025-02-26 13:15:42');
+INSERT INTO `sys_task` VALUES (12, 'TASK2025022613182039', '中午奶茶配送', '帮忙买5杯奶茶，给实验室小伙伴们解暑', 28, NULL, 1, 0, 15.00, 0, NULL, '东门蜜雪冰城', '理工楼B区502实验室', 1.50, '中件', '2025-02-26 13:45:00', '周组长', '13876543210', '[]', '5杯不同口味：2杯多肉葡萄，1杯芋泥波波，2杯椰椰奶冻，糖度冰度常规', '2025-02-26 13:18:20');
+INSERT INTO `sys_task` VALUES (13, 'TASK2025022613202354', '打印课程PPT和资料', '老师课件和复习资料打印，大约80页，黑白双面打印', 28, NULL, 7, 0, 20.00, 0, NULL, '教学楼下打印店', '宿舍9栋328', 0.50, '小件', '2025-02-26 19:00:00', '郑同学', '13912345678', '[\"https://example.com/files/slides.zip\"]', '文件已压缩上传，请全部打印出来并装订成册', '2025-02-26 13:20:23');
+INSERT INTO `sys_task` VALUES (14, 'TASK2025022613224183', '食堂窗口排队', '中午食堂特价窗口人太多，帮忙排队买份红烧排骨套餐', 28, NULL, 3, 0, 15.00, 1, 5.00, '第二食堂一楼特价窗口', '学生活动中心排练室', 0.80, '小件', '2025-02-26 12:00:00', '冯社长', '13887654321', '[]', '今天中午有特价活动，可能需要排队15-20分钟，辛苦了', '2025-02-26 13:22:41');
+INSERT INTO `sys_task` VALUES (15, 'TASK2025022613252697', '借篮球场地并买水', '帮忙去体育馆借一个篮球并预约半场地，顺便带两瓶水', 28, NULL, 29, 0, 20.00, 0, NULL, '大学生活动中心', '篮球场', 1.50, '中件', '2025-02-26 15:00:00', '潘队长', '13698765432', '[]', '需要用学生证借篮球，我的学生证会给你，请帮忙预约16:00-18:00的场地', '2025-02-26 13:25:26');
+INSERT INTO `sys_task` VALUES (16, 'TASK2025022613281504', '取三个京东快递', '帮忙取三个京东快递，都是衣服和书籍', 28, NULL, 2, 5, 18.00, 0, NULL, '西区京东派送点', '文科楼教师办公室302', 4.00, '中件', '2025-02-26 16:30:00', '何老师', '13566778899', '[]', '取件码将通过短信发送，请送到办公室，如果我不在请放前台', '2025-02-26 13:28:15');
+
+-- ----------------------------
+-- Table structure for sys_task_log
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_task_log`;
+CREATE TABLE `sys_task_log`  (
+  `id` int(0) NOT NULL AUTO_INCREMENT COMMENT '日志ID',
+  `task_id` int(0) NOT NULL COMMENT '任务ID',
+  `user_id` int(0) NULL DEFAULT NULL COMMENT '操作人id',
+  `action` tinyint(0) NOT NULL COMMENT '操作类型：1-发布，2-接单，3-开始执行，4-完成任务，5-确认完成，6-取消任务，7-提交纠纷，8-解决纠纷，9-评价',
+  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注说明',
+  `action_time` datetime(0) NOT NULL COMMENT '操作时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '任务日志表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_task_log
+-- ----------------------------
+INSERT INTO `sys_task_log` VALUES (2, 1, NULL, 1, '发布任务-外卖配送', '2025-02-26 12:52:03');
+INSERT INTO `sys_task_log` VALUES (3, 2, NULL, 1, '发布任务-快递代取', '2025-02-26 12:54:09');
+INSERT INTO `sys_task_log` VALUES (4, 3, NULL, 1, '发布任务-代替排队', '2025-02-26 12:56:21');
+INSERT INTO `sys_task_log` VALUES (5, 4, NULL, 1, '发布任务-大件物流', '2025-02-26 13:01:45');
+INSERT INTO `sys_task_log` VALUES (6, 5, NULL, 1, '发布任务-快递代取', '2025-02-26 13:04:32');
+INSERT INTO `sys_task_log` VALUES (7, 6, NULL, 1, '发布任务-文档打印', '2025-02-26 13:06:19');
+INSERT INTO `sys_task_log` VALUES (8, 7, NULL, 1, '发布任务-夜宵配送', '2025-02-26 13:08:27');
+INSERT INTO `sys_task_log` VALUES (9, 8, NULL, 1, '发布任务-自习代占', '2025-02-26 13:10:15');
+INSERT INTO `sys_task_log` VALUES (10, 9, NULL, 1, '发布任务-餐饮外卖', '2025-02-26 13:12:34');
+INSERT INTO `sys_task_log` VALUES (11, 10, NULL, 1, '发布任务-代跑腿', '2025-02-26 13:15:42');
+INSERT INTO `sys_task_log` VALUES (12, 11, NULL, 1, '发布任务-外卖配送', '2025-02-26 13:18:20');
+INSERT INTO `sys_task_log` VALUES (13, 12, NULL, 1, '发布任务-文档打印', '2025-02-26 13:20:23');
+INSERT INTO `sys_task_log` VALUES (14, 13, NULL, 1, '发布任务-代替排队', '2025-02-26 13:22:41');
+INSERT INTO `sys_task_log` VALUES (15, 14, NULL, 1, '发布任务-体育用品', '2025-02-26 13:25:26');
+INSERT INTO `sys_task_log` VALUES (16, 15, NULL, 1, '发布任务-快递代取', '2025-02-26 13:28:15');
+INSERT INTO `sys_task_log` VALUES (17, 16, NULL, 6, '取消任务:取三个京东快递', '2025-02-26 17:26:49');
+
+-- ----------------------------
 -- Table structure for sys_task_types
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_task_types`;
@@ -144,7 +226,7 @@ CREATE TABLE `sys_task_types`  (
   `status` tinyint(1) NOT NULL DEFAULT 1 COMMENT '状态(0-禁用,1-启用)',
   `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '任务类型表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 44 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '任务类型表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_task_types
@@ -161,7 +243,7 @@ INSERT INTO `sys_task_types` VALUES (9, '海报印刷', 'https://cdn-icons-png.f
 INSERT INTO `sys_task_types` VALUES (10, '论文打印', 'https://cdn-icons-png.flaticon.com/128/3497/3497086.png', '毕业论文打印及装订全套服务', 88, 1, '2025-02-25 11:40:16');
 INSERT INTO `sys_task_types` VALUES (11, '证件照打印', 'https://cdn-icons-png.flaticon.com/128/2659/2659360.png', '标准证件照拍摄与打印', 78, 0, '2025-02-25 11:40:16');
 INSERT INTO `sys_task_types` VALUES (12, '食堂打饭', 'https://cdn-icons-png.flaticon.com/128/1147/1147805.png', '校内食堂餐点配送到宿舍或教学楼', 92, 1, '2025-02-25 11:40:16');
-INSERT INTO `sys_task_types` VALUES (13, '奶茶外卖', 'https://cdn-icons-png.flaticon.com/128/5742/5742527.png', '校内外奶茶店饮品配送服务', 94, 1, '2025-02-25 11:40:16');
+INSERT INTO `sys_task_types` VALUES (13, '奶茶外卖', 'https://cdn-icons-png.flaticon.com/128/2906/2906120.png', '校内外奶茶店饮品配送服务', 94, 1, '2025-02-25 11:40:16');
 INSERT INTO `sys_task_types` VALUES (14, '夜宵配送', 'https://cdn-icons-png.flaticon.com/128/6147/6147137.png', '深夜食品、零食配送服务', 86, 1, '2025-02-25 11:40:16');
 INSERT INTO `sys_task_types` VALUES (15, '水果配送', 'https://cdn-icons-png.flaticon.com/128/3194/3194591.png', '新鲜水果购买与配送', 76, 0, '2025-02-25 11:40:16');
 INSERT INTO `sys_task_types` VALUES (16, '蛋糕订制', 'https://cdn-icons-png.flaticon.com/128/3348/3348089.png', '生日、节日蛋糕预订与配送', 72, 1, '2025-02-25 11:40:16');

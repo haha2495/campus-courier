@@ -16,6 +16,7 @@ export default {
 	methods: {
 		async checkLoginStatus() {
 			const token = uni.getStorageSync('token')
+      console.log(token)
 			if (token) {
 				try {
 					// 获取用户信息

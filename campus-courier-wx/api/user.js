@@ -9,5 +9,11 @@ export const userApi = {
             method: 'POST',
             data: data
         })
+    },
+    getCurrentUser(){
+        return http({
+            url: '/api/student/current',
+            method: 'get'
+        })
     }
 } 
