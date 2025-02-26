@@ -1,6 +1,6 @@
 package com.example.campus.courier.controller;
 
-import com.example.campus.courier.mapper.handler.SysTaskHandler;
+import com.example.campus.courier.service.SysTaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class SysTaskController {
 
-    private final SysTaskHandler sysTaskHandler;
+    private final SysTaskService sysTaskService;
 
 } 
