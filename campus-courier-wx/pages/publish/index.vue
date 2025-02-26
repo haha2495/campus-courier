@@ -297,15 +297,20 @@
             <!-- 任务报酬 -->
             <view class="form-item">
               <text class="form-label">任务报酬</text>
-              <view class="reward-input-wrapper">
-                <text class="currency-symbol">¥</text>
-                <input 
-                  type="digit" 
-                  class="reward-input" 
-                  placeholder="请输入悬赏金额" 
-                  placeholder-class="placeholder"
-                  v-model="taskForm.reward"
-                />
+              <view class="money-input-container">
+                <view class="money-input-wrapper">
+                  <view class="currency-symbol-wrapper">
+                    <text class="currency-symbol">¥</text>
+                  </view>
+                  <input 
+                    type="digit" 
+                    class="money-input" 
+                    placeholder="请输入悬赏金额" 
+                    placeholder-class="placeholder"
+                    v-model="taskForm.reward"
+                  />
+                  <view class="money-suffix" v-if="taskForm.reward">元</view>
+                </view>
               </view>
             </view>
             
@@ -323,15 +328,20 @@
               
               <!-- 加急费用，只在加急时显示 -->
               <view class="urgent-fee" v-if="taskForm.urgent">
-                <view class="reward-input-wrapper">
-                  <text class="currency-symbol">¥</text>
-                  <input 
-                    type="digit" 
-                    class="reward-input" 
-                    placeholder="加急费用" 
-                    placeholder-class="placeholder"
-                    v-model="taskForm.urgentReward"
-                  />
+                <view class="money-input-container">
+                  <view class="money-input-wrapper">
+                    <view class="currency-symbol-wrapper">
+                      <text class="currency-symbol">¥</text>
+                    </view>
+                    <input 
+                      type="digit" 
+                      class="money-input" 
+                      placeholder="加急费用" 
+                      placeholder-class="placeholder"
+                      v-model="taskForm.urgentReward"
+                    />
+                    <view class="money-suffix" v-if="taskForm.urgentReward">元</view>
+                  </view>
                 </view>
               </view>
             </view>
@@ -1819,5 +1829,80 @@ const getPageTaskTypes = (page) => {
       border-radius: 50%;
     }
   }
+}
+
+// 新增：金额输入容器和输入框样式增强
+.money-input-container {
+  position: relative;
+  margin-bottom: 16rpx;
+}
+
+.money-input-wrapper {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 20rpx;
+  border: 2rpx solid #e8e8e8;
+  box-shadow: 0 6rpx 16rpx rgba(0, 0, 0, 0.03);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  padding-right: 20rpx;
+  
+  &:focus-within {
+    border-color: #ff9500;
+    background-color: #fffcf7;
+    box-shadow: 0 8rpx 20rpx rgba(255, 149, 0, 0.15);
+    transform: translateY(-2rpx);
+  }
+  
+  .currency-symbol-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 70rpx;
+    height: 80rpx;
+    background: linear-gradient(135deg, #ff9500, #ff7d00);
+    padding: 0 16rpx;
+    
+    .currency-symbol {
+      font-size: 34rpx;
+      color: #ffffff;
+      font-weight: bold;
+    }
+  }
+  
+  .money-input {
+    flex: 1;
+    height: 80rpx;
+    font-size: 32rpx;
+    color: #333333;
+    background-color: transparent;
+    padding: 0 20rpx;
+    font-weight: 500;
+    
+    &::placeholder {
+      color: #c0c4cc;
+      font-size: 28rpx;
+      font-weight: normal;
+      transition: all 0.3s;
+    }
+    
+    &:focus::placeholder {
+      opacity: 0.7;
+      transform: translateX(4rpx);
+    }
+  }
+  
+  .money-suffix {
+    font-size: 28rpx;
+    color: #999;
+    margin-left: 8rpx;
+    transition: all 0.3s;
+  }
+}
+
+// 删除或替换旧的reward-input-wrapper样式
+.reward-input-wrapper {
+  // 这个样式可以删除，已被money-input-wrapper替代
 }
 </style> 
