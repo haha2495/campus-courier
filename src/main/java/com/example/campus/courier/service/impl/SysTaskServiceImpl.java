@@ -9,6 +9,7 @@ import com.example.campus.courier.model.entity.SysTask;
 import com.example.campus.courier.model.entity.SysTaskLog;
 import com.example.campus.courier.model.entity.SysTaskType;
 import com.example.campus.courier.model.enums.TaskActionEnum;
+import com.example.campus.courier.model.enums.TaskStatusEnum;
 import com.example.campus.courier.model.request.task.TaskAddRequest;
 import com.example.campus.courier.model.request.task.TaskQueryRequest;
 import com.example.campus.courier.model.response.PageResult;
@@ -97,5 +98,37 @@ public class SysTaskServiceImpl implements SysTaskService {
 
         // 7. 构建并返回分页结果
         return PageResult.build(taskPage.getTotal(), dtoList);
+    }
+
+    /**
+     * 取消任务
+     *
+     * @param taskId 任务ID
+     * @param userId 当前用户ID
+     * @return 操作是否成功
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean cancelTask(Long taskId, Integer userId) {
+        // 1. 获取任务信息
+        SysTask task = sysTaskHandler.getById(taskId.intValue());
+        if (task == null) {
+            throw new IllegalArgumentException("任务不存在");
+        }
+
+        // 2. 验证是否为任务发布者
+        if (!task.getPublisherId().equals(userId)) {
+            throw new IllegalArgumentException("只有任务发布者才能取消任务");
+        }
+
+        // 3. 更新任务状态为已取消
+        task.updateStatus(TaskStatusEnum.CANCELED);
+        boolean success = sysTaskHandler.updateById(task);
+
+        // 4. 记录任务日志
+        SysTaskLog taskLog = new SysTaskLog().init(task.getId(), TaskActionEnum.CANCEL, "取消任务:" + task.getTitle());
+        sysTaskLogHandler.save(taskLog);
+
+        return success;
     }
 } 

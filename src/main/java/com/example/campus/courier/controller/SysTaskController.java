@@ -50,4 +50,18 @@ public class SysTaskController extends BaseController {
             @Parameter(description = "查询条件") @Validated TaskQueryRequest request) {
         return Result.success(sysTaskService.getPublishedTasks(request, getLoginUserId()));
     }
+
+    /**
+     * 取消任务
+     *
+     * @param taskId 任务ID
+     * @return 操作结果
+     */
+    @PostMapping("/{taskId}/cancel")
+    @Operation(summary = "取消任务")
+    public Result<Boolean> cancelTask(
+            @Parameter(description = "任务ID") 
+            @PathVariable("taskId") Long taskId) {
+        return Result.success(sysTaskService.cancelTask(taskId, getLoginUserId()));
+    }
 } 

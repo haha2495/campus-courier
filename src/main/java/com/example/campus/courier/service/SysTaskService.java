@@ -28,4 +28,13 @@ public interface SysTaskService {
      * @return 任务列表分页结果
      */
     PageResult<TaskDTO> getPublishedTasks(TaskQueryRequest request, Integer publisherId);
+
+    /**
+     * 取消任务
+     * 
+     * @param taskId 任务ID
+     * @param userId 当前用户ID
+     * @return 操作是否成功
+     */
+    boolean cancelTask(Long taskId, Integer userId);
 } 

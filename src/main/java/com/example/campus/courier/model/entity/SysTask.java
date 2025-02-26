@@ -141,4 +141,13 @@ public class SysTask implements Serializable {
         
         return this;
     }
+
+    /**
+     * 更新任务状态
+     *
+     * @param status 任务状态枚举
+     */
+    public void updateStatus(TaskStatusEnum status) {
+        this.status = status.getCode();
+    }
 } 
