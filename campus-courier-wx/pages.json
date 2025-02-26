@@ -43,6 +43,14 @@
 			"style": {
 				"navigationBarTitleText": "任务详情"
 			}
+		},
+		{
+			"path": "pages/task-hall/index",
+			"style": {
+				"navigationBarTitleText": "抢单大厅",
+				"enablePullDownRefresh": true,
+				"backgroundTextStyle": "dark"
+			}
 		}
 	],
 	"globalStyle": {

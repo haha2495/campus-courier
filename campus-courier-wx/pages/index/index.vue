@@ -427,7 +427,10 @@ const handleTabNavigation = (tab) => {
   } else {
     switch(tab) {
       case TabPageName.ORDERS:
-        showMessage('抢单大厅功能待实现')
+        // 跳转到抢单大厅
+        uni.navigateTo({
+          url: '/pages/task-hall/index'
+        })
         break
       case TabPageName.CURRENT:
         showMessage('当前任务功能待实现')
@@ -461,6 +464,14 @@ const navigateTo = (page) => {
     // 跳转到我的任务页面 - 使用navigateTo而不是switchTab
     uni.navigateTo({
       url: '/pages/my-tasks/index'
+    })
+    return
+  }
+
+  if (page === 'orders') {
+    // 跳转到抢单大厅
+    uni.navigateTo({
+      url: '/pages/task-hall/index'
     })
     return
   }
