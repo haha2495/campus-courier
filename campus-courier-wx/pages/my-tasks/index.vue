@@ -62,34 +62,59 @@
             class="task-card"
             @click="navigateToTaskDetail(task.task.id)"
         >
+          <!-- 卡片头部 - 类型和状态 -->
           <view class="card-header">
             <view class="task-type">
               <image class="type-icon" :src="task.taskType.icon" mode="aspectFit"></image>
-              <text>{{ task.taskType.name }}</text>
+              <text>{{ task.taskType.typeName }}</text>
             </view>
             <view class="task-status" :style="getStatusStyle(task.task.status)">
               {{ getStatusText(task.task.status) }}
             </view>
           </view>
 
+          <!-- 卡片内容主体 -->
           <view class="card-body">
-            <view class="task-title">{{ task.task.title }}</view>
+            <!-- 任务标题和加急标记 -->
+            <view class="title-row">
+              <view class="task-title">{{ task.task.title }}</view>
+              <view v-if="task.task.urgent" class="urgent-tag">加急</view>
+            </view>
+            
+            <!-- 任务描述 -->
             <view class="task-desc">{{ task.task.description }}</view>
 
+            <!-- 地址信息 -->
+            <view class="address-info" v-if="task.task.pickupAddress || task.task.deliveryAddress">
+              <view class="address-item" v-if="task.task.pickupAddress">
+                <text class="address-label">取件：</text>
+                <text class="address-value">{{ task.task.pickupAddress }}</text>
+              </view>
+              <view class="address-item" v-if="task.task.deliveryAddress">
+                <text class="address-label">送达：</text>
+                <text class="address-value">{{ task.task.deliveryAddress }}</text>
+              </view>
+            </view>
+
+            <!-- 任务关键信息：赏金和截止时间 -->
             <view class="task-info">
               <view class="info-item">
                 <text class="info-label">赏金：</text>
-                <text class="info-value price">¥{{ task.task.price }}</text>
+                <text class="info-value price">
+                  ¥{{ task.task.reward }}
+                  <text v-if="task.task.urgent" class="urgent-reward">+{{ task.task.urgentReward }}(加急费)</text>
+                </text>
               </view>
               <view class="info-item">
                 <text class="info-label">截止时间：</text>
-                <text class="info-value">{{ task.task.deadline }}</text>
+                <text class="info-value">{{ formatTime(task.task.expectedFinishTime) }}</text>
               </view>
             </view>
           </view>
 
+          <!-- 卡片底部 - 时间和操作按钮 -->
           <view class="card-footer">
-            <view class="time-info">{{ task.task.createTime }}</view>
+            <view class="time-info">{{ formatTime(task.task.createTime) }}</view>
             <view class="action-btn" v-if="canCancelTask(task.task.status)" @click.stop="cancelTask(task.task.id)">
               取消任务
             </view>
@@ -124,6 +149,21 @@ const hasMoreData = ref(true)
 const currentPage = ref(1)
 const pageSize = 10
 const total = ref(0)
+
+// 格式化时间显示
+const formatTime = (timeString) => {
+  if (!timeString) return '';
+  const date = new Date(timeString);
+  
+  // 格式化为 YYYY-MM-DD HH:MM
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  
+  return `${year}-${month}-${day} ${hours}:${minutes}`;
+}
 
 // 获取任务状态文本
 const getStatusText = (status) => {
@@ -510,11 +550,17 @@ onMounted(() => {
   .card-body {
     padding: 20rpx 30rpx;
 
+    .title-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10rpx;
+    }
+
     .task-title {
       font-size: 30rpx;
       font-weight: 500;
       color: #333;
-      margin-bottom: 10rpx;
+      flex: 1;
       // 超出一行省略
       display: -webkit-box;
       -webkit-box-orient: vertical;
@@ -522,15 +568,50 @@ onMounted(() => {
       overflow: hidden;
     }
 
+    .urgent-tag {
+      background-color: #ff4d4f;
+      color: white;
+      font-size: 22rpx;
+      padding: 4rpx 12rpx;
+      border-radius: 10rpx;
+      margin-left: 10rpx;
+      font-weight: bold;
+    }
+
     .task-desc {
       font-size: 26rpx;
       color: #666;
-      margin-bottom: 20rpx;
+      margin-bottom: 16rpx;
       // 超出两行省略
       display: -webkit-box;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 2;
       overflow: hidden;
+    }
+
+    .address-info {
+      margin-bottom: 16rpx;
+      
+      .address-item {
+        display: flex;
+        margin-bottom: 6rpx;
+        
+        .address-label {
+          font-size: 24rpx;
+          color: #999;
+          flex-shrink: 0;
+        }
+        
+        .address-value {
+          font-size: 24rpx;
+          color: #666;
+          flex: 1;
+          // 超出一行省略
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
     }
 
     .task-info {
@@ -554,6 +635,12 @@ onMounted(() => {
           &.price {
             color: #ff9500;
             font-weight: 500;
+            
+            .urgent-reward {
+              font-size: 22rpx;
+              color: #ff4d4f;
+              margin-left: 6rpx;
+            }
           }
         }
       }
