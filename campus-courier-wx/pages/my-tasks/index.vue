@@ -1,16 +1,18 @@
 <template>
   <view class="my-tasks-container">
     <!-- 状态筛选器 -->
-    <view class="status-filter">
-      <view
-          v-for="(status, index) in statusOptions"
-          :key="index"
-          class="status-item"
-          :class="{ active: currentStatus === status.value }"
-          @click="filterByStatus(status.value)"
-      >
-        {{ status.label }}
-      </view>
+    <view class="status-filter-wrapper">
+      <scroll-view class="status-filter" scroll-x show-scrollbar="false">
+        <view
+            v-for="(status, index) in statusOptions"
+            :key="index"
+            class="status-item"
+            :class="{ active: currentStatus === status.value }"
+            @click="filterByStatus(status.value)"
+        >
+          {{ status.label }}
+        </view>
+      </scroll-view>
     </view>
 
     <!-- 任务列表 -->
@@ -285,10 +287,6 @@ const navigateToPublish = () => {
 // 页面加载时获取任务列表
 onMounted(() => {
   refreshTasks()
-  
-  // 获取系统状态栏高度并设置
-  const systemInfo = uni.getSystemInfoSync()
-  document.documentElement.style.setProperty('--status-bar-height', `${systemInfo.statusBarHeight}px`)
 })
 </script>
 
@@ -298,34 +296,46 @@ onMounted(() => {
   flex-direction: column;
   height: 100vh;
   background-color: #f5f7fa;
-  position: relative;
-  /* 添加安全区域，防止状态栏遮挡 */
-  padding-top: var(--status-bar-height, 20px);
+  /* 移除顶部内边距 */
+}
+
+.status-filter-wrapper {
+  background-color: #ffffff;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 10rpx 0;
+  /* 添加安全区域，确保适配刘海屏 */
+  padding-top: constant(safe-area-inset-top); /* iOS 11.0及以下 */
+  padding-top: env(safe-area-inset-top); /* iOS 11.2+ */
 }
 
 .status-filter {
   display: flex;
-  background-color: #ffffff;
-  padding: 20rpx 30rpx;
   white-space: nowrap;
-  overflow-x: auto;
-  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
-  /* 增加z-index确保在顶部不被遮挡 */
-  position: relative;
-  z-index: 10;
+  padding: 10rpx 30rpx;
+  height: 70rpx;
 
   &::-webkit-scrollbar {
     display: none;
   }
 
   .status-item {
-    padding: 10rpx 30rpx;
+    padding: 6rpx 30rpx;
     margin-right: 20rpx;
     font-size: 26rpx;
     color: #666;
     background-color: #f5f7fa;
     border-radius: 30rpx;
     transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 56rpx;
+    flex-shrink: 0;
 
     &.active {
       background-color: #fff3e0;
