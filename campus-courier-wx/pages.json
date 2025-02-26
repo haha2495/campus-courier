@@ -19,6 +19,18 @@
 				"navigationBarTitleText": "校园跑腿",
 				"navigationStyle": "custom"
 			}
+		},
+		{
+			"path": "pages/publish/index",
+			"style": {
+				"navigationBarTitleText": "发布任务",
+				"navigationStyle": "custom",
+				"pageAnimation": {
+					"type": "slide",
+					"duration": 300,
+					"timingFunc": "ease-in-out"
+				}
+			}
 		}
 	],
 	"globalStyle": {

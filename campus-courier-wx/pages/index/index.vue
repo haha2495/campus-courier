@@ -251,7 +251,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, onShow } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { TabBarType, TabPageName, publisherTabConfig, runnerTabConfig, getCenterButton, getVersionedIconUrl, ICON_VERSION } from '@/utils/tabConfig'
 
 // 当前角色：publisher(发布者) 或 runner(跑腿者)
@@ -281,6 +281,27 @@ const iconCache = ref({})
 // 添加空状态控制
 const showEmpty = ref(true)
 const isLoading = ref(false)
+
+// 页面生命周期钩子
+onMounted(() => {
+  // 初始化操作
+  getSystemInfo()
+  initRoleFromStorage()
+  refreshIconCache()
+  loadIconCache()
+  preloadTabIcons()
+  refreshData()
+})
+
+// 页面显示时执行
+defineExpose({
+  onShow() {
+    console.log('页面显示')
+    // 页面显示时刷新数据
+    loadIconCache()
+    refreshData()
+  }
+})
 
 // 刷新数据方法
 const refreshData = async () => {
@@ -323,28 +344,6 @@ const getIconSrc = (url) => {
     }
   }
   return url
-}
-
-// 初始化函数
-onMounted(() => {
-  getSystemInfo()
-  initRoleFromStorage()
-  loadIconCache()
-  preloadTabIcons()
-  refreshData()
-})
-
-// 每次显示页面时执行
-onShow(() => {
-  // 刷新图标缓存
-  loadIconCache()
-  refreshData()
-})
-
-// 加载图标缓存
-const loadIconCache = () => {
-  const cache = uni.getStorageSync('iconCache') || {}
-  iconCache.value = cache
 }
 
 // 获取系统信息
@@ -400,7 +399,12 @@ const handleTabNavigation = (tab) => {
   if (currentRole.value === TabBarType.PUBLISHER) {
     switch(tab) {
       case TabPageName.PUBLISH:
-        showMessage('发布任务功能待实现')
+        // 跳转到发布任务页面
+        uni.navigateTo({
+          url: '/pages/publish/index',
+          animationType: 'slide-in-bottom',
+          animationDuration: 300
+        })
         break
       case TabPageName.TASKS:
         showMessage('我的任务功能待实现')
@@ -433,7 +437,12 @@ const handleTabNavigation = (tab) => {
 // 导航到特定页面
 const navigateTo = (page) => {
   if (page === 'publish') {
-    switchTab('publish')
+    // 直接跳转到发布任务页面
+    uni.navigateTo({
+      url: '/pages/publish/index',
+      animationType: 'slide-in-bottom',
+      animationDuration: 300
+    })
     return
   }
   
@@ -589,52 +598,23 @@ const preloadTabIcons = () => {
 // 添加刷新图标缓存的方法
 const refreshIconCache = () => {
   // 检查缓存版本
-  const cachedVersion = uni.getStorageSync('iconCacheVersion')
-  
-  if (cachedVersion !== ICON_VERSION) {
-    console.log('图标版本已更新，刷新缓存', cachedVersion, '->', ICON_VERSION)
+  const cacheVersion = uni.getStorageSync('ICON_CACHE_VERSION')
+  if (cacheVersion !== ICON_VERSION) {
+    console.log(`Icon version changed from ${cacheVersion} to ${ICON_VERSION}, refreshing cache`)
+    // 版本不同，清除现有缓存
+    uni.removeStorageSync('iconCache')
+    // 更新缓存版本
+    uni.setStorageSync('ICON_CACHE_VERSION', ICON_VERSION)
     
-    // 清除所有图标缓存
-    try {
-      const fs = uni.getFileSystemManager()
-      const cachePath = `${uni.env.USER_DATA_PATH}/icons`
-      
-      // 尝试删除并重新创建缓存目录
-      try {
-        const fileList = fs.readdirSync(cachePath)
-        fileList.forEach(file => {
-          try {
-            fs.unlinkSync(`${cachePath}/${file}`)
-          } catch (e) {
-            console.warn('删除缓存文件失败', e)
-          }
-        })
-      } catch (e) {
-        console.log('缓存目录可能不存在，将创建新目录')
-      }
-      
-      // 重新创建缓存目录
-      try {
-        fs.mkdirSync(cachePath, true)
-      } catch (e) {
-        console.warn('创建缓存目录失败', e)
-      }
-      
-      // 清除缓存记录
-      iconCache.value = {}
-      uni.setStorageSync('iconCache', {})
-      
-      // 更新缓存版本
-      uni.setStorageSync('iconCacheVersion', ICON_VERSION)
-      
-      // 强制重新预加载图标
-      setTimeout(() => {
-        preloadTabIcons()
-      }, 500)
-    } catch (e) {
-      console.error('刷新图标缓存失败', e)
-    }
+    // 可以在这里添加额外的缓存清理逻辑
+    // 例如删除之前缓存的文件等
   }
+}
+
+// 加载图标缓存
+const loadIconCache = () => {
+  const cache = uni.getStorageSync('iconCache') || {}
+  iconCache.value = cache
 }
 </script>
 
