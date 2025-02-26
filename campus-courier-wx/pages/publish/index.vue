@@ -1160,7 +1160,7 @@ const getPageTaskTypes = (page) => {
 
 // 表单样式
 .form-item {
-  margin-bottom: 24rpx;
+  margin-bottom: 30rpx;
   position: relative;
   
   &:last-child {
@@ -1169,16 +1169,29 @@ const getPageTaskTypes = (page) => {
   
   .form-label {
     display: block;
-    font-size: 26rpx;
-    color: #333;
-    margin-bottom: 12rpx;
-    font-weight: 500;
+    font-size: 28rpx;
+    color: #333333;
+    margin-bottom: 14rpx;
+    font-weight: 600;
+    position: relative;
+    padding-left: 16rpx;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 4rpx;
+      height: 24rpx;
+      width: 6rpx;
+      background: linear-gradient(to bottom, #ff9500, #ffbb00);
+      border-radius: 3rpx;
+    }
   }
   
   .input-counter {
     position: absolute;
-    right: 10rpx;
-    bottom: 10rpx;
+    right: 12rpx;
+    bottom: 12rpx;
     font-size: 22rpx;
     color: #999;
     transition: color 0.3s;
@@ -1207,18 +1220,29 @@ const getPageTaskTypes = (page) => {
   position: relative;
   display: flex;
   align-items: center;
-  background-color: #f8f8f8;
-  border-radius: 12rpx;
-  border: 2rpx solid #e5e5e5; /* 更明显的边框 */
+  background-color: #ffffff;
+  border-radius: 20rpx; /* 增加圆角 */
+  border: 2rpx solid #e8e8e8;
   transition: all 0.3s;
   overflow: hidden;
-  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.03);
+  box-shadow: 0 6rpx 16rpx rgba(0, 0, 0, 0.03);
   margin-bottom: 26rpx; /* 确保下方计数器有足够空间 */
   
   &:focus-within {
     border-color: #ff9500;
-    background-color: #fff;
-    box-shadow: 0 4rpx 12rpx rgba(255, 149, 0, 0.1);
+    background-color: #fffcf7;
+    box-shadow: 0 8rpx 20rpx rgba(255, 149, 0, 0.15);
+    transform: translateY(-2rpx); /* 轻微上浮效果 */
+  }
+  
+  .input-prefix {
+    padding: 0 16rpx 0 24rpx; /* 增加左侧内边距 */
+    display: flex;
+    align-items: center;
+  }
+  
+  .input-icon {
+    padding: 0 20rpx 0 10rpx;
   }
 }
 
@@ -1230,13 +1254,24 @@ const getPageTaskTypes = (page) => {
 .form-input, .form-textarea {
   flex: 1;
   background-color: transparent;
-  padding: 22rpx 20rpx;
-  font-size: 28rpx;
-  color: #333;
+  padding: 24rpx 20rpx; /* 增加内边距 */
+  font-size: 30rpx;
+  color: #333333;
   border: none;
   
   &.with-prefix {
     padding-left: 10rpx;
+  }
+  
+  &::placeholder {
+    color: #c0c4cc;
+    font-size: 28rpx;
+    transition: all 0.3s;
+  }
+  
+  &:focus::placeholder {
+    opacity: 0.7; /* 聚焦时减淡占位符 */
+    transform: translateX(4rpx); /* 轻微位移效果 */
   }
 }
 
@@ -1245,24 +1280,24 @@ const getPageTaskTypes = (page) => {
   min-height: 180rpx;
   line-height: 1.6;
   padding: 20rpx;
-  font-size: 28rpx;
-  color: #333;
+  font-size: 30rpx;
+  color: #333333;
   border: none;
 }
 
 .location-text, .picker-text {
   flex: 1;
-  font-size: 28rpx;
-  color: #333;
+  font-size: 30rpx;
+  color: #333333;
   padding: 22rpx 0;
   
   &.location-placeholder, &.picker-placeholder {
-    color: #bbb;
+    color: #c0c4cc;
   }
 }
 
 .input-suffix {
-  padding: 0 20rpx 0 10rpx;
+  padding: 0 24rpx 0 10rpx; /* 增加右侧内边距 */
 }
 
 // 时间选择器样式优化
@@ -1276,169 +1311,114 @@ const getPageTaskTypes = (page) => {
   
   .date-picker, .time-picker {
     height: 86rpx;
+    transition: all 0.3s;
+    
+    &:active {
+      transform: scale(0.98); /* 轻微缩放效果 */
+    }
   }
 }
 
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  10%, 30%, 50%, 70%, 90% { transform: translateX(-5rpx); }
-  20%, 40%, 60%, 80% { transform: translateX(5rpx); }
+// 日期时间选择器增强
+.input-container.date-picker, .input-container.time-picker {
+  &:active {
+    background-color: #fffcf7;
+    border-color: #ffcb8c;
+  }
 }
 
-// 位置选择器
-.location-picker {
+// 搜索框样式增强
+.search-box {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  background-color: #f8f8f8;
-  border-radius: 12rpx;
-  padding: 20rpx;
-  font-size: 28rpx;
-  color: #333;
-  
-  .location-placeholder {
-    color: #bbb;
-  }
-  
-  .location-icon {
-    font-size: 32rpx;
-  }
-}
-
-// 金额输入
-.reward-input-wrapper {
-  display: flex;
-  align-items: center;
-  background-color: #f8f8f8;
-  border-radius: 12rpx;
-  padding: 0 20rpx;
-  border: 2rpx solid transparent;
+  background-color: #f2f2f2;
+  border-radius: 30rpx; /* 增加圆角 */
+  padding: 10rpx 24rpx; /* 增加内边距 */
+  margin-bottom: 20rpx;
+  box-shadow: inset 0 2rpx 6rpx rgba(0, 0, 0, 0.05);
+  border: 1rpx solid #e6e6e6;
   transition: all 0.3s;
   
   &:focus-within {
+    background-color: #ffffff;
     border-color: #ff9500;
-    background-color: #fff;
-    box-shadow: 0 0 0 2rpx rgba(255, 149, 0, 0.1);
+    box-shadow: 0 4rpx 12rpx rgba(255, 149, 0, 0.1);
   }
   
-  .currency-symbol {
-    font-size: 32rpx;
-    color: #ff9500;
-    font-weight: bold;
-    margin-right: 8rpx;
-  }
-  
-  .reward-input {
+  .search-input {
     flex: 1;
-    height: 80rpx;
-    font-size: 28rpx;
-    color: #333;
-    background-color: transparent;
+    height: 60rpx;
+    font-size: 26rpx;
+    margin: 0 15rpx;
   }
 }
 
-// 上传区域
-.upload-area {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20rpx;
-  
-  .upload-button {
-    width: 160rpx;
-    height: 160rpx;
-    background-color: #f8f8f8;
-    border-radius: 12rpx;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border: 2rpx dashed #ddd;
-    
-    .upload-icon {
-      font-size: 48rpx;
-      color: #bbb;
-      line-height: 1;
-      margin-bottom: 10rpx;
-    }
-    
-    .upload-text {
-      font-size: 24rpx;
-      color: #bbb;
-    }
-  }
-  
-  .image-preview {
-    width: 160rpx;
-    height: 160rpx;
-    position: relative;
-    border-radius: 12rpx;
-    overflow: hidden;
-    
-    .preview-image {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    
-    .delete-icon {
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 40rpx;
-      height: 40rpx;
-      background-color: rgba(0, 0, 0, 0.5);
-      color: #fff;
-      font-size: 28rpx;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 0 0 0 12rpx;
-    }
-  }
-}
-
-// 选择类型提示
-.select-type-hint {
+// 上传按钮增强
+.upload-button {
+  width: 160rpx;
+  height: 160rpx;
+  background-color: #f8f8f8;
+  border-radius: 20rpx; /* 增加圆角 */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 60rpx 0;
+  border: 2rpx dashed #ddd;
+  transition: all 0.3s;
   
-  .hint-icon {
-    font-size: 60rpx;
-    margin-bottom: 20rpx;
-    animation: bounce 2s infinite;
-  }
-  
-  .hint-text {
-    font-size: 28rpx;
-    color: #999;
+  &:active {
+    background-color: #f0f0f0;
+    transform: scale(0.97); /* 轻微缩放效果 */
   }
 }
 
-@keyframes bounce {
-  0%, 20%, 50%, 80%, 100% {
-    transform: translateY(0);
+// 图片预览增强
+.image-preview {
+  width: 160rpx;
+  height: 160rpx;
+  position: relative;
+  border-radius: 20rpx; /* 增加圆角 */
+  overflow: hidden;
+  border: 2rpx solid #f0f0f0;
+  transition: all 0.3s;
+  
+  &:active {
+    transform: scale(0.95); /* 轻微缩放效果 */
+    box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
   }
-  40% {
-    transform: translateY(-20rpx);
-  }
-  60% {
-    transform: translateY(-10rpx);
+  
+  .delete-icon {
+    position: absolute;
+    top: 8rpx;
+    right: 8rpx;
+    width: 40rpx;
+    height: 40rpx;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    font-size: 24rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s;
+    
+    &:active {
+      transform: scale(0.9);
+      background-color: rgba(255, 77, 79, 0.8);
+    }
   }
 }
 
-// 提交按钮
+// 提交按钮增强
 .submit-button {
-  height: 90rpx;
+  height: 98rpx; /* 增加高度 */
   background: linear-gradient(to right, #cccccc, #bbbbbb);
-  border-radius: 45rpx;
+  border-radius: 49rpx; /* 保持半圆形状 */
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0 10rpx 20rpx rgba(0, 0, 0, 0.1);
-  margin: 60rpx 0 calc(80rpx + env(safe-area-inset-bottom, 40rpx)); /* 增加按钮上下边距 */
+  margin: 60rpx 20rpx calc(80rpx + env(safe-area-inset-bottom, 40rpx)); /* 增加按钮左右边距 */
   position: relative;
   overflow: hidden;
   transition: all 0.3s ease;
@@ -1468,33 +1448,7 @@ const getPageTaskTypes = (page) => {
   
   &.button-can-submit {
     background: linear-gradient(to right, #ff9500, #ff7d00);
-    box-shadow: 0 10rpx 20rpx rgba(255, 149, 0, 0.2);
-    
-    &:active {
-      box-shadow: 0 5rpx 10rpx rgba(255, 149, 0, 0.2);
-    }
-    
-    .button-ripple {
-      position: absolute;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0));
-      animation: buttonRipple 2s infinite ease-in-out;
-      z-index: 1;
-    }
-  }
-}
-
-@keyframes buttonRipple {
-  0% {
-    left: -100%;
-  }
-  50% {
-    left: 100%;
-  }
-  100% {
-    left: 100%;
+    box-shadow: 0 10rpx 30rpx rgba(255, 149, 0, 0.25); /* 更明显的阴影 */
   }
 }
 
@@ -1512,23 +1466,6 @@ const getPageTaskTypes = (page) => {
   }
   100% {
     transform: scale(1);
-  }
-}
-
-// 新增：搜索框样式
-.search-box {
-  display: flex;
-  align-items: center;
-  background-color: #f2f2f2;
-  border-radius: 16rpx;
-  padding: 10rpx 20rpx;
-  margin-bottom: 20rpx;
-  
-  .search-input {
-    flex: 1;
-    height: 60rpx;
-    font-size: 26rpx;
-    margin: 0 15rpx;
   }
 }
 
@@ -1709,19 +1646,19 @@ const getPageTaskTypes = (page) => {
 .form-card {
   background-color: #ffffff;
   border-radius: 16rpx;
-  margin-bottom: 30rpx;
+  margin-bottom: 36rpx;
   overflow: hidden;
-  box-shadow: 0 2rpx 15rpx rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.06);
   
   .card-header {
     display: flex;
     align-items: center;
     padding: 24rpx;
-    background-color: #f9f9f9;
+    background: linear-gradient(to right, #fff8e6, #fffcf5);
     border-bottom: 1px solid #f0f0f0;
     
     .card-title {
-      font-size: 28rpx;
+      font-size: 30rpx;
       font-weight: bold;
       color: #333;
       margin-left: 12rpx;
@@ -1729,7 +1666,7 @@ const getPageTaskTypes = (page) => {
   }
   
   .card-body {
-    padding: 24rpx;
+    padding: 30rpx 24rpx;
   }
 }
 
@@ -1747,23 +1684,25 @@ const getPageTaskTypes = (page) => {
 .weight-input-wrapper {
   display: flex;
   align-items: center;
-  background-color: #f8f8f8;
-  border-radius: 12rpx;
-  padding: 0 20rpx;
-  border: 2rpx solid transparent;
+  background-color: #ffffff;
+  border-radius: 20rpx; /* 增加圆角 */
+  padding: 0 24rpx; /* 增加内边距 */
+  border: 2rpx solid #e8e8e8;
   transition: all 0.3s;
+  box-shadow: 0 6rpx 16rpx rgba(0, 0, 0, 0.03);
   
   &:focus-within {
     border-color: #ff9500;
-    background-color: #fff;
-    box-shadow: 0 0 0 2rpx rgba(255, 149, 0, 0.1);
+    background-color: #fffcf7;
+    box-shadow: 0 8rpx 20rpx rgba(255, 149, 0, 0.15);
+    transform: translateY(-2rpx); /* 轻微上浮效果 */
   }
   
   .weight-input {
     flex: 1;
     height: 80rpx;
-    font-size: 28rpx;
-    color: #333;
+    font-size: 30rpx;
+    color: #333333;
     background-color: transparent;
   }
   
@@ -1779,16 +1718,25 @@ const getPageTaskTypes = (page) => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #f8f8f8;
-  border-radius: 12rpx;
-  padding: 22rpx 20rpx;
-  font-size: 28rpx;
+  background-color: #ffffff;
+  border-radius: 20rpx; /* 增加圆角 */
+  padding: 24rpx 24rpx; /* 增加内边距 */
+  font-size: 30rpx;
+  border: 2rpx solid #e8e8e8;
+  box-shadow: 0 6rpx 16rpx rgba(0, 0, 0, 0.03);
+  transition: all 0.3s;
+  
+  &:active {
+    background-color: #fffcf7;
+    border-color: #ffcb8c;
+    transform: scale(0.99); /* 轻微缩放效果 */
+  }
   
   .size-text {
-    color: #333;
+    color: #333333;
     
     &.size-placeholder {
-      color: #bbb;
+      color: #c0c4cc;
     }
   }
 }
