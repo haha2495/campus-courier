@@ -176,15 +176,19 @@
             <!-- 取件地址 -->
             <view class="form-item">
               <text class="form-label">取件地址</text>
-              <view class="input-container" @click="showLocationPicker('pickup')">
+              <view class="input-container">
                 <view class="input-prefix">
                   <u-icon name="map" size="32rpx" color="#ff9500"></u-icon>
                 </view>
-                <text class="location-text" :class="{'location-placeholder': !taskForm.pickupLocation}">
-                  {{ taskForm.pickupLocation || '请输入取件地址' }}
-                </text>
-                <view class="input-suffix">
-                  <u-icon name="arrow-right" size="28rpx" color="#c0c4cc"></u-icon>
+                <input 
+                  type="text" 
+                  class="form-input with-prefix" 
+                  placeholder="请输入取件地址" 
+                  placeholder-class="placeholder"
+                  v-model="taskForm.pickupLocation"
+                />
+                <view class="input-suffix" @click="openMap('pickup')">
+                  <u-icon name="map-fill" size="28rpx" color="#36c892"></u-icon>
                 </view>
               </view>
             </view>
@@ -192,15 +196,19 @@
             <!-- 送达地址 -->
             <view class="form-item">
               <text class="form-label">送达地址</text>
-              <view class="input-container" @click="showLocationPicker('delivery')">
+              <view class="input-container">
                 <view class="input-prefix">
                   <u-icon name="map-fill" size="32rpx" color="#ff9500"></u-icon>
                 </view>
-                <text class="location-text" :class="{'location-placeholder': !taskForm.deliveryLocation}">
-                  {{ taskForm.deliveryLocation || '请输入送达地址' }}
-                </text>
-                <view class="input-suffix">
-                  <u-icon name="arrow-right" size="28rpx" color="#c0c4cc"></u-icon>
+                <input 
+                  type="text" 
+                  class="form-input with-prefix" 
+                  placeholder="请输入送达地址" 
+                  placeholder-class="placeholder"
+                  v-model="taskForm.deliveryLocation"
+                />
+                <view class="input-suffix" @click="openMap('delivery')">
+                  <u-icon name="map-fill" size="28rpx" color="#36c892"></u-icon>
                 </view>
               </view>
             </view>
@@ -356,13 +364,15 @@
             <!-- 备注说明 -->
             <view class="form-item">
               <text class="form-label">备注说明</text>
-              <textarea 
-                class="form-textarea" 
-                placeholder="补充说明（选填）" 
-                placeholder-class="placeholder"
-                v-model="taskForm.notes"
-                maxlength="100"
-              />
+              <view class="textarea-container">
+                <textarea 
+                  class="form-textarea" 
+                  placeholder="补充说明（选填）" 
+                  placeholder-class="placeholder"
+                  v-model="taskForm.notes"
+                  maxlength="100"
+                />
+              </view>
               <text class="input-counter">{{ taskForm.notes.length }}/100</text>
             </view>
           </view>
@@ -748,21 +758,17 @@ const selectTaskType = (typeId) => {
 
 // 选择位置
 const showLocationPicker = (type) => {
-  // 模拟选择位置，实际项目中应调用地图选择API
-  uni.showModal({
-    title: '输入地址',
-    editable: true,
-    placeholderText: type === 'pickup' ? '请输入取件地址' : '请输入送达地址',
-    success: (res) => {
-      if (res.confirm && res.content) {
-        if (type === 'pickup') {
-          taskForm.pickupLocation = res.content
-        } else {
-          taskForm.deliveryLocation = res.content
-        }
-      }
-    }
+  // 保留原有功能，但不再使用
+  console.log('选择位置类型:', type)
+}
+
+// 打开地图选择位置
+const openMap = (type) => {
+  uni.showToast({
+    title: '选择地图位置功能开发中',
+    icon: 'none'
   })
+  // 这里可以集成地图选择功能
 }
 
 // 日期选择
@@ -1037,6 +1043,7 @@ const getPageTaskTypes = (page) => {
 .publish-content {
   height: calc(100vh - var(--window-top) - 10px);
   padding: 30rpx;
+  padding-bottom: calc(160rpx + env(safe-area-inset-bottom, 40rpx)); /* 增加底部内边距 */
   box-sizing: border-box;
   position: absolute;
   left: 0;
@@ -1202,31 +1209,16 @@ const getPageTaskTypes = (page) => {
   align-items: center;
   background-color: #f8f8f8;
   border-radius: 12rpx;
-  border: 2rpx solid transparent;
+  border: 2rpx solid #e5e5e5; /* 更明显的边框 */
   transition: all 0.3s;
   overflow: hidden;
   box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.03);
+  margin-bottom: 26rpx; /* 确保下方计数器有足够空间 */
   
-  &.focused {
+  &:focus-within {
     border-color: #ff9500;
     background-color: #fff;
     box-shadow: 0 4rpx 12rpx rgba(255, 149, 0, 0.1);
-  }
-  
-  &.input-error {
-    border-color: #ff4d4f;
-    background-color: #fff;
-    animation: shake 0.5s;
-  }
-  
-  .input-prefix {
-    padding: 0 16rpx 0 20rpx;
-    display: flex;
-    align-items: center;
-  }
-  
-  .input-icon {
-    padding: 0 20rpx 0 10rpx;
   }
 }
 
@@ -1253,7 +1245,9 @@ const getPageTaskTypes = (page) => {
   min-height: 180rpx;
   line-height: 1.6;
   padding: 20rpx;
-  padding-bottom: 40rpx; // 留出计数器的空间
+  font-size: 28rpx;
+  color: #333;
+  border: none;
 }
 
 .location-text, .picker-text {
@@ -1444,7 +1438,7 @@ const getPageTaskTypes = (page) => {
   align-items: center;
   justify-content: center;
   box-shadow: 0 10rpx 20rpx rgba(0, 0, 0, 0.1);
-  margin: 40rpx 0 calc(40rpx + env(safe-area-inset-bottom, 40rpx));
+  margin: 60rpx 0 calc(80rpx + env(safe-area-inset-bottom, 40rpx)); /* 增加按钮上下边距 */
   position: relative;
   overflow: hidden;
   transition: all 0.3s ease;
