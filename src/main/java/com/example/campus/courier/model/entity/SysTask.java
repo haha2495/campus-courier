@@ -45,7 +45,7 @@ public class SysTask implements Serializable {
     @Schema(description = "任务类型ID")
     private Integer taskTypeId;
 
-    @Schema(description = "任务状态：0-待接单，1-已接单，2-进行中，3-待确认，4-已完成，5-已取消，6-已过期，7-存在纠纷")
+    @Schema(description = "任务状态：0-待接单，1-已接单，2-进行中，3-待确认，4-已完成，5-已取消，6-已过期，7-存在纠纷（参见TaskStatusEnum枚举类）")
     private Integer status;
 
     @Schema(description = "任务报酬")
