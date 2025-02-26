@@ -1,24 +1,5 @@
 <template>
   <view class="my-tasks-container">
-    <!-- 顶部切换栏 -->
-    <view class="tab-header">
-      <view 
-        class="tab-item" 
-        :class="{ active: activeTab === 'published' }" 
-        @click="switchTab('published')"
-      >
-        我发布的
-      </view>
-      <view 
-        class="tab-item" 
-        :class="{ active: activeTab === 'accepted' }" 
-        @click="switchTab('accepted')"
-      >
-        我接单的
-      </view>
-      <view class="tab-slider" :style="tabSliderStyle"></view>
-    </view>
-
     <!-- 状态筛选器 -->
     <view class="status-filter">
       <view 
@@ -43,9 +24,20 @@
     >
       <!-- 暂无数据提示 -->
       <view v-if="taskList.length === 0" class="empty-container">
-        <image class="empty-image" src="/static/images/empty-tasks.png" mode="aspectFit"></image>
-        <text class="empty-text">暂无数据</text>
-        <text class="empty-subtext">下拉刷新试试看</text>
+        <view class="empty-animation">
+          <view class="empty-courier-icon">🛵</view>
+          <view class="empty-dots">
+            <view class="dot"></view>
+            <view class="dot"></view>
+            <view class="dot"></view>
+          </view>
+        </view>
+        <text class="empty-text">还没有任务哦！</text>
+        <text class="empty-subtext">快去发布一个新任务吧～</text>
+        <view class="empty-action" @click="navigateToPublish">
+          <text class="action-text">去发布</text>
+          <text class="action-arrow">→</text>
+        </view>
       </view>
 
       <!-- 任务卡片列表 -->
@@ -73,14 +65,6 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 
-// 任务类型标签页
-const activeTab = ref('published') // 默认选中"我发布的"
-const tabSliderStyle = computed(() => {
-  return {
-    transform: activeTab.value === 'published' ? 'translateX(0)' : 'translateX(100%)'
-  }
-})
-
 // 状态筛选选项
 const statusOptions = [
   { label: '全部', value: 'all' },
@@ -97,12 +81,6 @@ const isRefreshing = ref(false)
 const hasMoreData = ref(true)
 const currentPage = ref(1)
 const pageSize = 10
-
-// 切换标签页
-const switchTab = (tab) => {
-  activeTab.value = tab
-  refreshTasks()
-}
 
 // 状态筛选
 const filterByStatus = (status) => {
@@ -151,6 +129,13 @@ const navigateToTaskDetail = (taskId) => {
   })
 }
 
+// 跳转到发布任务页面
+const navigateToPublish = () => {
+  uni.navigateTo({
+    url: '/pages/publish/index'
+  })
+}
+
 // 页面加载时获取任务列表
 onMounted(() => {
   refreshTasks()
@@ -165,47 +150,17 @@ onMounted(() => {
   background-color: #f5f7fa;
 }
 
-.tab-header {
-  display: flex;
-  position: relative;
-  background-color: #ffffff;
-  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
-  padding: 20rpx 0;
-  z-index: 10;
-  
-  .tab-item {
-    flex: 1;
-    text-align: center;
-    font-size: 30rpx;
-    color: #666;
-    position: relative;
-    padding: 16rpx 0;
-    transition: color 0.3s;
-    
-    &.active {
-      color: #ff9500;
-      font-weight: 500;
-    }
-  }
-  
-  .tab-slider {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 50%;
-    height: 4rpx;
-    background-color: #ff9500;
-    transition: transform 0.3s ease;
-  }
-}
-
 .status-filter {
   display: flex;
   background-color: #ffffff;
   padding: 20rpx 30rpx;
   white-space: nowrap;
   overflow-x: auto;
-  margin-top: 2rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+  
+  &::-webkit-scrollbar {
+    display: none;
+  }
   
   .status-item {
     padding: 10rpx 30rpx;
@@ -238,24 +193,87 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding-top: 200rpx;
+  padding-top: 150rpx;
   
-  .empty-image {
-    width: 240rpx;
-    height: 240rpx;
-    margin-bottom: 20rpx;
-    opacity: 0.6;
+  .empty-animation {
+    position: relative;
+    width: 200rpx;
+    height: 200rpx;
+    margin-bottom: 40rpx;
+    
+    .empty-courier-icon {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 60rpx;
+      animation: drive 3s infinite;
+    }
+    
+    .empty-dots {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      
+      .dot {
+        width: 16rpx;
+        height: 16rpx;
+        border-radius: 50%;
+        background-color: #cccccc;
+        margin: 0 10rpx;
+        opacity: 0.6;
+        
+        &:nth-child(1) {
+          animation: pulse 1.5s infinite 0.2s;
+        }
+        
+        &:nth-child(2) {
+          animation: pulse 1.5s infinite 0.4s;
+        }
+        
+        &:nth-child(3) {
+          animation: pulse 1.5s infinite 0.6s;
+        }
+      }
+    }
   }
   
   .empty-text {
-    font-size: 32rpx;
-    color: #999;
-    margin-bottom: 10rpx;
+    font-size: 34rpx;
+    color: #666;
+    margin-bottom: 15rpx;
+    font-weight: 500;
   }
   
   .empty-subtext {
-    font-size: 26rpx;
-    color: #bbb;
+    font-size: 28rpx;
+    color: #999;
+    margin-bottom: 40rpx;
+  }
+  
+  .empty-action {
+    background: linear-gradient(to right, #ff9500, #ffbd5c);
+    padding: 18rpx 40rpx;
+    border-radius: 40rpx;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 6rpx 16rpx rgba(255, 149, 0, 0.3);
+    
+    .action-text {
+      color: #ffffff;
+      font-size: 28rpx;
+      font-weight: 500;
+    }
+    
+    .action-arrow {
+      color: #ffffff;
+      font-size: 28rpx;
+      margin-left: 10rpx;
+      font-weight: 500;
+    }
   }
 }
 
@@ -269,6 +287,12 @@ onMounted(() => {
   margin-bottom: 20rpx;
   box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
   overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  
+  &:active {
+    transform: scale(0.98);
+    box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+  }
   
   .card-placeholder {
     height: 180rpx;
@@ -285,5 +309,28 @@ onMounted(() => {
   font-size: 26rpx;
   color: #999;
   padding: 30rpx 0;
+}
+
+@keyframes drive {
+  0% {
+    left: -60rpx;
+  }
+  50% {
+    left: 200rpx;
+  }
+  100% {
+    left: -60rpx;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.2;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.2);
+  }
 }
 </style> 
