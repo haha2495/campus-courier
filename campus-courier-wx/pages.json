@@ -35,15 +35,13 @@
 		{
 			"path": "pages/my-tasks/index",
 			"style": {
-				"navigationBarTitleText": "我的任务",
-				"navigationStyle": "custom"
+				"navigationBarTitleText": "我的任务"
 			}
 		},
 		{
 			"path": "pages/task-detail/index",
 			"style": {
-				"navigationBarTitleText": "任务详情",
-				"navigationStyle": "custom"
+				"navigationBarTitleText": "任务详情"
 			}
 		}
 	],
