@@ -6,6 +6,8 @@ import com.example.campus.courier.model.request.task.TaskTypePageRequest;
 import com.example.campus.courier.model.request.task.TaskTypeUpdateRequest;
 import com.example.campus.courier.model.response.PageResult;
 
+import java.util.List;
+
 /**
  * 任务类型服务接口
  */
@@ -26,6 +28,13 @@ public interface SysTaskTypeService {
      * @return 任务类型分页数据
      */
     PageResult<SysTaskType> pageTaskTypes(TaskTypePageRequest request);
+    
+    /**
+     * 获取所有启用的任务类型
+     *
+     * @return 启用的任务类型列表，按优先级排序
+     */
+    List<SysTaskType> listEnabledTaskTypes();
 
     /**
      * 启用任务类型

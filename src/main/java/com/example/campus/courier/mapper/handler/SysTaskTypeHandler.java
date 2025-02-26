@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * 任务类型数据处理层
  */
@@ -48,6 +50,24 @@ public class SysTaskTypeHandler extends ServiceImpl<SysTaskTypeMapper, SysTaskTy
         
         // 转换为PageResult
         return PageResult.build(page.getTotal(), page.getRecords());
+    }
+    
+    /**
+     * 获取所有启用的任务类型，按优先级排序
+     *
+     * @return 启用的任务类型列表
+     */
+    public List<SysTaskType> listEnabledTaskTypes() {
+        log.info("Handler - 获取所有启用的任务类型");
+        
+        // 构建查询条件：状态为启用(1)，按优先级降序排序
+        LambdaQueryWrapper<SysTaskType> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysTaskType::getStatus, 1)
+                    .orderByDesc(SysTaskType::getPriority)
+                    .orderByAsc(SysTaskType::getCreateTime);
+        
+        // 执行查询并返回结果
+        return list(queryWrapper);
     }
     
     /**

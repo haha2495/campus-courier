@@ -14,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * 任务类型服务实现类
  */
@@ -54,6 +56,19 @@ public class SysTaskTypeServiceImpl implements SysTaskTypeService {
         
         // 调用Handler执行分页查询
         return taskTypeHandler.pageTaskTypes(request);
+    }
+    
+    /**
+     * 获取所有启用的任务类型，按优先级排序
+     *
+     * @return 启用的任务类型列表
+     */
+    @Override
+    public List<SysTaskType> listEnabledTaskTypes() {
+        log.info("获取所有启用的任务类型");
+        
+        // 调用Handler获取启用的任务类型列表
+        return taskTypeHandler.listEnabledTaskTypes();
     }
     
     /**

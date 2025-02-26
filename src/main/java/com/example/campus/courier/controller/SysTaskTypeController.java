@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * 任务类型控制器
  */
@@ -57,6 +59,19 @@ public class SysTaskTypeController extends BaseController {
             return Result.forbidden();
         }
         return Result.success(taskTypeService.pageTaskTypes(request), "查询成功");
+    }
+    
+    /**
+     * 获取所有启用的任务类型
+     *
+     * @return 已启用的任务类型列表，按优先级排序
+     */
+    @GetMapping("/enabled")
+    @Operation(summary = "获取所有启用的任务类型", description = "返回所有已启用的任务类型列表，按优先级排序，用于小程序端展示")
+    public Result<List<SysTaskType>> listEnabledTaskTypes() {
+        // 获取所有启用的任务类型
+        List<SysTaskType> enabledTaskTypes = taskTypeService.listEnabledTaskTypes();
+        return Result.success(enabledTaskTypes, "获取成功");
     }
 
     /**
