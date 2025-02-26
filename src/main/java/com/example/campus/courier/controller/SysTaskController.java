@@ -37,7 +37,7 @@ public class SysTaskController extends BaseController {
         Integer currentUserId = getLoginUserId();
         
         // 调用服务保存任务
-        boolean success = sysTaskService.saveTask(request, currentUserId.longValue());
+        boolean success = sysTaskService.saveTask(request, currentUserId);
         
         // 返回保存结果
         if (success) {

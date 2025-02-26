@@ -32,7 +32,7 @@ public class SysTask implements Serializable {
 
     @TableId(value = "id", type = IdType.AUTO)
     @Schema(description = "任务ID")
-    private Long id;
+    private Integer id;
 
     @Schema(description = "任务编号")
     private String taskNo;
@@ -44,10 +44,10 @@ public class SysTask implements Serializable {
     private String description;
 
     @Schema(description = "发布者用户ID")
-    private Long publisherId;
+    private Integer publisherId;
 
     @Schema(description = "接单者用户ID")
-    private Long runnerId;
+    private Integer runnerId;
 
     @Schema(description = "任务类型ID")
     private Integer taskTypeId;
@@ -104,7 +104,7 @@ public class SysTask implements Serializable {
      * @param publisherId 发布者ID
      * @return 当前实体对象
      */
-    public SysTask init(TaskAddRequest request, Long publisherId) {
+    public SysTask init(TaskAddRequest request, Integer publisherId) {
         // 1. 设置任务基本信息
         this.taskNo = TaskUtils.generateTaskNo();
         this.title = request.getTitle();

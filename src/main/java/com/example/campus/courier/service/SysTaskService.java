@@ -15,5 +15,5 @@ public interface SysTaskService {
      * @param publisherId 发布者ID
      * @return 操作是否成功
      */
-    boolean saveTask(TaskAddRequest request, Long publisherId);
+    boolean saveTask(TaskAddRequest request, Integer publisherId);
 } 

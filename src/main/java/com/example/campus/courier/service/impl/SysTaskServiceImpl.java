@@ -32,7 +32,7 @@ public class SysTaskServiceImpl implements SysTaskService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean saveTask(TaskAddRequest request, Long publisherId) {
+    public boolean saveTask(TaskAddRequest request, Integer publisherId) {
         // 1. 使用贫血模型初始化任务实体
         SysTask task = new SysTask().init(request, publisherId);
 

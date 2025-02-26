@@ -25,10 +25,10 @@ public class SysTaskLog implements Serializable {
 
     @TableId(value = "id", type = IdType.AUTO)
     @Schema(description = "日志ID")
-    private Long id;
+    private Integer id;
 
     @Schema(description = "任务ID")
-    private Long taskId;
+    private Integer taskId;
 
     @Schema(description = "操作类型：1-发布，2-接单，3-开始执行，4-完成任务，5-确认完成，6-取消任务，7-提交纠纷，8-解决纠纷，9-评价（参见TaskActionEnum枚举类）")
     private Integer action;
@@ -48,7 +48,7 @@ public class SysTaskLog implements Serializable {
      * @param remark 备注说明
      * @return 当前实体对象
      */
-    public SysTaskLog init(Long taskId, TaskActionEnum action, String remark) {
+    public SysTaskLog init(Integer taskId, TaskActionEnum action, String remark) {
         this.taskId = taskId;
         this.action = action.getCode();
         this.remark = remark;
