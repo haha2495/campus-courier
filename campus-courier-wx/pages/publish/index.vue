@@ -69,7 +69,6 @@
                 :class="{ 'active': selectedTaskType === type.id.toString() }"
                 @click="selectTaskType(type.id.toString())"
               >
-                <!-- 只保留图标和名称展示 -->
                 <image 
                   v-if="type.icon && type.icon.includes('http')" 
                   :src="type.icon" 
@@ -120,120 +119,6 @@
         <view class="description-content">
           <text class="description-text">{{ selectedTaskTypeObj.description }}</text>
         </view>
-      </view>
-      
-      <!-- 任务表单 -->
-      <view v-if="selectedTaskType">
-        <view class="section-title">任务信息</view>
-        
-        <!-- 任务标题 -->
-        <view class="form-item">
-          <text class="form-label">任务标题</text>
-          <input 
-            type="text" 
-            placeholder="请输入任务标题（5-20字）" 
-            placeholder-class="placeholder"
-            class="form-input"
-            maxlength="20"
-            v-model="taskForm.title"
-          />
-        </view>
-        
-        <!-- 任务描述 -->
-        <view class="form-item">
-          <text class="form-label">任务描述</text>
-          <textarea 
-            placeholder="请详细描述您的任务需求..." 
-            placeholder-class="placeholder"
-            class="form-textarea"
-            auto-height
-            maxlength="500"
-            v-model="taskForm.description"
-          ></textarea>
-        </view>
-        
-        <!-- 地点信息 -->
-        <view class="form-item">
-          <text class="form-label">取货地点</text>
-          <view class="location-picker" @click="showLocationPicker('pickup')">
-            <text class="location-placeholder">{{ taskForm.pickupLocation || '点击选择位置' }}</text>
-            <view class="location-icon">📍</view>
-          </view>
-        </view>
-        
-        <view class="form-item">
-          <text class="form-label">送达地点</text>
-          <view class="location-picker" @click="showLocationPicker('delivery')">
-            <text class="location-placeholder">{{ taskForm.deliveryLocation || '点击选择位置' }}</text>
-            <view class="location-icon">📍</view>
-          </view>
-        </view>
-        
-        <!-- 时间选择 -->
-        <view class="form-item">
-          <text class="form-label">期望送达</text>
-          <view class="time-picker">
-            <picker 
-              mode="date" 
-              @change="onDateChange"
-              :start="currentDate"
-            >
-              <view class="picker-item">
-                <text class="picker-text">{{ taskForm.deliveryDate || '选择日期' }}</text>
-                <text class="picker-arrow">▼</text>
-              </view>
-            </picker>
-            <picker 
-              mode="time" 
-              @change="onTimeChange"
-            >
-              <view class="picker-item">
-                <text class="picker-text">{{ taskForm.deliveryTime || '选择时间' }}</text>
-                <text class="picker-arrow">▼</text>
-              </view>
-            </picker>
-          </view>
-        </view>
-        
-        <!-- 金额输入 -->
-        <view class="form-item">
-          <text class="form-label">悬赏金额</text>
-          <view class="reward-input-wrapper">
-            <text class="currency-symbol">¥</text>
-            <input 
-              type="digit" 
-              placeholder="输入金额" 
-              placeholder-class="placeholder"
-              class="reward-input"
-              v-model="taskForm.reward"
-            />
-          </view>
-        </view>
-        
-        <!-- 上传图片 -->
-        <view class="form-item">
-          <text class="form-label">上传图片(选填)</text>
-          <view class="upload-area">
-            <view 
-              v-for="(image, index) in taskForm.images" 
-              :key="index"
-              class="image-preview"
-            >
-              <image :src="image" mode="aspectFill" class="preview-image"></image>
-              <view class="delete-icon" @click.stop="deleteImage(index)">×</view>
-            </view>
-            <view class="upload-button" @click="chooseImage" v-if="taskForm.images.length < 3">
-              <text class="upload-icon">+</text>
-              <text class="upload-text">上传图片</text>
-            </view>
-          </view>
-        </view>
-      </view>
-      
-      <!-- 未选择任务类型的提示 -->
-      <view v-else class="select-type-hint">
-        <view class="hint-icon">👆</view>
-        <text class="hint-text">请先选择任务类型</text>
       </view>
       
       <!-- 提交按钮 -->
