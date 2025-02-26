@@ -52,7 +52,7 @@ public class SysTaskServiceImpl implements SysTaskService {
         sysTaskHandler.save(task);
 
         // 3. 初始化并保存任务日志
-        SysTaskLog taskLog = new SysTaskLog().init(task.getId(), TaskActionEnum.PUBLISH, "发布任务:" + task.getTitle());
+        SysTaskLog taskLog = new SysTaskLog().init(task.getId(), TaskActionEnum.PUBLISH, "发布任务:" + task.getTitle(), publisherId);
         sysTaskLogHandler.save(taskLog);
 
         return true;
@@ -126,7 +126,7 @@ public class SysTaskServiceImpl implements SysTaskService {
         boolean success = sysTaskHandler.updateById(task);
 
         // 4. 记录任务日志
-        SysTaskLog taskLog = new SysTaskLog().init(task.getId(), TaskActionEnum.CANCEL, "取消任务:" + task.getTitle());
+        SysTaskLog taskLog = new SysTaskLog().init(task.getId(), TaskActionEnum.CANCEL, "取消任务:" + task.getTitle(), userId);
         sysTaskLogHandler.save(taskLog);
 
         return success;
