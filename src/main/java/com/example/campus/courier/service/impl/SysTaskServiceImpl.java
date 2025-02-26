@@ -18,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -52,12 +51,12 @@ public class SysTaskServiceImpl implements SysTaskService {
         sysTaskHandler.save(task);
 
         // 3. 初始化并保存任务日志
-        SysTaskLog taskLog = new SysTaskLog().init(task.getId(), TaskActionEnum.PUBLISH, "发布任务");
+        SysTaskLog taskLog = new SysTaskLog().init(task.getId(), TaskActionEnum.PUBLISH, "发布任务:" + task.getTitle());
         sysTaskLogHandler.save(taskLog);
 
         return true;
     }
-    
+
     /**
      * 获取用户发布的任务列表
      *
@@ -69,25 +68,25 @@ public class SysTaskServiceImpl implements SysTaskService {
     public PageResult<TaskDTO> getPublishedTasks(TaskQueryRequest request, Integer publisherId) {
         // 1. 使用Handler查询任务基础数据
         Page<SysTask> taskPage = sysTaskHandler.getPublishedTasks(request, publisherId);
-        
+
         // 2. 如果没有数据，返回空结果
         if (taskPage.getRecords().isEmpty()) {
             return PageResult.empty();
         }
-        
+
         // 3. 提取任务类型ID列表
         List<Integer> typeIds = taskPage.getRecords().stream()
-                              .map(SysTask::getTaskTypeId)
-                              .distinct()
-                              .collect(Collectors.toList());
-        
+                .map(SysTask::getTaskTypeId)
+                .distinct()
+                .collect(Collectors.toList());
+
         // 4. 通过TaskTypeHandler查询任务类型数据
         List<SysTaskType> taskTypes = sysTaskTypeHandler.getTaskTypesByIds(typeIds);
-        
+
         // 5. 将任务类型数据转为Map，方便后续查找
         Map<Integer, SysTaskType> typeMap = taskTypes.stream()
-                                         .collect(Collectors.toMap(SysTaskType::getId, type -> type));
-        
+                .collect(Collectors.toMap(SysTaskType::getId, type -> type));
+
         // 6. 在Service层组装DTO
         List<TaskDTO> dtoList = taskPage.getRecords().stream().map(task -> {
             TaskDTO dto = new TaskDTO();
@@ -95,7 +94,7 @@ public class SysTaskServiceImpl implements SysTaskService {
             dto.setTaskType(typeMap.get(task.getTaskTypeId()));
             return dto;
         }).collect(Collectors.toList());
-        
+
         // 7. 构建并返回分页结果
         return PageResult.build(taskPage.getTotal(), dtoList);
     }

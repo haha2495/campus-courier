@@ -60,8 +60,14 @@
             v-for="task in taskList"
             :key="task.task.id"
             class="task-card"
+            :class="{ 'urgent-card': task.task.urgent }"
             @click="navigateToTaskDetail(task.task.id)"
         >
+          <!-- 加急标记 - 使用气泡样式 -->
+          <view v-if="task.task.urgent" class="urgent-bubble">
+            <text>加急</text>
+          </view>
+          
           <!-- 卡片头部 - 类型和状态 -->
           <view class="card-header">
             <view class="task-type">
@@ -75,11 +81,8 @@
 
           <!-- 卡片内容主体 -->
           <view class="card-body">
-            <!-- 任务标题和加急标记 -->
-            <view class="title-row">
-              <view class="task-title">{{ task.task.title }}</view>
-              <view v-if="task.task.urgent" class="urgent-tag">加急</view>
-            </view>
+            <!-- 任务标题 -->
+            <view class="task-title">{{ task.task.title }}</view>
             
             <!-- 任务描述 -->
             <view class="task-desc">{{ task.task.description }}</view>
@@ -87,34 +90,44 @@
             <!-- 地址信息 -->
             <view class="address-info" v-if="task.task.pickupAddress || task.task.deliveryAddress">
               <view class="address-item" v-if="task.task.pickupAddress">
-                <text class="address-label">取件：</text>
+                <view class="address-icon pickup-icon">取</view>
                 <text class="address-value">{{ task.task.pickupAddress }}</text>
               </view>
               <view class="address-item" v-if="task.task.deliveryAddress">
-                <text class="address-label">送达：</text>
+                <view class="address-icon delivery-icon">送</view>
                 <text class="address-value">{{ task.task.deliveryAddress }}</text>
+              </view>
+            </view>
+
+            <!-- 任务规格信息 -->
+            <view class="task-specs" v-if="task.task.estimatedWeight || task.task.estimatedSize">
+              <view class="spec-item" v-if="task.task.estimatedWeight">
+                <text class="spec-label">预估重量：</text>
+                <text class="spec-value">{{ task.task.estimatedWeight }}kg</text>
+              </view>
+              <view class="spec-item" v-if="task.task.estimatedSize">
+                <text class="spec-label">预估大小：</text>
+                <text class="spec-value">{{ task.task.estimatedSize }}</text>
               </view>
             </view>
 
             <!-- 任务关键信息：赏金和截止时间 -->
             <view class="task-info">
-              <view class="info-item">
-                <text class="info-label">赏金：</text>
-                <text class="info-value price">
-                  ¥{{ task.task.reward }}
-                  <text v-if="task.task.urgent" class="urgent-reward">+{{ task.task.urgentReward }}(加急费)</text>
-                </text>
+              <view class="info-item reward">
+                <text class="reward-icon">¥</text>
+                <text class="reward-value">{{ task.task.reward }}</text>
+                <text v-if="task.task.urgent && task.task.urgentReward" class="urgent-reward">+{{ task.task.urgentReward }}</text>
               </view>
-              <view class="info-item">
-                <text class="info-label">截止时间：</text>
-                <text class="info-value">{{ task.task.expectedFinishTime }}</text>
+              <view class="info-item time">
+                <text class="time-label">期望送达：</text>
+                <text class="time-value">{{ formatTime(task.task.expectedFinishTime) }}</text>
               </view>
             </view>
           </view>
 
           <!-- 卡片底部 - 时间和操作按钮 -->
           <view class="card-footer">
-            <view class="time-info">{{ formatTime(task.task.createTime) }}</view>
+            <view class="time-info">{{ formatRelativeTime(task.task.createTime) }}</view>
             <view class="action-btn" v-if="canCancelTask(task.task.status)" @click.stop="cancelTask(task.task.id)">
               取消任务
             </view>
@@ -149,6 +162,42 @@ const hasMoreData = ref(true)
 const currentPage = ref(1)
 const pageSize = 10
 const total = ref(0)
+
+// 格式化时间显示 (YYYY-MM-DD HH:MM)
+const formatTime = (timeString) => {
+  if (!timeString) return '';
+  const date = new Date(timeString);
+  
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  
+  return `${year}-${month}-${day} ${hours}:${minutes}`;
+}
+
+// 格式化相对时间 (例如：刚刚、5分钟前、1小时前)
+const formatRelativeTime = (timeString) => {
+  if (!timeString) return '';
+  
+  const now = new Date();
+  const date = new Date(timeString);
+  const diff = Math.floor((now - date) / 1000); // 差值（秒）
+  
+  if (diff < 60) {
+    return '刚刚';
+  } else if (diff < 3600) {
+    return `${Math.floor(diff / 60)}分钟前`;
+  } else if (diff < 86400) {
+    return `${Math.floor(diff / 3600)}小时前`;
+  } else if (diff < 604800) { // 7天内
+    return `${Math.floor(diff / 86400)}天前`;
+  } else {
+    // 超过7天显示具体日期
+    return formatTime(timeString);
+  }
+}
 
 // 获取任务状态文本
 const getStatusText = (status) => {
@@ -321,7 +370,6 @@ onMounted(() => {
   flex-direction: column;
   height: 100vh;
   background-color: #f5f7fa;
-  /* 移除顶部内边距 */
 }
 
 .status-filter-wrapper {
@@ -376,9 +424,7 @@ onMounted(() => {
 
 .task-list-scroll {
   flex: 1;
-  /* 修改左右padding为相同值，确保两侧间距一致 */
-  padding: 30rpx 30rpx;
-  /* 解决滑动问题 */
+  padding: 20rpx 30rpx 30rpx;
   height: 100%;
   box-sizing: border-box;
 }
@@ -492,36 +538,83 @@ onMounted(() => {
 
 .task-card {
   background-color: #ffffff;
-  border-radius: 16rpx;
-  margin-bottom: 20rpx;
-  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+  border-radius: 20rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
   overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
-
+  transition: all 0.3s ease;
+  position: relative;
+  border: 1px solid #f0f0f0;
+  
   &:active {
-    transform: scale(0.98);
-    box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+    transform: translateY(2rpx);
+    box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+  }
+  
+  // 加急任务卡片样式
+  &.urgent-card {
+    background: linear-gradient(to right, #fffafa, #fff7f7);
+    border-left: 8rpx solid #ff4d4f;
+    box-shadow: 0 4rpx 16rpx rgba(255, 77, 79, 0.15);
+    border: 1px solid rgba(255, 77, 79, 0.2);
+    
+    .card-header {
+      border-bottom-color: rgba(255, 77, 79, 0.1);
+    }
+    
+    .card-footer {
+      border-top-color: rgba(255, 77, 79, 0.1);
+    }
+  }
+  
+  // 加急气泡标记
+  .urgent-bubble {
+    position: absolute;
+    top: -8rpx;
+    right: 30rpx;
+    background: #ff4d4f;
+    color: white;
+    font-size: 22rpx;
+    font-weight: bold;
+    padding: 6rpx 16rpx;
+    border-radius: 20rpx;
+    box-shadow: 0 4rpx 8rpx rgba(255, 77, 79, 0.3);
+    z-index: 10;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -6rpx;
+      right: 12rpx;
+      width: 0;
+      height: 0;
+      border-left: 6rpx solid transparent;
+      border-right: 6rpx solid transparent;
+      border-top: 8rpx solid #ff4d4f;
+    }
   }
 
   .card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20rpx 30rpx 0;
+    padding: 24rpx 30rpx 16rpx;
+    border-bottom: 1rpx solid rgba(0, 0, 0, 0.03);
 
     .task-type {
       display: flex;
       align-items: center;
 
       .type-icon {
-        width: 32rpx;
-        height: 32rpx;
-        margin-right: 8rpx;
+        width: 36rpx;
+        height: 36rpx;
+        margin-right: 10rpx;
       }
 
       text {
-        font-size: 24rpx;
+        font-size: 26rpx;
         color: #333;
+        font-weight: 500;
       }
     }
 
@@ -529,38 +622,23 @@ onMounted(() => {
       font-size: 24rpx;
       padding: 6rpx 16rpx;
       border-radius: 20rpx;
+      font-weight: 500;
     }
   }
 
   .card-body {
     padding: 20rpx 30rpx;
 
-    .title-row {
-      display: flex;
-      align-items: center;
-      margin-bottom: 10rpx;
-    }
-
     .task-title {
-      font-size: 30rpx;
-      font-weight: 500;
+      font-size: 32rpx;
+      font-weight: 600;
       color: #333;
-      flex: 1;
+      margin-bottom: 12rpx;
       // 超出一行省略
       display: -webkit-box;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 1;
       overflow: hidden;
-    }
-
-    .urgent-tag {
-      background-color: #ff4d4f;
-      color: white;
-      font-size: 22rpx;
-      padding: 4rpx 12rpx;
-      border-radius: 10rpx;
-      margin-left: 10rpx;
-      font-weight: bold;
     }
 
     .task-desc {
@@ -572,6 +650,7 @@ onMounted(() => {
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 2;
       overflow: hidden;
+      line-height: 1.5;
     }
 
     .address-info {
@@ -579,17 +658,34 @@ onMounted(() => {
       
       .address-item {
         display: flex;
-        margin-bottom: 6rpx;
+        align-items: center;
+        margin-bottom: 10rpx;
         
-        .address-label {
-          font-size: 24rpx;
-          color: #999;
+        .address-icon {
+          width: 36rpx;
+          height: 36rpx;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 20rpx;
+          color: white;
+          font-weight: bold;
+          margin-right: 10rpx;
           flex-shrink: 0;
+          
+          &.pickup-icon {
+            background-color: #1989fa;
+          }
+          
+          &.delivery-icon {
+            background-color: #07c160;
+          }
         }
         
         .address-value {
-          font-size: 24rpx;
-          color: #666;
+          font-size: 26rpx;
+          color: #333;
           flex: 1;
           // 超出一行省略
           white-space: nowrap;
@@ -598,34 +694,73 @@ onMounted(() => {
         }
       }
     }
+    
+    .task-specs {
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 16rpx;
+      
+      .spec-item {
+        display: flex;
+        align-items: center;
+        margin-right: 24rpx;
+        margin-bottom: 8rpx;
+        
+        .spec-label {
+          font-size: 24rpx;
+          color: #999;
+        }
+        
+        .spec-value {
+          font-size: 24rpx;
+          color: #333;
+          font-weight: 500;
+        }
+      }
+    }
 
     .task-info {
       display: flex;
       justify-content: space-between;
-      margin-top: 10rpx;
+      align-items: center;
+      margin-top: 16rpx;
 
       .info-item {
         display: flex;
         align-items: center;
-
-        .info-label {
-          font-size: 24rpx;
-          color: #999;
-        }
-
-        .info-value {
-          font-size: 24rpx;
-          color: #666;
-
-          &.price {
+        
+        &.reward {
+          .reward-icon {
+            font-size: 24rpx;
             color: #ff9500;
+            margin-right: 4rpx;
+            font-weight: 700;
+          }
+          
+          .reward-value {
+            font-size: 36rpx;
+            color: #ff9500;
+            font-weight: 700;
+          }
+          
+          .urgent-reward {
+            font-size: 24rpx;
+            color: #ff4d4f;
+            margin-left: 6rpx;
+            font-weight: 600;
+          }
+        }
+        
+        &.time {
+          .time-label {
+            font-size: 24rpx;
+            color: #999;
+          }
+          
+          .time-value {
+            font-size: 24rpx;
+            color: #333;
             font-weight: 500;
-            
-            .urgent-reward {
-              font-size: 22rpx;
-              color: #ff4d4f;
-              margin-left: 6rpx;
-            }
           }
         }
       }
@@ -636,8 +771,8 @@ onMounted(() => {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20rpx 30rpx;
-    border-top: 1rpx solid #f0f0f0;
+    padding: 16rpx 30rpx;
+    border-top: 1rpx solid rgba(0, 0, 0, 0.03);
 
     .time-info {
       font-size: 24rpx;
@@ -650,6 +785,12 @@ onMounted(() => {
       background-color: #feecef;
       padding: 8rpx 20rpx;
       border-radius: 20rpx;
+      transition: all 0.2s;
+      
+      &:active {
+        transform: scale(0.95);
+        background-color: #fde2e5;
+      }
     }
   }
 }
