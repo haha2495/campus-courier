@@ -31,6 +31,13 @@
 					"timingFunc": "ease-in-out"
 				}
 			}
+		},
+		{
+			"path": "pages/my-tasks/index",
+			"style": {
+				"navigationBarTitleText": "我的任务",
+				"navigationStyle": "custom"
+			}
 		}
 	],
 	"globalStyle": {

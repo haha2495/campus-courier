@@ -407,7 +407,10 @@ const handleTabNavigation = (tab) => {
         })
         break
       case TabPageName.TASKS:
-        showMessage('我的任务功能待实现')
+        // 跳转到我的任务页面
+        uni.switchTab({
+          url: '/pages/my-tasks/index'
+        })
         break
       case TabPageName.DISPUTES:
         showMessage('纠纷大厅功能待实现')
@@ -425,7 +428,10 @@ const handleTabNavigation = (tab) => {
         showMessage('当前任务功能待实现')
         break
       case TabPageName.RECORDS:
-        showMessage('我的接单功能待实现')
+        // 跑腿者的我的任务页面
+        uni.switchTab({
+          url: '/pages/my-tasks/index'
+        })
         break
       case TabPageName.MINE:
         showMessage('个人中心功能待实现')
@@ -442,6 +448,14 @@ const navigateTo = (page) => {
       url: '/pages/publish/index',
       animationType: 'slide-in-bottom',
       animationDuration: 300
+    })
+    return
+  }
+  
+  if (page === 'tasks') {
+    // 跳转到我的任务页面
+    uni.switchTab({
+      url: '/pages/my-tasks/index'
     })
     return
   }
