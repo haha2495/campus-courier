@@ -309,24 +309,40 @@ const cancelTask = async (taskId) => {
     uni.showModal({
       title: '确认取消',
       content: '确定要取消这个任务吗？取消后无法恢复。',
-      success: async (res) => {
+      async success(res) {
         if (res.confirm) {
           uni.showLoading({title: '取消中...'})
 
           try {
             // 调用取消任务API
-            await apiCancelTask(taskId)
-
-            uni.showToast({
-              title: '任务已取消',
-              icon: 'success'
-            })
-            // 刷新任务列表
-            refreshTasks()
+            const res = await apiCancelTask(taskId)
+            
+            if (res.success) {
+              // 先显示成功提示
+              await uni.showToast({
+                title: '任务已取消',
+                icon: 'success',
+                duration: 1500
+              })
+              
+              // 等待提示显示完毕后再刷新列表
+              setTimeout(async () => {
+                // 重置页码和列表数据
+                currentPage.value = 1
+                taskList.value = []
+                // 重新获取列表数据
+                await fetchTaskList()
+              }, 500)
+            } else {
+              uni.showToast({
+                title: res.message || '取消任务失败',
+                icon: 'none'
+              })
+            }
           } catch (error) {
             console.error('取消任务失败：', error)
             uni.showToast({
-              title: '取消任务失败',
+              title: error.message || '取消任务失败',
               icon: 'none'
             })
           } finally {
