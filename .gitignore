@@ -128,4 +128,5 @@ pnpm-debug.log*
 
 # Uni-app
 /corp-courier-wx/unpackage/
-.hbuilderx/ 
+.hbuilderx/
+unpackage/
