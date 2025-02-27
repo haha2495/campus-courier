@@ -56,3 +56,19 @@ export const getTaskDetail = (taskId) => {
         method: 'GET'
     })
 }
+
+// 获取抢单大厅任务列表
+export function getTaskHallList() {
+    return http({
+        url: '/api/tasks/hall',
+        method: 'GET'
+    })
+}
+
+// 抢单（接受任务）
+export function acceptTask(taskId) {
+    return http({
+        url: '/api/tasks/' + taskId + '/accept',
+        method: 'POST'
+    })
+}

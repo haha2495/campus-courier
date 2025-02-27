@@ -69,6 +69,7 @@
 <script setup>
 import {onMounted, ref} from 'vue'
 import TaskCard from '@/components/task-card/index.vue'
+import { getTaskHallList, acceptTask as acceptTaskApi } from '@/api/task'
 
 // 搜索关键词
 const searchKeyword = ref('')
@@ -97,13 +98,13 @@ const fetchTaskList = async () => {
     isLoading.value = !isRefreshing.value
 
     // 调用获取任务列表API
-    // const res = await getTaskHallList()
+    const res = await getTaskHallList()
 
-    // if (res.data) {
-    //   taskList.value = res.data
-    // } else {
-    //   taskList.value = []
-    // }
+    if (res.data) {
+      taskList.value = res.data
+    } else {
+      taskList.value = []
+    }
 
     hasMoreData.value = false // 因为不分页，所以没有更多数据
   } catch (error) {
@@ -151,7 +152,8 @@ const acceptTask = async (taskId) => {
         uni.showLoading({title: '抢单中...'})
 
         try {
-          // TODO: 调用抢单API
+          await acceptTaskApi(taskId)
+          
           await uni.showToast({
             title: '抢单成功',
             icon: 'success'
