@@ -94,4 +94,14 @@ public interface SysTaskService {
      * @return 操作是否成功
      */
     boolean addTaskMessage(TaskMessageAddRequest request, Integer userId);
+
+    /**
+     * 送达任务
+     * 跑腿者标记任务已送达，等待发布者确认
+     *
+     * @param taskId 任务ID
+     * @param userId 当前用户ID
+     * @return 操作是否成功
+     */
+    boolean deliverTask(Integer taskId, Integer userId);
 } 

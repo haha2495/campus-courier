@@ -311,6 +311,44 @@ public class SysTaskServiceImpl implements SysTaskService {
         return sysTaskMessageHandler.save(message);
     }
 
+    /**
+     * 送达任务
+     * 跑腿者标记任务已送达，等待发布者确认
+     *
+     * @param taskId 任务ID
+     * @param userId 当前用户ID
+     * @return 操作是否成功
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean deliverTask(Integer taskId, Integer userId) {
+        // 1. 获取任务信息
+        SysTask task = sysTaskHandler.getById(taskId);
+        if (task == null) {
+            throw new IllegalArgumentException("任务不存在");
+        }
+
+        // 2. 校验任务状态
+        if (TaskStatusEnum.IN_PROGRESS.getCode() != task.getStatus()) {
+            throw new IllegalArgumentException("只有进行中的任务才能标记送达");
+        }
+
+        // 3. 校验是否是接单人
+        if (!userId.equals(task.getRunnerId())) {
+            throw new IllegalArgumentException("只有接单人才能标记任务送达");
+        }
+
+        // 4. 更新任务状态为已完成（等待确认）
+        task.updateStatus(TaskStatusEnum.AWAITING_CONFIRMATION);
+        sysTaskHandler.updateById(task);
+
+        // 5. 记录任务日志
+        SysTaskLog taskLog = new SysTaskLog().init(task.getId(), TaskActionEnum.COMPLETE, "送达任务:" + task.getTitle(), userId);
+        sysTaskLogHandler.save(taskLog);
+
+        return Boolean.TRUE;
+    }
+
     private List<TaskDTO> getTaskDTOS(List<SysTask> tasks) {
         if (tasks.isEmpty()) {
             return List.of();

@@ -64,15 +64,23 @@
           <template #actions>
             <!-- 根据任务状态显示不同的操作按钮 -->
             <view class="action-buttons">
+              <!-- 待确认状态 -->
+              <template v-if="task.task.status === TASK_STATUS.AWAITING_CONFIRMATION">
+                <view class="waiting-confirm-tip">
+                  <u-icon name="clock-fill" color="#F59E0B" size="28"></u-icon>
+                  <text class="tip-text">等待发布者确认收货...</text>
+                </view>
+              </template>
+              
               <!-- 已接单状态 -->
-              <template v-if="task.task.status === TASK_STATUS.ACCEPTED">
+              <template v-else-if="task.task.status === TASK_STATUS.ACCEPTED">
                 <view class="action-btn primary-btn" @click.stop="startTask(task.task.id)">
                   开始执行
                 </view>
               </template>
               
               <!-- 进行中状态 -->
-              <template v-if="task.task.status === TASK_STATUS.IN_PROGRESS">
+              <template v-else-if="task.task.status === TASK_STATUS.IN_PROGRESS">
                 <view class="action-btn success-btn" @click.stop="completeTask(task.task.id)">
                   送达
                 </view>
@@ -95,7 +103,7 @@
 import {onMounted, ref} from 'vue'
 import TaskCard from '@/components/task-card/index.vue'
 import {TASK_STATUS} from '@/constants/taskStatus'
-import {getMyAcceptedTasks, startTask as startTaskApi} from '@/api/task'
+import {getMyAcceptedTasks, startTask as startTaskApi, deliverTask as deliverTaskApi} from '@/api/task'
 
 // 状态筛选选项
 const statusOptions = [
@@ -211,7 +219,7 @@ const completeTask = async (taskId) => {
       if (res.confirm) {
         uni.showLoading({title: '处理中...'})
         try {
-          // TODO: 调用完成任务API
+          await deliverTaskApi(taskId)
           await uni.showToast({
             title: '已完成配送',
             icon: 'success'
@@ -461,6 +469,20 @@ onMounted(() => {
     &:active {
       background-color: #d7f6e6;
     }
+  }
+}
+
+.waiting-confirm-tip {
+  display: flex;
+  align-items: center;
+  padding: 8rpx 16rpx;
+  background-color: #FEF3C7;
+  border-radius: 8rpx;
+  
+  .tip-text {
+    margin-left: 8rpx;
+    font-size: 24rpx;
+    color: #F59E0B;
   }
 }
 

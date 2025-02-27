@@ -110,3 +110,14 @@ export function startTask(taskId) {
         method: 'POST'
     })
 }
+
+/**
+ * 送达任务
+ * @param {number|string} taskId 任务ID
+ */
+export function deliverTask(taskId) {
+    return http({
+        url: '/api/tasks/' + taskId + '/deliver',
+        method: 'POST'
+    })
+}

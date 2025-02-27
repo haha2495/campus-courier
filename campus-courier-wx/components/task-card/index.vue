@@ -84,7 +84,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['click'])
+const emit = defineEmits(['click', 'start', 'complete'])
 
 // 格式化时间显示 (YYYY-MM-DD HH:MM)
 const formatTime = (timeString) => {
@@ -476,6 +476,20 @@ const handleClick = () => {
   }
   50% {
     transform: translateY(-4rpx);
+  }
+}
+
+.waiting-confirm-tip {
+  display: flex;
+  align-items: center;
+  padding: 8rpx 16rpx;
+  background-color: #FEF3C7;
+  border-radius: 8rpx;
+  
+  .tip-text {
+    margin-left: 8rpx;
+    font-size: 24rpx;
+    color: #F59E0B;
   }
 }
 </style> 

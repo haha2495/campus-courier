@@ -146,4 +146,19 @@ public class SysTaskController extends BaseController {
     public Result<Boolean> addTaskMessage(@RequestBody @Validated TaskMessageAddRequest request) {
         return Result.success(sysTaskService.addTaskMessage(request, getLoginUserId()));
     }
+
+    /**
+     * 送达任务
+     * 跑腿者标记任务已送达，等待发布者确认
+     *
+     * @param taskId 任务ID
+     * @return 操作结果
+     */
+    @PostMapping("/{taskId}/deliver")
+    @Operation(summary = "送达任务")
+    public Result<Boolean> deliverTask(
+            @Parameter(description = "任务ID") 
+            @PathVariable("taskId") Integer taskId) {
+        return Result.success(sysTaskService.deliverTask(taskId, getLoginUserId()));
+    }
 } 
