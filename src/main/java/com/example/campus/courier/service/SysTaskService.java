@@ -4,6 +4,7 @@ import com.example.campus.courier.model.dto.TaskDTO;
 import com.example.campus.courier.model.request.task.TaskAddRequest;
 import com.example.campus.courier.model.request.task.TaskQueryRequest;
 import com.example.campus.courier.model.response.PageResult;
+import com.example.campus.courier.model.dto.TaskDetailDTO;
 
 import java.util.List;
 
@@ -74,4 +75,13 @@ public interface SysTaskService {
      * @return 操作是否成功
      */
     boolean startTask(Long taskId, Integer userId);
+
+    /**
+     * 获取任务详情
+     * 包含任务信息、任务类型信息和留言列表
+     *
+     * @param taskId 任务ID
+     * @return 任务详情DTO
+     */
+    TaskDetailDTO getTaskDetail(Long taskId);
 } 

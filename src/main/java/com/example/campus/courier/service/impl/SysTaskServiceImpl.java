@@ -6,9 +6,11 @@ import com.example.campus.courier.mapper.handler.SysTaskLogHandler;
 import com.example.campus.courier.mapper.handler.SysTaskTypeHandler;
 import com.example.campus.courier.mapper.handler.SysTaskMessageHandler;
 import com.example.campus.courier.model.dto.TaskDTO;
+import com.example.campus.courier.model.dto.TaskDetailDTO;
 import com.example.campus.courier.model.entity.SysTask;
 import com.example.campus.courier.model.entity.SysTaskLog;
 import com.example.campus.courier.model.entity.SysTaskType;
+import com.example.campus.courier.model.entity.SysTaskMessage;
 import com.example.campus.courier.model.enums.TaskActionEnum;
 import com.example.campus.courier.model.enums.TaskStatusEnum;
 import com.example.campus.courier.model.request.task.TaskAddRequest;
@@ -236,6 +238,31 @@ public class SysTaskServiceImpl implements SysTaskService {
         sysTaskLogHandler.save(taskLog);
 
         return Boolean.TRUE;
+    }
+
+    /**
+     * 获取任务详情
+     * 包含任务信息、任务类型信息和留言列表
+     *
+     * @param taskId 任务ID
+     * @return 任务详情DTO
+     */
+    @Override
+    public TaskDetailDTO getTaskDetail(Long taskId) {
+        // 1. 获取任务基本信息
+        SysTask task = sysTaskHandler.getById(taskId.intValue());
+        if (task == null) {
+            throw new IllegalArgumentException("任务不存在");
+        }
+
+        // 2. 获取任务类型信息
+        SysTaskType taskType = sysTaskTypeHandler.getById(task.getTaskTypeId());
+
+        // 3. 获取任务留言列表
+        List<SysTaskMessage> messages = sysTaskMessageHandler.getTaskMessages(task.getId());
+
+        // 4. 使用build方法构建并返回DTO
+        return TaskDetailDTO.build(task, taskType, messages);
     }
 
     private List<TaskDTO> getTaskDTOS(List<SysTask> tasks) {

@@ -1,6 +1,7 @@
 package com.example.campus.courier.controller;
 
 import com.example.campus.courier.model.dto.TaskDTO;
+import com.example.campus.courier.model.dto.TaskDetailDTO;
 import com.example.campus.courier.model.request.task.TaskAddRequest;
 import com.example.campus.courier.model.request.task.TaskQueryRequest;
 import com.example.campus.courier.model.response.PageResult;
@@ -117,5 +118,19 @@ public class SysTaskController extends BaseController {
             @Parameter(description = "任务ID") 
             @PathVariable("taskId") Long taskId) {
         return Result.success(sysTaskService.startTask(taskId, getLoginUserId()));
+    }
+
+    /**
+     * 获取任务详情
+     *
+     * @param taskId 任务ID
+     * @return 任务详情
+     */
+    @GetMapping("/{taskId}")
+    @Operation(summary = "获取任务详情")
+    public Result<TaskDetailDTO> getTaskDetail(
+            @Parameter(description = "任务ID") 
+            @PathVariable("taskId") Long taskId) {
+        return Result.success(sysTaskService.getTaskDetail(taskId));
     }
 } 
