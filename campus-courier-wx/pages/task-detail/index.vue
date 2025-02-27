@@ -7,7 +7,7 @@
     </view>
 
     <template v-else>
-      <!-- 任务状态标签 - 只保留这个悬浮的状态标签 -->
+      <!-- 任务状态标签 -->
       <view class="status-tag" :style="getStatusStyle(taskDetail.task.status)">
         {{ getStatusText(taskDetail.task.status) }}
       </view>
@@ -139,68 +139,70 @@
         </view>
       </view>
 
-      <!-- 留言列表 -->
-      <view class="message-card">
-        <view class="card-header">
-          <text class="section-title">任务留言</text>
-          <text class="message-count" v-if="taskDetail.messages.length > 0">
-            ({{ taskDetail.messages.length }})
-          </text>
-        </view>
-
-        <!-- 暂无留言提示 -->
-        <view v-if="taskDetail.messages.length === 0" class="empty-messages">
-          <text>暂无留言</text>
-        </view>
-
-        <!-- 留言列表 -->
-        <view v-else class="message-list">
+      <!-- 标签页切换 -->
+      <view class="tab-container">
+        <view class="tab-header">
           <view 
-            v-for="message in taskDetail.messages" 
-            :key="message.id" 
-            class="message-item"
+            v-for="(tab, index) in tabs" 
+            :key="index"
+            class="tab-item"
+            :class="{ active: activeTab === index }"
+            @click="handleTabChange(index)"
           >
-            <view class="message-content">{{ message.content }}</view>
-            <!-- 留言图片 -->
-            <view v-if="message.images && message.images.length > 0" class="message-images">
-              <image
-                v-for="(image, index) in message.images"
-                :key="index"
-                :src="image"
-                mode="aspectFill"
-                @click="previewImage(image, message.images)"
-                class="message-image"
-              ></image>
-            </view>
-            <view class="message-time">{{ formatTime(message.createTime) }}</view>
+            <text>{{ tab.name }}</text>
+            <text v-if="tab.count" class="tab-count">({{ tab.count }})</text>
           </view>
+        </view>
+
+        <!-- 标签页内容 -->
+        <view class="tab-content">
+          <!-- 任务进度 -->
+          <TaskTimeline 
+            v-if="activeTab === 0" 
+            :taskLogs="taskDetail.logs"
+          />
+
+          <!-- 任务留言 -->
+          <TaskMessages
+            v-else-if="activeTab === 1"
+            :taskId="taskId"
+            :messages="taskDetail.messages"
+            @refresh="fetchTaskDetail"
+          />
         </view>
       </view>
     </template>
-
-    <!-- 底部留言栏 -->
-    <view class="message-bar">
-      <input 
-        class="message-input" 
-        v-model="messageContent"
-        placeholder="输入留言内容..."
-        @confirm="sendMessage"
-      />
-      <view class="send-btn" :class="{ active: messageContent }" @click="sendMessage">
-        发送
-      </view>
-    </view>
   </view>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { getTaskDetail } from '@/api/task'
 import { TASK_STATUS } from '@/constants/taskStatus'
+import TaskTimeline from './components/TaskTimeline.vue'
+import TaskMessages from './components/TaskMessages.vue'
 
 const loading = ref(true)
 const taskDetail = ref(null)
-const messageContent = ref('')
+const activeTab = ref(0)
+const taskId = ref(null)
+
+// 标签页配置
+const tabs = computed(() => [
+  {
+    name: '任务进度',
+    count: taskDetail.value?.logs?.length || 0
+  },
+  {
+    name: '任务留言',
+    count: taskDetail.value?.messages?.length || 0
+  }
+])
+
+// 切换标签页
+const handleTabChange = (index) => {
+  activeTab.value = index
+}
 
 // 获取任务详情
 const fetchTaskDetail = async () => {
@@ -208,9 +210,9 @@ const fetchTaskDetail = async () => {
     loading.value = true
     const pages = getCurrentPages()
     const currentPage = pages[pages.length - 1]
-    const taskId = currentPage.options.id
+    taskId.value = currentPage.options.id
 
-    if (!taskId) {
+    if (!taskId.value) {
       uni.showToast({
         title: '任务ID不存在',
         icon: 'none'
@@ -221,7 +223,7 @@ const fetchTaskDetail = async () => {
       return
     }
 
-    const res = await getTaskDetail(taskId)
+    const res = await getTaskDetail(taskId.value)
     if (res.data) {
       taskDetail.value = res.data
     }
@@ -277,13 +279,6 @@ const previewImage = (current, urls) => {
   })
 }
 
-// 发送留言
-const sendMessage = () => {
-  if (!messageContent.value.trim()) return
-  // TODO: 实现发送留言的逻辑
-  messageContent.value = ''
-}
-
 onMounted(() => {
   fetchTaskDetail()
 })
@@ -293,7 +288,7 @@ onMounted(() => {
 .task-detail-container {
   min-height: 100vh;
   background-color: #f5f7fa;
-  padding-bottom: 120rpx;
+  padding-bottom: env(safe-area-inset-bottom);
   padding-top: env(safe-area-inset-top);
 }
 
@@ -765,6 +760,53 @@ onMounted(() => {
   }
   80% {
     transform: scale(0.95) translateY(2rpx);
+  }
+}
+
+.tab-container {
+  margin-top: 30rpx;
+  background: #fff;
+  
+  .tab-header {
+    display: flex;
+    align-items: center;
+    border-bottom: 2rpx solid #f5f7fa;
+    padding: 0 30rpx;
+    
+    .tab-item {
+      position: relative;
+      padding: 24rpx 40rpx;
+      font-size: 28rpx;
+      color: #666;
+      display: flex;
+      align-items: center;
+      
+      .tab-count {
+        font-size: 24rpx;
+        color: #999;
+        margin-left: 8rpx;
+      }
+      
+      &.active {
+        color: #07c160;
+        font-weight: 600;
+        
+        &::after {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          left: 40rpx;
+          right: 40rpx;
+          height: 4rpx;
+          background: #07c160;
+          border-radius: 4rpx;
+        }
+      }
+    }
+  }
+  
+  .tab-content {
+    min-height: 400rpx;
   }
 }
 </style> 

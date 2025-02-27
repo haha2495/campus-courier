@@ -57,7 +57,24 @@ export const getTaskDetail = (taskId) => {
     })
 }
 
-// 获取抢单大厅任务列表
+/**
+ * 添加任务留言
+ * @param {Object} data 留言数据
+ * @param {number} data.taskId 任务ID
+ * @param {string} data.content 留言内容
+ * @param {Array<string>} data.imageUrls 图片URL列表
+ */
+export function addTaskMessage(data) {
+    return http({
+        url: '/api/tasks/message',
+        method: 'post',
+        data
+    })
+}
+
+/**
+ * 获取抢单大厅任务列表
+ */
 export function getTaskHallList() {
     return http({
         url: '/api/tasks/hall',
@@ -73,7 +90,9 @@ export function acceptTask(taskId) {
     })
 }
 
-// 获取我当前接单的任务列表
+/**
+ * 获取我接单的任务列表
+ */
 export function getMyAcceptedTasks() {
     return http({
         url: '/api/tasks/my-accepted',
@@ -81,7 +100,10 @@ export function getMyAcceptedTasks() {
     })
 }
 
-// 开始执行任务
+/**
+ * 开始任务
+ * @param {number|string} taskId 任务ID
+ */
 export function startTask(taskId) {
     return http({
         url: '/api/tasks/' + taskId + '/start',
