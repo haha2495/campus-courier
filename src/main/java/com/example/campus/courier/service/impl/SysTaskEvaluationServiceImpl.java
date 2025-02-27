@@ -65,8 +65,14 @@ public class SysTaskEvaluationServiceImpl implements SysTaskEvaluationService {
                 .init(request, userId, task.getRunnerId());
 
         // 6. 保存评价
-        return sysTaskEvaluationHandler.save(evaluation);
+        boolean saved = sysTaskEvaluationHandler.save(evaluation);
+        
+        if (saved) {
+            // 7. 更新任务状态为已评价
+            task.setStatus(TaskStatusEnum.EVALUATED.getCode());
+            sysTaskHandler.updateById(task);
+        }
+
+        return saved;
     }
-
-
 } 

@@ -3,6 +3,9 @@ package com.example.campus.courier.model.enums;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * 任务状态枚举
+ */
 @Getter
 @AllArgsConstructor
 public enum TaskStatusEnum {
@@ -13,8 +16,9 @@ public enum TaskStatusEnum {
     COMPLETED(4, "已完成"),
     CANCELED(5, "已取消"),
     EXPIRED(6, "已过期"),
-    DISPUTED(7, "存在纠纷");
+    DISPUTED(7, "存在纠纷"),
+    EVALUATED(8, "已评价");
 
-    private final int code;
-    private final String description;
+    private final Integer code;
+    private final String desc;
 } 

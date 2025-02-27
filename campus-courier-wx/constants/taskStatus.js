@@ -12,6 +12,7 @@ export const TASK_STATUS = {
   CANCELED: 5,              // 已取消
   EXPIRED: 6,               // 已过期
   DISPUTED: 7,              // 存在纠纷
+  EVALUATED: 8,            // 已评价
   
   // 获取状态文本
   getStatusText(status) {
@@ -23,7 +24,8 @@ export const TASK_STATUS = {
       4: '已完成',
       5: '已取消',
       6: '已过期',
-      7: '存在纠纷'
+      7: '存在纠纷',
+      8: '已评价'
     }
     return statusMap[status] || '未知状态'
   },
@@ -38,7 +40,8 @@ export const TASK_STATUS = {
       4: 'status-completed',
       5: 'status-cancelled',
       6: 'status-expired',
-      7: 'status-dispute'
+      7: 'status-dispute',
+      8: 'status-evaluated'
     }
     return statusClassMap[status] || ''
   },
@@ -53,7 +56,8 @@ export const TASK_STATUS = {
       4: { text: '#8b5cf6', background: '#f3f0ff' },  // 已完成 - 紫色
       5: { text: '#999999', background: '#f5f5f5' },  // 已取消 - 灰色
       6: { text: '#909399', background: '#f4f4f5' },  // 已过期 - 灰色
-      7: { text: '#ee0a24', background: '#feecef' }    // 存在纠纷 - 红色
+      7: { text: '#ee0a24', background: '#feecef' },  // 存在纠纷 - 红色
+      8: { text: '#10B981', background: '#ECFDF5' }   // 已评价 - 绿色
     }
     return colorMap[status] || { text: '#999999', background: '#f5f5f5' }
   },
@@ -67,7 +71,8 @@ export const TASK_STATUS = {
       { label: '进行中', value: 2 },
       { label: '待确认', value: 3 },
       { label: '已完成', value: 4 },
-      { label: '已取消', value: 5 }
+      { label: '已取消', value: 5 },
+      { label: '已评价', value: 8 }
     ]
   }
 } 
