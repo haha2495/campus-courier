@@ -444,6 +444,13 @@ const getAvatarColor = (name) => {
   max-width: 70%;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+
+  .message-bubble {
+    max-width: 100%;
+    word-break: break-all;
+    margin-bottom: 10rpx;
+  }
 }
 
 .user-info {
@@ -495,8 +502,8 @@ const getAvatarColor = (name) => {
   &.single-image {
     .message-image {
       width: 400rpx;
-      height: auto;
-      max-height: 600rpx;
+      height: 400rpx;
+      object-fit: contain;
       background-color: #f0f0f0;
     }
   }
@@ -506,6 +513,7 @@ const getAvatarColor = (name) => {
     height: 200rpx;
     border-radius: 8rpx;
     background-color: #f0f0f0;
+    object-fit: cover;
   }
 }
 
