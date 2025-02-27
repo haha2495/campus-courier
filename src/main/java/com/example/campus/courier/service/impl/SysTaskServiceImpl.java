@@ -349,6 +349,44 @@ public class SysTaskServiceImpl implements SysTaskService {
         return Boolean.TRUE;
     }
 
+    /**
+     * 确认任务完成
+     * 发布者确认跑腿者已完成任务，任务状态变更为已完成
+     *
+     * @param taskId 任务ID
+     * @param userId 当前用户ID（发布者）
+     * @return 操作是否成功
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean confirmTask(Integer taskId, Integer userId) {
+        // 1. 获取任务信息
+        SysTask task = sysTaskHandler.getById(taskId);
+        if (task == null) {
+            throw new IllegalArgumentException("任务不存在");
+        }
+
+        // 2. 校验任务状态
+        if (TaskStatusEnum.AWAITING_CONFIRMATION.getCode() != task.getStatus()) {
+            throw new IllegalArgumentException("只有待确认的任务才能确认完成");
+        }
+
+        // 3. 校验是否是发布者
+        if (!userId.equals(task.getPublisherId())) {
+            throw new IllegalArgumentException("只有任务发布者才能确认完成");
+        }
+
+        // 4. 更新任务状态为已完成
+        task.updateStatus(TaskStatusEnum.COMPLETED);
+        sysTaskHandler.updateById(task);
+
+        // 5. 记录任务日志
+        SysTaskLog taskLog = new SysTaskLog().init(task.getId(), TaskActionEnum.CONFIRM, "确认完成任务:" + task.getTitle(), userId);
+        sysTaskLogHandler.save(taskLog);
+
+        return Boolean.TRUE;
+    }
+
     private List<TaskDTO> getTaskDTOS(List<SysTask> tasks) {
         if (tasks.isEmpty()) {
             return List.of();

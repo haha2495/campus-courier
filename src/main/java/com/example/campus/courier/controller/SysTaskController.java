@@ -161,4 +161,19 @@ public class SysTaskController extends BaseController {
             @PathVariable("taskId") Integer taskId) {
         return Result.success(sysTaskService.deliverTask(taskId, getLoginUserId()));
     }
+
+    /**
+     * 确认任务完成
+     * 发布者确认跑腿者已完成任务
+     *
+     * @param taskId 任务ID
+     * @return 操作结果
+     */
+    @PostMapping("/{taskId}/confirm")
+    @Operation(summary = "确认任务完成")
+    public Result<Boolean> confirmTask(
+            @Parameter(description = "任务ID") 
+            @PathVariable("taskId") Integer taskId) {
+        return Result.success(sysTaskService.confirmTask(taskId, getLoginUserId()));
+    }
 } 

@@ -63,8 +63,21 @@
             @click="navigateToTaskDetail(task.task.id)"
         >
           <template #actions>
+            <!-- 待确认状态 -->
+            <template v-if="task.task.status === TASK_STATUS.AWAITING_CONFIRMATION">
+              <view class="action-buttons">
+                <view class="action-btn confirm-btn" @click.stop="confirmTask(task.task.id)">
+                  确认完成
+                </view>
+                <view class="action-btn dispute-btn" @click.stop="submitDispute(task.task.id)">
+                  提交纠纷
+                </view>
+              </view>
+            </template>
+            
+            <!-- 待接单状态可取消 -->
             <view 
-                v-if="canCancelTask(task.task.status)" 
+                v-else-if="canCancelTask(task.task.status)" 
                 class="action-btn cancel-btn" 
                 @click.stop="cancelTask(task.task.id)"
             >
@@ -85,7 +98,12 @@
 
 <script setup>
 import {onMounted, ref} from 'vue'
-import {cancelTask as apiCancelTask, getMyPublishedTasks} from '@/api/task'
+import {
+  cancelTask as apiCancelTask, 
+  getMyPublishedTasks,
+  confirmTask as apiConfirmTask,
+  submitDispute as apiSubmitDispute
+} from '@/api/task'
 import {TASK_STATUS} from '@/constants/taskStatus'
 import TaskCard from '@/components/task-card/index.vue'
 
@@ -307,6 +325,81 @@ const navigateToPublish = () => {
   })
 }
 
+// 确认完成任务
+const confirmTask = async (taskId) => {
+  uni.showModal({
+    title: '确认完成',
+    content: '请仔细核对后，进行确认。一旦确认，将无法发起纠纷，请认真处理。',
+    confirmText: '确认完成',
+    confirmColor: '#07c160',
+    cancelText: '再检查下',
+    cancelColor: '#999999',
+    async success(res) {
+      if (res.confirm) {
+        // 二次确认
+        uni.showModal({
+          title: '二次确认',
+          content: '您确定要标记此任务为已完成吗？\n此操作不可撤销！',
+          confirmText: '确定完成',
+          confirmColor: '#07c160',
+          cancelText: '返回检查',
+          cancelColor: '#999999',
+          async success(res) {
+            if (res.confirm) {
+              uni.showLoading({title: '处理中...'})
+              try {
+                await apiConfirmTask(taskId)
+                await uni.showToast({
+                  title: '已确认完成',
+                  icon: 'success'
+                })
+                await refreshTasks()
+              } catch (error) {
+                console.error('确认任务失败：', error)
+                uni.showToast({
+                  title: error.message || '操作失败',
+                  icon: 'none'
+                })
+              } finally {
+                uni.hideLoading()
+              }
+            }
+          }
+        })
+      }
+    }
+  })
+}
+
+// 提交纠纷
+const submitDispute = async (taskId) => {
+  uni.showModal({
+    title: '提交纠纷',
+    content: '确定要提交纠纷吗？提交后客服会介入处理',
+    async success(res) {
+      if (res.confirm) {
+        uni.showLoading({title: '处理中...'})
+        try {
+          await apiSubmitDispute(taskId)
+          await uni.showToast({
+            title: '已提交纠纷',
+            icon: 'success'
+          })
+          await refreshTasks()
+        } catch (error) {
+          console.error('提交纠纷失败：', error)
+          uni.showToast({
+            title: error.message || '操作失败',
+            icon: 'none'
+          })
+        } finally {
+          uni.hideLoading()
+        }
+      }
+    }
+  })
+}
+
 // 页面加载时获取任务列表
 onMounted(() => {
   refreshTasks()
@@ -489,6 +582,11 @@ onMounted(() => {
   padding: 20rpx 0;
 }
 
+.action-buttons {
+  display: flex;
+  gap: 16rpx;
+}
+
 .action-btn {
   font-size: 24rpx;
   padding: 8rpx 20rpx;
@@ -498,13 +596,31 @@ onMounted(() => {
   &:active {
     transform: scale(0.95);
   }
-  
-  &.cancel-btn {
-    color: #ee0a24;
-    background-color: #feecef;
-    
+
+  &.confirm-btn {
+    color: #07c160;
+    background-color: #e8f8f1;
+
     &:active {
-      background-color: #fde2e5;
+      background-color: #d7f6e6;
+    }
+  }
+
+  &.dispute-btn {
+    color: #ff9500;
+    background-color: #fff7e6;
+
+    &:active {
+      background-color: #fff0d9;
+    }
+  }
+
+  &.cancel-btn {
+    color: #ff4d4f;
+    background-color: #fff2f0;
+
+    &:active {
+      background-color: #ffe7e5;
     }
   }
 }

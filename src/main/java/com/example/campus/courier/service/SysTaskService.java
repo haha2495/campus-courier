@@ -104,4 +104,14 @@ public interface SysTaskService {
      * @return 操作是否成功
      */
     boolean deliverTask(Integer taskId, Integer userId);
+
+    /**
+     * 确认任务完成
+     * 发布者确认跑腿者已完成任务，任务状态变更为已完成
+     *
+     * @param taskId 任务ID
+     * @param userId 当前用户ID（发布者）
+     * @return 操作是否成功
+     */
+    boolean confirmTask(Integer taskId, Integer userId);
 } 

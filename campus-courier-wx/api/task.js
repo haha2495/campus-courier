@@ -121,3 +121,25 @@ export function deliverTask(taskId) {
         method: 'POST'
     })
 }
+
+/**
+ * 确认完成任务
+ * @param {number|string} taskId 任务ID
+ */
+export function confirmTask(taskId) {
+    return http({
+        url: `/api/tasks/${taskId}/confirm`,
+        method: 'POST'
+    })
+}
+
+/**
+ * 提交纠纷
+ * @param {number|string} taskId 任务ID
+ */
+export function submitDispute(taskId) {
+    return http({
+        url: `/api/tasks/${taskId}/dispute`,
+        method: 'POST'
+    })
+}
