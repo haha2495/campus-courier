@@ -143,6 +143,7 @@
 <script setup>
 import {computed, nextTick, ref, watch} from 'vue'
 import {addTaskMessage} from '@/api/task'
+import { uploadApi } from '@/api/upload'
 
 const props = defineProps({
   taskId: {
@@ -271,13 +272,7 @@ const sendMessage = async () => {
     if (images.length > 0) {
       imageUrls = await Promise.all(images.map(async (imagePath) => {
         try {
-          const uploadRes = await uni.uploadFile({
-            url: '/api/upload',
-            filePath: imagePath,
-            name: 'file',
-          })
-          const result = JSON.parse(uploadRes.data)
-          return result.data
+          return await uploadApi.upload(imagePath)
         } catch (error) {
           console.error('图片上传失败:', error)
           throw new Error('图片上传失败')
