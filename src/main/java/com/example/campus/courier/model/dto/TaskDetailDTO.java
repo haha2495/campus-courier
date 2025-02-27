@@ -1,7 +1,6 @@
 package com.example.campus.courier.model.dto;
 
 import com.example.campus.courier.model.entity.SysTask;
-import com.example.campus.courier.model.entity.SysTaskMessage;
 import com.example.campus.courier.model.entity.SysTaskType;
 import com.example.campus.courier.model.entity.SysTaskLog;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -23,7 +22,7 @@ public class TaskDetailDTO {
     private SysTaskType taskType;
 
     @Schema(description = "任务留言列表")
-    private List<SysTaskMessage> messages;
+    private List<TaskMessageDTO> messages;
 
     @Schema(description = "任务日志列表(按时间倒序)")
     private List<SysTaskLog> taskLogs;
@@ -37,7 +36,7 @@ public class TaskDetailDTO {
      * @param taskLogs 任务日志列表
      * @return 任务详情DTO
      */
-    public static TaskDetailDTO build(SysTask task, SysTaskType taskType, List<SysTaskMessage> messages, List<SysTaskLog> taskLogs) {
+    public static TaskDetailDTO build(SysTask task, SysTaskType taskType, List<TaskMessageDTO> messages, List<SysTaskLog> taskLogs) {
         TaskDetailDTO dto = new TaskDetailDTO();
         dto.task = task;
         dto.taskType = taskType;

@@ -5,12 +5,11 @@ import com.example.campus.courier.mapper.handler.SysTaskHandler;
 import com.example.campus.courier.mapper.handler.SysTaskLogHandler;
 import com.example.campus.courier.mapper.handler.SysTaskTypeHandler;
 import com.example.campus.courier.mapper.handler.SysTaskMessageHandler;
+import com.example.campus.courier.mapper.handler.SysStudentHandler;
 import com.example.campus.courier.model.dto.TaskDTO;
 import com.example.campus.courier.model.dto.TaskDetailDTO;
-import com.example.campus.courier.model.entity.SysTask;
-import com.example.campus.courier.model.entity.SysTaskLog;
-import com.example.campus.courier.model.entity.SysTaskType;
-import com.example.campus.courier.model.entity.SysTaskMessage;
+import com.example.campus.courier.model.dto.TaskMessageDTO;
+import com.example.campus.courier.model.entity.*;
 import com.example.campus.courier.model.enums.TaskActionEnum;
 import com.example.campus.courier.model.enums.TaskStatusEnum;
 import com.example.campus.courier.model.request.task.TaskAddRequest;
@@ -39,6 +38,7 @@ public class SysTaskServiceImpl implements SysTaskService {
     private final SysTaskLogHandler sysTaskLogHandler;
     private final SysTaskTypeHandler sysTaskTypeHandler;
     private final SysTaskMessageHandler sysTaskMessageHandler;
+    private final SysStudentHandler sysStudentHandler;
 
     /**
      * 保存任务
@@ -262,11 +262,27 @@ public class SysTaskServiceImpl implements SysTaskService {
         // 3. 获取任务留言列表
         List<SysTaskMessage> messages = sysTaskMessageHandler.getTaskMessages(taskId);
 
-        // 4. 获取任务日志列表(按时间倒序排序)
+        // 4. 获取所有留言发送者的ID
+        List<Integer> studentIds = messages.stream()
+                .map(SysTaskMessage::getUserId)
+                .distinct()
+                .collect(Collectors.toList());
+
+        // 5. 批量获取学生信息
+        List<SysStudent> students = sysStudentHandler.getStudentsByIds(studentIds);
+        Map<Integer, SysStudent> studentMap = students.stream()
+                .collect(Collectors.toMap(SysStudent::getId, student -> student));
+
+        // 6. 构建留言DTO列表
+        List<TaskMessageDTO> messageDTOs = messages.stream()
+                .map(message -> TaskMessageDTO.build(message, studentMap.get(message.getUserId())))
+                .collect(Collectors.toList());
+
+        // 7. 获取任务日志列表(按时间倒序)
         List<SysTaskLog> taskLogs = sysTaskLogHandler.getTaskLogs(taskId);
 
-        // 5. 构建并返回DTO
-        return TaskDetailDTO.build(task, taskType, messages, taskLogs);
+        // 8. 构建并返回DTO
+        return TaskDetailDTO.build(task, taskType, messageDTOs, taskLogs);
     }
 
     /**

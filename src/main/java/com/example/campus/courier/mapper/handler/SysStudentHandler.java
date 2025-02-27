@@ -13,11 +13,18 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Tag(name = "学生信息处理器")
-@Component
+import java.util.List;
+
+/**
+ * 学生信息处理类
+ */
+@Service
 @RequiredArgsConstructor
 public class SysStudentHandler extends ServiceImpl<SysStudentMapper, SysStudent> {
+
+    private final SysStudentMapper sysStudentMapper;
 
     /**
      * 检查学号是否已存在
@@ -101,5 +108,19 @@ public class SysStudentHandler extends ServiceImpl<SysStudentMapper, SysStudent>
         updateWrapper.eq(SysStudent::getId, studentId)
                 .set(SysStudent::getIdentityType, role.getCode());
         update(updateWrapper);
+    }
+
+    /**
+     * 根据ID列表批量获取学生信息
+     *
+     * @param studentIds 学生ID列表
+     * @return 学生信息列表
+     */
+    public List<SysStudent> getStudentsByIds(List<Integer> studentIds) {
+        if (studentIds == null || studentIds.isEmpty()) {
+            return List.of();
+        }
+        return list(new LambdaQueryWrapper<SysStudent>()
+                .in(SysStudent::getId, studentIds));
     }
 }
