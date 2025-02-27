@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import com.example.campus.courier.model.request.evaluation.EvaluationAddRequest;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -52,4 +53,24 @@ public class SysTaskEvaluation {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @Schema(description = "创建时间")
     private LocalDateTime createTime;
+
+    /**
+     * 初始化评价记录
+     *
+     * @param request 评价请求
+     * @param publisherId 发布者ID
+     * @param runnerId 跑腿者ID
+     * @return 评价记录实体
+     */
+    public SysTaskEvaluation init(EvaluationAddRequest request, Integer publisherId, Integer runnerId) {
+        this.setTaskId(request.getTaskId())
+            .setPublisherId(publisherId)
+            .setRunnerId(runnerId)
+            .setScore(request.getScore())
+            .setContent(request.getContent())
+            .setTags(request.getTags())
+            .setAnonymous(request.getAnonymous())
+            .setCreateTime(LocalDateTime.now());
+        return this;
+    }
 } 
