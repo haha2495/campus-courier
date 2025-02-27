@@ -4,6 +4,7 @@ import com.example.campus.courier.model.dto.TaskDTO;
 import com.example.campus.courier.model.dto.TaskDetailDTO;
 import com.example.campus.courier.model.request.task.TaskAddRequest;
 import com.example.campus.courier.model.request.task.TaskQueryRequest;
+import com.example.campus.courier.model.request.task.TaskMessageAddRequest;
 import com.example.campus.courier.model.response.PageResult;
 import com.example.campus.courier.model.response.Result;
 import com.example.campus.courier.service.SysTaskService;
@@ -132,5 +133,17 @@ public class SysTaskController extends BaseController {
             @Parameter(description = "任务ID") 
             @PathVariable("taskId") Long taskId) {
         return Result.success(sysTaskService.getTaskDetail(taskId));
+    }
+
+    /**
+     * 添加任务留言
+     *
+     * @param request 留言请求
+     * @return 操作结果
+     */
+    @PostMapping("/message")
+    @Operation(summary = "添加任务留言")
+    public Result<Boolean> addTaskMessage(@RequestBody @Validated TaskMessageAddRequest request) {
+        return Result.success(sysTaskService.addTaskMessage(request, getLoginUserId()));
     }
 } 

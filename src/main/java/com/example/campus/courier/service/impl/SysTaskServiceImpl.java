@@ -15,6 +15,7 @@ import com.example.campus.courier.model.enums.TaskActionEnum;
 import com.example.campus.courier.model.enums.TaskStatusEnum;
 import com.example.campus.courier.model.request.task.TaskAddRequest;
 import com.example.campus.courier.model.request.task.TaskQueryRequest;
+import com.example.campus.courier.model.request.task.TaskMessageAddRequest;
 import com.example.campus.courier.model.response.PageResult;
 import com.example.campus.courier.service.SysTaskService;
 import lombok.RequiredArgsConstructor;
@@ -263,6 +264,32 @@ public class SysTaskServiceImpl implements SysTaskService {
 
         // 4. 使用build方法构建并返回DTO
         return TaskDetailDTO.build(task, taskType, messages);
+    }
+
+    /**
+     * 添加任务留言
+     *
+     * @param request 留言请求
+     * @param userId  当前用户ID
+     * @return 操作是否成功
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean addTaskMessage(TaskMessageAddRequest request, Integer userId) {
+        // 1. 获取任务信息
+        SysTask task = sysTaskHandler.getById(request.getTaskId());
+        if (task == null) {
+            throw new IllegalArgumentException("任务不存在");
+        }
+
+        // 2. 校验用户是否有权限留言(只有任务发布者和接单者可以留言)
+        if (!userId.equals(task.getPublisherId()) && !userId.equals(task.getRunnerId())) {
+            throw new IllegalArgumentException("只有任务发布者和接单者可以留言");
+        }
+
+        // 3. 使用贫血模型初始化并保存留言
+        SysTaskMessage message = new SysTaskMessage().init(request, userId);
+        return sysTaskMessageHandler.save(message);
     }
 
     private List<TaskDTO> getTaskDTOS(List<SysTask> tasks) {

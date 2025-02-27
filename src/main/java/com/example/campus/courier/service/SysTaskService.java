@@ -2,6 +2,7 @@ package com.example.campus.courier.service;
 
 import com.example.campus.courier.model.dto.TaskDTO;
 import com.example.campus.courier.model.request.task.TaskAddRequest;
+import com.example.campus.courier.model.request.task.TaskMessageAddRequest;
 import com.example.campus.courier.model.request.task.TaskQueryRequest;
 import com.example.campus.courier.model.response.PageResult;
 import com.example.campus.courier.model.dto.TaskDetailDTO;
@@ -84,4 +85,13 @@ public interface SysTaskService {
      * @return 任务详情DTO
      */
     TaskDetailDTO getTaskDetail(Long taskId);
+
+    /**
+     * 添加任务留言
+     *
+     * @param request 留言请求
+     * @param userId 当前用户ID
+     * @return 操作是否成功
+     */
+    boolean addTaskMessage(TaskMessageAddRequest request, Integer userId);
 } 
