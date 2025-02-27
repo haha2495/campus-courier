@@ -138,7 +138,8 @@ const loadMoreTasks = async () => {
 // 跳转到任务详情
 const navigateToTaskDetail = (taskId) => {
   uni.navigateTo({
-    url: '/pages/task-detail/index?id=' + taskId
+    url: `/pages/task-detail/index?id=${taskId}`,
+    animationType: 'slide-in-right'
   })
 }
 

@@ -41,7 +41,12 @@
 		{
 			"path": "pages/task-detail/index",
 			"style": {
-				"navigationBarTitleText": "任务详情"
+				"navigationBarTitleText": "任务详情",
+				"pageAnimation": {
+					"type": "slide",
+					"duration": 300,
+					"timingFunc": "ease-in-out"
+				}
 			}
 		},
 		{
