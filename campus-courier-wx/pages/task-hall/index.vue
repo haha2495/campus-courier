@@ -156,11 +156,17 @@ const acceptTask = async (taskId) => {
           
           await uni.showToast({
             title: '抢单成功',
-            icon: 'success'
+            icon: 'success',
+            duration: 1500
           })
 
-          // 刷新列表
-          await refreshTasks()
+          // 等待提示显示完毕后再跳转
+          setTimeout(() => {
+            // 跳转到当前任务页面
+            uni.navigateTo({
+              url: '/pages/current-tasks/index'
+            })
+          }, 1500)
         } catch (error) {
           console.error('抢单失败：', error)
           uni.showToast({

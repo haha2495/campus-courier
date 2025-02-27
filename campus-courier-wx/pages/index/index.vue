@@ -433,7 +433,10 @@ const handleTabNavigation = (tab) => {
         })
         break
       case TabPageName.CURRENT:
-        showMessage('当前任务功能待实现')
+        // 跳转到当前任务页面
+        uni.navigateTo({
+          url: '/pages/current-tasks/index'
+        })
         break
       case TabPageName.RECORDS:
         // 跑腿者的我的任务页面 - 使用navigateTo而不是switchTab
