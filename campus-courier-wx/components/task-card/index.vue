@@ -53,7 +53,7 @@
         <view class="info-item reward">
           <text class="reward-icon">¥</text>
           <text class="reward-value">{{ task.task.reward }}</text>
-          <text v-if="task.task.urgent && task.task.urgentReward" class="urgent-reward">+{{ task.task.urgentReward }}</text>
+          <text v-if="task.task.urgent && task.task.urgentReward" class="urgent-reward">{{ task.task.urgentReward }}</text>
         </view>
         <view class="info-item time">
           <text class="time-label">期望送达：</text>

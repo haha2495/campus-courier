@@ -1,128 +1,157 @@
 <template>
   <view class="task-detail-container">
     <!-- 加载状态 -->
-    <view v-if="isLoading" class="loading-container">
-      <u-loading-icon mode="circle" size="36"></u-loading-icon>
-      <text class="loading-text">加载中...</text>
+    <view v-if="loading" class="loading-state">
+      <u-loading-icon mode="circle"></u-loading-icon>
+      <text>努力加载中...</text>
     </view>
 
     <template v-else>
-      <!-- 任务基本信息卡片 -->
+      <!-- 任务状态标签 -->
+      <view class="status-tag" :style="getStatusStyle(taskDetail.task.status)">
+        {{ getStatusText(taskDetail.task.status) }}
+      </view>
+
+      <!-- 基本信息卡片 -->
       <view class="detail-card">
-        <!-- 任务状态标签 -->
-        <view class="status-tag" :style="getStatusStyle(taskDetail?.task?.status)">
-          {{ getStatusText(taskDetail?.task?.status) }}
-        </view>
-
-        <!-- 任务标题和类型 -->
-        <view class="task-header">
-          <view class="task-type">
-            <image class="type-icon" :src="taskDetail?.taskType?.icon" mode="aspectFit"></image>
-            <text>{{ taskDetail?.taskType?.typeName }}</text>
+        <view class="card-header">
+          <view class="type-info">
+            <image class="type-icon" :src="taskDetail.taskType.icon" mode="aspectFit"></image>
+            <text class="type-name">{{ taskDetail.taskType.typeName }}</text>
           </view>
-          <view class="task-title">{{ taskDetail?.task?.title }}</view>
+          <view v-if="taskDetail.task.urgent" class="urgent-tag">加急</view>
         </view>
 
-        <!-- 任务描述 -->
-        <view class="task-desc">{{ taskDetail?.task?.description }}</view>
+        <view class="card-title">{{ taskDetail.task.title }}</view>
+        <view class="card-desc">{{ taskDetail.task.description }}</view>
 
         <!-- 地址信息 -->
-        <view class="address-info" v-if="taskDetail?.task?.pickupAddress || taskDetail?.task?.deliveryAddress">
-          <view class="address-item" v-if="taskDetail?.task?.pickupAddress">
-            <view class="address-icon pickup-icon">取</view>
-            <text class="address-value">{{ taskDetail?.task?.pickupAddress }}</text>
-          </view>
-          <view class="address-item" v-if="taskDetail?.task?.deliveryAddress">
-            <view class="address-icon delivery-icon">送</view>
-            <text class="address-value">{{ taskDetail?.task?.deliveryAddress }}</text>
-          </view>
-        </view>
-
-        <!-- 任务规格信息 -->
-        <view class="task-specs">
-          <view class="spec-item" v-if="taskDetail?.task?.estimatedWeight">
-            <text class="spec-label">预估重量：</text>
-            <text class="spec-value">{{ taskDetail?.task?.estimatedWeight }}kg</text>
-          </view>
-          <view class="spec-item" v-if="taskDetail?.task?.estimatedSize">
-            <text class="spec-label">预估大小：</text>
-            <text class="spec-value">{{ taskDetail?.task?.estimatedSize }}</text>
+        <view class="info-section">
+          <view class="section-title">配送信息</view>
+          <view class="info-content">
+            <view class="info-item address-item">
+              <text class="info-label">取件地址</text>
+              <text class="info-value">{{ taskDetail.task.pickupAddress }}</text>
+            </view>
+            <view class="info-item address-item">
+              <text class="info-label">送达地址</text>
+              <text class="info-value">{{ taskDetail.task.deliveryAddress }}</text>
+            </view>
           </view>
         </view>
 
-        <!-- 任务金额信息 -->
-        <view class="task-reward">
-          <text class="reward-label">任务金额：</text>
-          <view class="reward-value">
-            <text class="currency">¥</text>
-            <text class="amount">{{ taskDetail?.task?.reward }}</text>
-            <text v-if="taskDetail?.task?.urgent" class="urgent-tag">加急</text>
-            <text v-if="taskDetail?.task?.urgentReward" class="urgent-reward">+{{ taskDetail?.task?.urgentReward }}</text>
+        <!-- 规格信息 -->
+        <view class="info-section">
+          <view class="section-title">物品信息</view>
+          <view class="info-content">
+            <view class="info-item specs-grid">
+              <view class="info-item spec-item">
+                <text class="info-label">预估重量</text>
+                <text class="info-value">{{ taskDetail.task.estimatedWeight }}kg</text>
+              </view>
+              <view class="info-item spec-item">
+                <text class="info-label">预估大小</text>
+                <text class="info-value">{{ taskDetail.task.estimatedSize }}</text>
+              </view>
+            </view>
           </view>
         </view>
 
-        <!-- 联系人信息 -->
-        <view class="contact-info">
-          <view class="contact-item">
-            <text class="contact-label">联系人：</text>
-            <text class="contact-value">{{ taskDetail?.task?.contactName }}</text>
+        <!-- 赏金信息 -->
+        <view class="info-section reward-section">
+          <view class="section-title">赏金信息</view>
+          <view class="reward-content">
+            <view class="reward-main">
+              <view class="reward-label">赏金金额</view>
+              <view class="reward-value">
+                <text class="currency">¥</text>
+                <text class="amount">{{ taskDetail.task.reward }}</text>
+              </view>
+            </view>
+            <view v-if="taskDetail.task.urgent" class="urgent-reward">
+              <view class="reward-label">加急奖励</view>
+              <view class="reward-value">
+                <text class="currency">+¥</text>
+                <text class="amount">{{ taskDetail.task.urgentReward }}</text>
+                <text class="urgent-tag">加急</text>
+              </view>
+            </view>
           </view>
-          <view class="contact-item">
-            <text class="contact-label">联系电话：</text>
-            <text class="contact-value">{{ taskDetail?.task?.contactPhone }}</text>
-            <view class="call-btn" @click="makePhoneCall(taskDetail?.task?.contactPhone)">
-              <u-icon name="phone-fill" color="#07c160" size="28"></u-icon>
+        </view>
+
+        <!-- 联系方式 -->
+        <view class="info-section">
+          <view class="section-title">联系方式</view>
+          <view class="info-content">
+            <view class="info-item contact-item">
+              <text class="info-label">联系人</text>
+              <text class="info-value">{{ taskDetail.task.contactName }}</text>
+            </view>
+            <view class="info-item contact-item">
+              <text class="info-label">联系电话</text>
+              <view class="info-value phone-wrapper">
+                <text>{{ taskDetail.task.contactPhone }}</text>
+                <view class="phone-icon" @click.stop="makePhoneCall(taskDetail.task.contactPhone)">
+                  <u-icon name="phone-fill" color="#07c160" size="40"></u-icon>
+                </view>
+              </view>
             </view>
           </view>
         </view>
 
         <!-- 时间信息 -->
-        <view class="time-info">
-          <view class="time-item">
-            <text class="time-label">发布时间：</text>
-            <text class="time-value">{{ formatTime(taskDetail?.task?.createTime) }}</text>
-          </view>
-          <view class="time-item">
-            <text class="time-label">期望送达：</text>
-            <text class="time-value">{{ formatTime(taskDetail?.task?.expectedFinishTime) }}</text>
+        <view class="info-section">
+          <view class="section-title">时间信息</view>
+          <view class="info-content">
+            <view class="info-item time-item">
+              <text class="info-label">发布时间</text>
+              <text class="info-value">{{ formatTime(taskDetail.task.createTime) }}</text>
+            </view>
+            <view class="info-item time-item">
+              <text class="info-label">期望送达</text>
+              <text class="info-value">{{ formatTime(taskDetail.task.expectedFinishTime) }}</text>
+            </view>
           </view>
         </view>
 
-        <!-- 任务图片 -->
-        <view class="task-images" v-if="taskDetail?.task?.images?.length">
-          <text class="images-title">相关图片</text>
-          <view class="images-grid">
+        <!-- 图片信息 -->
+        <view v-if="taskDetail.task.images && taskDetail.task.images.length > 0" class="info-section">
+          <view class="section-title">相关图片</view>
+          <view class="image-grid">
             <image
               v-for="(image, index) in taskDetail.task.images"
               :key="index"
               :src="image"
               mode="aspectFill"
               @click="previewImage(image, taskDetail.task.images)"
+              class="task-image"
             ></image>
           </view>
         </view>
 
-        <!-- 备注信息 -->
-        <view class="task-notes" v-if="taskDetail?.task?.notes">
-          <text class="notes-title">备注说明</text>
-          <text class="notes-content">{{ taskDetail.task.notes }}</text>
+        <!-- 备注说明 -->
+        <view v-if="taskDetail.task.notes" class="info-section">
+          <view class="section-title">备注说明</view>
+          <view class="notes-content">{{ taskDetail.task.notes }}</view>
         </view>
       </view>
 
       <!-- 留言列表 -->
-      <view class="messages-card">
-        <view class="messages-header">
-          <text class="messages-title">任务留言</text>
-          <text class="messages-count">({{ taskDetail?.messages?.length || 0 }})</text>
+      <view class="message-card">
+        <view class="card-header">
+          <text class="section-title">任务留言</text>
+          <text class="message-count" v-if="taskDetail.messages.length > 0">
+            ({{ taskDetail.messages.length }})
+          </text>
         </view>
-        
+
         <!-- 暂无留言提示 -->
-        <view v-if="!taskDetail?.messages?.length" class="no-messages">
-          <u-empty mode="message" icon="/static/images/no-messages.png" text="暂无留言"></u-empty>
+        <view v-if="taskDetail.messages.length === 0" class="empty-messages">
+          <text>暂无留言</text>
         </view>
 
         <!-- 留言列表 -->
-        <view v-else class="messages-list">
+        <view v-else class="message-list">
           <view 
             v-for="message in taskDetail.messages" 
             :key="message.id" 
@@ -130,13 +159,14 @@
           >
             <view class="message-content">{{ message.content }}</view>
             <!-- 留言图片 -->
-            <view class="message-images" v-if="message.images?.length">
+            <view v-if="message.images && message.images.length > 0" class="message-images">
               <image
                 v-for="(image, index) in message.images"
                 :key="index"
                 :src="image"
                 mode="aspectFill"
                 @click="previewImage(image, message.images)"
+                class="message-image"
               ></image>
             </view>
             <view class="message-time">{{ formatTime(message.createTime) }}</view>
@@ -145,20 +175,15 @@
       </view>
     </template>
 
-    <!-- 底部操作栏 -->
-    <view class="bottom-bar">
-      <!-- 留言输入框 -->
-      <view class="message-input">
-        <u-input
-          v-model="messageContent"
-          type="text"
-          placeholder="输入留言内容"
-          :border="false"
-          :clearable="true"
-        ></u-input>
-      </view>
-      <!-- 发送按钮 -->
-      <view class="send-btn" @click="sendMessage">
+    <!-- 底部留言栏 -->
+    <view class="message-bar">
+      <input 
+        class="message-input" 
+        v-model="messageContent"
+        placeholder="输入留言内容..."
+        @confirm="sendMessage"
+      />
+      <view class="send-btn" :class="{ active: messageContent }" @click="sendMessage">
         发送
       </view>
     </view>
@@ -166,21 +191,37 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { getTaskDetail } from '@/api/task'
 import { TASK_STATUS } from '@/constants/taskStatus'
 
-// 页面数据
+const loading = ref(true)
 const taskDetail = ref(null)
-const isLoading = ref(true)
 const messageContent = ref('')
 
 // 获取任务详情
-const fetchTaskDetail = async (taskId) => {
+const fetchTaskDetail = async () => {
   try {
-    isLoading.value = true
+    loading.value = true
+    const pages = getCurrentPages()
+    const currentPage = pages[pages.length - 1]
+    const taskId = currentPage.options.id
+
+    if (!taskId) {
+      uni.showToast({
+        title: '任务ID不存在',
+        icon: 'none'
+      })
+      setTimeout(() => {
+        uni.navigateBack()
+      }, 1500)
+      return
+    }
+
     const res = await getTaskDetail(taskId)
-    taskDetail.value = res.data
+    if (res.data) {
+      taskDetail.value = res.data
+    }
   } catch (error) {
     console.error('获取任务详情失败：', error)
     uni.showToast({
@@ -188,20 +229,20 @@ const fetchTaskDetail = async (taskId) => {
       icon: 'none'
     })
   } finally {
-    isLoading.value = false
+    loading.value = false
   }
 }
 
 // 格式化时间
 const formatTime = (timeString) => {
-  if (!timeString) return '';
-  const date = new Date(timeString);
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  const hours = String(date.getHours()).padStart(2, '0');
-  const minutes = String(date.getMinutes()).padStart(2, '0');
-  return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes;
+  if (!timeString) return ''
+  const date = new Date(timeString)
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  const hours = String(date.getHours()).padStart(2, '0')
+  const minutes = String(date.getMinutes()).padStart(2, '0')
+  return `${year}-${month}-${day} ${hours}:${minutes}`
 }
 
 // 获取任务状态文本
@@ -220,7 +261,6 @@ const getStatusStyle = (status) => {
 
 // 拨打电话
 const makePhoneCall = (phone) => {
-  if (!phone) return
   uni.makePhoneCall({
     phoneNumber: phone
   })
@@ -235,36 +275,14 @@ const previewImage = (current, urls) => {
 }
 
 // 发送留言
-const sendMessage = async () => {
-  if (!messageContent.value.trim()) {
-    uni.showToast({
-      title: '请输入留言内容',
-      icon: 'none'
-    })
-    return
-  }
-
-  // TODO: 调用发送留言API
-  uni.showToast({
-    title: '留言功能开发中',
-    icon: 'none'
-  })
+const sendMessage = () => {
+  if (!messageContent.value.trim()) return
+  // TODO: 实现发送留言的逻辑
+  messageContent.value = ''
 }
 
-// 页面加载时获取任务详情
 onMounted(() => {
-  const pages = getCurrentPages()
-  const currentPage = pages[pages.length - 1]
-  const taskId = currentPage.options.id
-  
-  if (taskId) {
-    fetchTaskDetail(taskId)
-  } else {
-    uni.showToast({
-      title: '任务ID不存在',
-      icon: 'none'
-    })
-  }
+  fetchTaskDetail()
 })
 </script>
 
@@ -272,366 +290,448 @@ onMounted(() => {
 .task-detail-container {
   min-height: 100vh;
   background-color: #f5f7fa;
-  padding-bottom: 120rpx; // 为底部操作栏留出空间
+  padding-bottom: 120rpx;
+  padding-top: env(safe-area-inset-top);
 }
 
-.loading-container {
+.loading-state {
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 100rpx 0;
-
-  .loading-text {
-    font-size: 28rpx;
-    color: #999;
+  color: #999;
+  font-size: 28rpx;
+  
+  text {
     margin-top: 20rpx;
   }
 }
 
-.detail-card {
-  background-color: #ffffff;
-  margin: 20rpx;
-  padding: 30rpx;
-  border-radius: 20rpx;
-  position: relative;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
-
-  .status-tag {
-    position: absolute;
-    top: 30rpx;
-    right: 30rpx;
-    padding: 6rpx 20rpx;
-    border-radius: 20rpx;
-    font-size: 24rpx;
-    font-weight: 500;
-  }
+.status-tag {
+  position: fixed;
+  top: calc(env(safe-area-inset-top) + 20rpx);
+  right: 30rpx;
+  z-index: 100;
+  padding: 12rpx 30rpx;
+  border-radius: 30rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
 }
 
-.task-header {
-  margin-bottom: 20rpx;
-
-  .task-type {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10rpx;
-
-    .type-icon {
-      width: 36rpx;
-      height: 36rpx;
-      margin-right: 10rpx;
-    }
-
-    text {
-      font-size: 26rpx;
-      color: #666;
-    }
-  }
-
-  .task-title {
-    font-size: 36rpx;
-    font-weight: 600;
-    color: #333;
-  }
+.detail-card, .message-card {
+  margin: 30rpx;
+  background: #fff;
+  border-radius: 24rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
+  overflow: hidden;
 }
 
-.task-desc {
-  font-size: 28rpx;
-  color: #666;
-  line-height: 1.5;
-  margin-bottom: 30rpx;
-}
-
-.address-info {
-  margin-bottom: 30rpx;
-
-  .address-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 16rpx;
-
-    .address-icon {
-      width: 36rpx;
-      height: 36rpx;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20rpx;
-      color: white;
-      margin-right: 10rpx;
-
-      &.pickup-icon {
-        background-color: #1989fa;
-      }
-
-      &.delivery-icon {
-        background-color: #07c160;
-      }
-    }
-
-    .address-value {
-      font-size: 28rpx;
-      color: #333;
-    }
-  }
-}
-
-.task-specs {
+.card-header {
   display: flex;
-  flex-wrap: wrap;
-  margin-bottom: 30rpx;
-
-  .spec-item {
-    margin-right: 30rpx;
-    margin-bottom: 10rpx;
-
-    .spec-label {
-      font-size: 26rpx;
-      color: #999;
-    }
-
-    .spec-value {
-      font-size: 26rpx;
-      color: #333;
-      font-weight: 500;
-    }
-  }
-}
-
-.task-reward {
-  display: flex;
+  justify-content: space-between;
   align-items: center;
-  margin-bottom: 30rpx;
+  padding: 24rpx 30rpx;
+  border-bottom: 2rpx solid #f5f7fa;
+  margin-bottom: 0;
 
-  .reward-label {
-    font-size: 28rpx;
-    color: #999;
-  }
-
-  .reward-value {
+  .type-info {
     display: flex;
     align-items: center;
-
-    .currency {
-      font-size: 24rpx;
-      color: #ff9500;
-      margin-right: 4rpx;
+    
+    .type-icon {
+      width: 44rpx;
+      height: 44rpx;
+      margin-right: 16rpx;
     }
-
-    .amount {
-      font-size: 40rpx;
-      color: #ff9500;
-      font-weight: 600;
-    }
-
-    .urgent-tag {
-      font-size: 22rpx;
-      color: #fff;
-      background-color: #ff4d4f;
-      padding: 4rpx 12rpx;
-      border-radius: 12rpx;
-      margin-left: 12rpx;
-    }
-
-    .urgent-reward {
-      font-size: 28rpx;
-      color: #ff4d4f;
-      margin-left: 8rpx;
-      font-weight: 500;
-    }
-  }
-}
-
-.contact-info {
-  margin-bottom: 30rpx;
-
-  .contact-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10rpx;
-
-    .contact-label {
-      font-size: 26rpx;
-      color: #999;
-      width: 140rpx;
-    }
-
-    .contact-value {
-      font-size: 26rpx;
-      color: #333;
-      flex: 1;
-    }
-
-    .call-btn {
-      padding: 10rpx;
-
-      &:active {
-        opacity: 0.7;
-      }
-    }
-  }
-}
-
-.time-info {
-  margin-bottom: 30rpx;
-
-  .time-item {
-    display: flex;
-    margin-bottom: 10rpx;
-
-    .time-label {
-      font-size: 26rpx;
-      color: #999;
-      width: 140rpx;
-    }
-
-    .time-value {
-      font-size: 26rpx;
-      color: #333;
-    }
-  }
-}
-
-.task-images {
-  margin-bottom: 30rpx;
-
-  .images-title {
-    font-size: 28rpx;
-    color: #333;
-    font-weight: 500;
-    margin-bottom: 16rpx;
-  }
-
-  .images-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20rpx;
-
-    image {
-      width: 100%;
-      height: 200rpx;
-      border-radius: 12rpx;
-    }
-  }
-}
-
-.task-notes {
-  .notes-title {
-    font-size: 28rpx;
-    color: #333;
-    font-weight: 500;
-    margin-bottom: 16rpx;
-  }
-
-  .notes-content {
-    font-size: 26rpx;
-    color: #666;
-    line-height: 1.5;
-  }
-}
-
-.messages-card {
-  background-color: #ffffff;
-  margin: 20rpx;
-  padding: 30rpx;
-  border-radius: 20rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
-
-  .messages-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20rpx;
-
-    .messages-title {
+    
+    .type-name {
       font-size: 30rpx;
       color: #333;
-      font-weight: 500;
-    }
-
-    .messages-count {
-      font-size: 26rpx;
-      color: #999;
-      margin-left: 8rpx;
+      font-weight: 600;
     }
   }
 
-  .no-messages {
-    padding: 40rpx 0;
+  .urgent-tag {
+    background: linear-gradient(135deg, #ff4d4f, #ff7875);
+    color: #fff;
+    padding: 8rpx 24rpx;
+    border-radius: 20rpx;
+    font-size: 24rpx;
+    font-weight: 600;
+  }
+}
+
+.card-title {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #333;
+  padding: 30rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 2rpx solid #f5f7fa;
+}
+
+.card-desc {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.6;
+  padding: 20rpx 30rpx;
+  background: #fafafa;
+  margin: 20rpx 30rpx;
+  border-radius: 16rpx;
+}
+
+.info-section {
+  background-color: #ffffff;
+  border-radius: 16rpx;
+  margin-bottom: 24rpx;
+  padding: 24rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+
+  .section-title {
+    font-size: 32rpx;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 24rpx;
+    display: flex;
+    align-items: center;
+
+    &::before {
+      content: '';
+      width: 8rpx;
+      height: 32rpx;
+      background-color: #07c160;
+      margin-right: 16rpx;
+      border-radius: 4rpx;
+    }
   }
 
-  .messages-list {
-    .message-item {
-      padding: 20rpx 0;
-      border-bottom: 1px solid #f5f5f5;
+  .info-content {
+    padding: 16rpx;
+    background-color: #f8f8f8;
+    border-radius: 12rpx;
+    margin-top: 16rpx;
+
+    .info-item {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 16rpx;
+      padding: 12rpx 16rpx;
+      background-color: #ffffff;
+      border-radius: 8rpx;
 
       &:last-child {
-        border-bottom: none;
+        margin-bottom: 0;
       }
 
-      .message-content {
+      .info-label {
+        font-size: 28rpx;
+        color: #666;
+        min-width: 160rpx;
+        padding-right: 20rpx;
+      }
+
+      .info-value {
+        flex: 1;
         font-size: 28rpx;
         color: #333;
-        line-height: 1.5;
-        margin-bottom: 16rpx;
+        word-break: break-all;
       }
 
-      .message-images {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 20rpx;
-        margin-bottom: 16rpx;
-
-        image {
-          width: 100%;
-          height: 180rpx;
-          border-radius: 12rpx;
+      &.contact-item {
+        .info-value {
+          color: #333;
+          
+          &.phone-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            
+            .phone-icon {
+              padding: 8rpx;
+              margin-left: 20rpx;
+              border-radius: 50%;
+              transition: all 0.2s;
+              
+              &:active {
+                background-color: #f0f0f0;
+              }
+            }
+          }
         }
       }
 
-      .message-time {
-        font-size: 24rpx;
-        color: #999;
+      &.time-item {
+        .info-value {
+          color: #666;
+        }
       }
     }
   }
 }
 
-.bottom-bar {
+.address-item, .contact-item, .time-item {
+  margin-bottom: 20rpx;
+  padding: 16rpx 20rpx;
+  background: #f8f8f8;
+  border-radius: 12rpx;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+  
+  .label {
+    font-size: 26rpx;
+    color: #999;
+    margin-bottom: 8rpx;
+  }
+  
+  .value {
+    font-size: 30rpx;
+    color: #333;
+    font-weight: 500;
+  }
+}
+
+.specs-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+
+  .spec-item {
+    padding: 20rpx;
+    background: #f8f8f8;
+    border-radius: 12rpx;
+    text-align: center;
+
+    .label {
+      font-size: 26rpx;
+      color: #999;
+      margin-bottom: 8rpx;
+    }
+
+    .value {
+      font-size: 32rpx;
+      color: #333;
+      font-weight: 600;
+    }
+  }
+}
+
+.reward-section {
+  .reward-content {
+    background: linear-gradient(135deg, #fff9f0, #fff5f5);
+    border-radius: 16rpx;
+    padding: 24rpx;
+    margin-top: 16rpx;
+
+    .reward-main, .urgent-reward {
+      background: #ffffff;
+      border-radius: 12rpx;
+      padding: 20rpx;
+      margin-bottom: 16rpx;
+      box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      .reward-label {
+        font-size: 26rpx;
+        color: #666;
+        margin-bottom: 12rpx;
+      }
+
+      .reward-value {
+        display: flex;
+        align-items: baseline;
+
+        .currency {
+          font-size: 32rpx;
+          color: #ff9500;
+          margin-right: 4rpx;
+          font-weight: bold;
+        }
+
+        .amount {
+          font-size: 48rpx;
+          color: #ff9500;
+          font-weight: bold;
+          font-family: 'DIN Condensed', sans-serif;
+        }
+      }
+    }
+
+    .urgent-reward {
+      .reward-value {
+        .currency {
+          color: #ff4d4f;
+        }
+        
+        .amount {
+          color: #ff4d4f;
+        }
+
+        .urgent-tag {
+          font-size: 24rpx;
+          color: #ff4d4f;
+          background: #fff2f0;
+          padding: 4rpx 16rpx;
+          border-radius: 20rpx;
+          margin-left: 16rpx;
+        }
+      }
+    }
+  }
+}
+
+.phone-number {
+  color: #07c160;
+  text-decoration: underline;
+  font-weight: 600;
+  
+  &:active {
+    opacity: 0.8;
+  }
+}
+
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20rpx;
+  padding: 20rpx;
+  background: #f8f8f8;
+  border-radius: 16rpx;
+  
+  .task-image {
+    width: 100%;
+    height: 200rpx;
+    border-radius: 12rpx;
+    box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+  }
+}
+
+.notes-content {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.8;
+  padding: 24rpx;
+  background: #f8f8f8;
+  border-radius: 16rpx;
+  border-left: 8rpx solid #07c160;
+}
+
+.message-card {
+  .card-header {
+    padding: 24rpx 30rpx;
+    border-bottom: 2rpx solid #f5f7fa;
+    
+    .message-count {
+      font-size: 26rpx;
+      color: #999;
+      margin-left: 12rpx;
+      background: #f5f7fa;
+      padding: 4rpx 12rpx;
+      border-radius: 20rpx;
+    }
+  }
+}
+
+.empty-messages {
+  text-align: center;
+  color: #999;
+  font-size: 28rpx;
+  padding: 60rpx 0;
+  background: #fafafa;
+  margin: 30rpx;
+  border-radius: 16rpx;
+}
+
+.message-list {
+  padding: 0 30rpx;
+  
+  .message-item {
+    padding: 24rpx 0;
+    border-bottom: 2rpx solid #f5f7fa;
+    
+    &:last-child {
+      border-bottom: none;
+    }
+    
+    .message-content {
+      font-size: 28rpx;
+      color: #333;
+      line-height: 1.6;
+      padding: 16rpx 20rpx;
+      background: #f8f8f8;
+      border-radius: 16rpx;
+    }
+    
+    .message-images {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16rpx;
+      margin-top: 16rpx;
+      padding: 16rpx;
+      background: #f8f8f8;
+      border-radius: 16rpx;
+      
+      .message-image {
+        width: 180rpx;
+        height: 180rpx;
+        border-radius: 12rpx;
+        box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+      }
+    }
+    
+    .message-time {
+      font-size: 24rpx;
+      color: #999;
+      margin-top: 16rpx;
+      padding-left: 20rpx;
+    }
+  }
+}
+
+.message-bar {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: #ffffff;
+  background: #fff;
   padding: 20rpx 30rpx;
+  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
   display: flex;
   align-items: center;
-  box-shadow: 0 -2rpx 12rpx rgba(0, 0, 0, 0.05);
-  /* 适配底部安全区域 */
-  padding-bottom: constant(safe-area-inset-bottom);
-  padding-bottom: env(safe-area-inset-bottom);
-
+  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.06);
+  
   .message-input {
     flex: 1;
-    margin-right: 20rpx;
-    background-color: #f5f7fa;
-    border-radius: 36rpx;
-    padding: 0 20rpx;
-  }
-
-  .send-btn {
-    width: 120rpx;
-    height: 72rpx;
-    background-color: #07c160;
-    color: #ffffff;
+    height: 80rpx;
+    background: #f5f7fa;
+    border-radius: 40rpx;
+    padding: 0 30rpx;
     font-size: 28rpx;
-    border-radius: 36rpx;
+    margin-right: 20rpx;
+  }
+  
+  .send-btn {
+    width: 140rpx;
+    height: 80rpx;
     display: flex;
     align-items: center;
     justify-content: center;
-
-    &:active {
-      opacity: 0.8;
+    border-radius: 40rpx;
+    font-size: 30rpx;
+    font-weight: 600;
+    color: #999;
+    background: #f5f7fa;
+    transition: all 0.3s;
+    
+    &.active {
+      background: #07c160;
+      color: #fff;
     }
   }
 }
