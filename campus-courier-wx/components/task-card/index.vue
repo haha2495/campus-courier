@@ -1,15 +1,16 @@
 <template>
   <view class="task-card" :class="{ 'urgent-card': task.task.urgent }" @click="handleClick">
-    <!-- 加急标记 - 使用气泡样式 -->
-    <view v-if="task.task.urgent" class="urgent-bubble">
-      <text>加急</text>
-    </view>
-
     <!-- 卡片头部 - 类型和状态 -->
     <view class="card-header">
-      <view class="task-type">
-        <image class="type-icon" :src="task.taskType.icon" mode="aspectFit"></image>
-        <text>{{ task.taskType.typeName }}</text>
+      <view class="left-section">
+        <!-- 加急标记 -->
+        <view v-if="task.task.urgent" class="urgent-tag">
+          <text>急</text>
+        </view>
+        <view class="task-type">
+          <image class="type-icon" :src="task.taskType.icon" mode="aspectFit"></image>
+          <text>{{ task.taskType.typeName }}</text>
+        </view>
       </view>
       <view class="task-status" :style="getStatusStyle(task.task.status)">
         {{ getStatusText(task.task.status) }}
@@ -209,40 +210,33 @@ const handleClick = () => {
     }
   }
 
-  // 加急气泡标记
-  .urgent-bubble {
-    position: absolute;
-    top: -8rpx;
-    right: 30rpx;
-    background: linear-gradient(135deg, #ff4d4f 0%, #ff7875 100%);
-    color: white;
-    font-size: 22rpx;
-    font-weight: bold;
-    padding: 8rpx 20rpx;
-    border-radius: 20rpx;
-    box-shadow: 0 4rpx 12rpx rgba(255, 77, 79, 0.4);
-    z-index: 10;
-    animation: float 2s ease-in-out infinite;
-
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: -6rpx;
-      right: 12rpx;
-      width: 0;
-      height: 0;
-      border-left: 6rpx solid transparent;
-      border-right: 6rpx solid transparent;
-      border-top: 8rpx solid #ff4d4f;
-    }
-  }
-
   .card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 24rpx 30rpx 16rpx;
     border-bottom: 1rpx solid rgba(0, 0, 0, 0.03);
+
+    .left-section {
+      display: flex;
+      align-items: center;
+      gap: 12rpx;
+    }
+
+    .urgent-tag {
+      background: linear-gradient(135deg, #ff4d4f 0%, #ff7875 100%);
+      color: white;
+      font-size: 24rpx;
+      font-weight: bold;
+      width: 40rpx;
+      height: 40rpx;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4rpx 12rpx rgba(255, 77, 79, 0.4);
+      animation: urgentBounce 1s ease infinite;
+    }
 
     .task-type {
       display: flex;
@@ -456,13 +450,22 @@ const handleClick = () => {
   }
 }
 
-// 浮动动画
-@keyframes float {
+// 添加跳动动画
+@keyframes urgentBounce {
   0%, 100% {
-    transform: translateY(0);
+    transform: scale(1) translateY(0);
   }
-  50% {
-    transform: translateY(-6rpx);
+  20% {
+    transform: scale(1.1) translateY(-4rpx);
+  }
+  40% {
+    transform: scale(0.9) translateY(4rpx);
+  }
+  60% {
+    transform: scale(1.05) translateY(-2rpx);
+  }
+  80% {
+    transform: scale(0.95) translateY(2rpx);
   }
 }
 

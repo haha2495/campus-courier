@@ -7,7 +7,7 @@
     </view>
 
     <template v-else>
-      <!-- 任务状态标签 -->
+      <!-- 任务状态标签 - 只保留这个悬浮的状态标签 -->
       <view class="status-tag" :style="getStatusStyle(taskDetail.task.status)">
         {{ getStatusText(taskDetail.task.status) }}
       </view>
@@ -16,10 +16,13 @@
       <view class="detail-card">
         <view class="card-header">
           <view class="type-info">
+            <!-- 加急标记 -->
+            <view v-if="taskDetail.task.urgent" class="urgent-tag">
+              <text>急</text>
+            </view>
             <image class="type-icon" :src="taskDetail.taskType.icon" mode="aspectFit"></image>
             <text class="type-name">{{ taskDetail.taskType.typeName }}</text>
           </view>
-          <view v-if="taskDetail.task.urgent" class="urgent-tag">加急</view>
         </view>
 
         <view class="card-title">{{ taskDetail.task.title }}</view>
@@ -318,6 +321,9 @@ onMounted(() => {
   font-size: 26rpx;
   font-weight: 600;
   box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .detail-card, .message-card {
@@ -339,6 +345,22 @@ onMounted(() => {
   .type-info {
     display: flex;
     align-items: center;
+    gap: 12rpx;
+    
+    .urgent-tag {
+      background: linear-gradient(135deg, #ff4d4f 0%, #ff7875 100%);
+      color: white;
+      font-size: 24rpx;
+      font-weight: bold;
+      width: 40rpx;
+      height: 40rpx;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4rpx 12rpx rgba(255, 77, 79, 0.4);
+      animation: urgentBounce 1s ease infinite;
+    }
     
     .type-icon {
       width: 44rpx;
@@ -351,15 +373,6 @@ onMounted(() => {
       color: #333;
       font-weight: 600;
     }
-  }
-
-  .urgent-tag {
-    background: linear-gradient(135deg, #ff4d4f, #ff7875);
-    color: #fff;
-    padding: 8rpx 24rpx;
-    border-radius: 20rpx;
-    font-size: 24rpx;
-    font-weight: 600;
   }
 }
 
@@ -733,6 +746,25 @@ onMounted(() => {
       background: #07c160;
       color: #fff;
     }
+  }
+}
+
+// 添加跳动动画
+@keyframes urgentBounce {
+  0%, 100% {
+    transform: scale(1) translateY(0);
+  }
+  20% {
+    transform: scale(1.1) translateY(-4rpx);
+  }
+  40% {
+    transform: scale(0.9) translateY(4rpx);
+  }
+  60% {
+    transform: scale(1.05) translateY(-2rpx);
+  }
+  80% {
+    transform: scale(0.95) translateY(2rpx);
   }
 }
 </style> 
