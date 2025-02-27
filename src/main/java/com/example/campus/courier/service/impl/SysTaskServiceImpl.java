@@ -6,6 +6,7 @@ import com.example.campus.courier.mapper.handler.SysTaskLogHandler;
 import com.example.campus.courier.mapper.handler.SysTaskTypeHandler;
 import com.example.campus.courier.mapper.handler.SysTaskMessageHandler;
 import com.example.campus.courier.mapper.handler.SysStudentHandler;
+import com.example.campus.courier.mapper.handler.SysTaskEvaluationHandler;
 import com.example.campus.courier.model.dto.TaskDTO;
 import com.example.campus.courier.model.dto.TaskDetailDTO;
 import com.example.campus.courier.model.dto.TaskMessageDTO;
@@ -39,6 +40,7 @@ public class SysTaskServiceImpl implements SysTaskService {
     private final SysTaskTypeHandler sysTaskTypeHandler;
     private final SysTaskMessageHandler sysTaskMessageHandler;
     private final SysStudentHandler sysStudentHandler;
+    private final SysTaskEvaluationHandler sysTaskEvaluationHandler;
 
     /**
      * 保存任务
@@ -281,8 +283,11 @@ public class SysTaskServiceImpl implements SysTaskService {
         // 7. 获取任务日志列表(按时间倒序)
         List<SysTaskLog> taskLogs = sysTaskLogHandler.getTaskLogs(taskId);
 
-        // 8. 构建并返回DTO
-        return TaskDetailDTO.build(task, taskType, messageDTOs, taskLogs);
+        // 8. 查询任务评价信息
+        SysTaskEvaluation evaluation = sysTaskEvaluationHandler.getById(taskId);
+
+        // 9. 构建并返回DTO
+        return TaskDetailDTO.build(task, taskType, messageDTOs, taskLogs, evaluation);
     }
 
     /**
