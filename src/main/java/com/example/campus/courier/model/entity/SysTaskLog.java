@@ -1,8 +1,10 @@
 package com.example.campus.courier.model.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.example.campus.courier.model.enums.TaskActionEnum;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,12 +13,14 @@ import lombok.Data;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 任务日志实体类
  */
 @Data
-@TableName("sys_task_log")
+@TableName(value = "sys_task_log", autoResultMap = true)
 @Schema(description = "任务日志实体")
 public class SysTaskLog implements Serializable {
 
@@ -33,8 +37,12 @@ public class SysTaskLog implements Serializable {
     @Schema(description = "操作人id")
     private Integer userId;
 
-    @Schema(description = "操作类型：1-发布，2-接单，3-开始执行，4-完成任务，5-确认完成，6-取消任务，7-提交纠纷，8-解决纠纷，9-评价（参见TaskActionEnum枚举类）")
+    @Schema(description = "操作类型（参见TaskActionEnum枚举类）")
     private Integer action;
+
+    @Schema(description = "图片(JSON格式)")
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private List<String> images = new ArrayList<>();
 
     @Schema(description = "备注说明")
     private String remark;
