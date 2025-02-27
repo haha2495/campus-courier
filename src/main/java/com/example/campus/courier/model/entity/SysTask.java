@@ -150,4 +150,9 @@ public class SysTask implements Serializable {
     public void updateStatus(TaskStatusEnum status) {
         this.status = status.getCode();
     }
-} 
+
+    public void acceptTask(Integer userId) {
+        this.status = TaskStatusEnum.ACCEPTED.getCode();
+        this.runnerId = userId;
+    }
+}

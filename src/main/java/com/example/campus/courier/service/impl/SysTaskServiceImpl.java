@@ -139,10 +139,10 @@ public class SysTaskServiceImpl implements SysTaskService {
      * @return 任务列表
      */
     @Override
-    public List<TaskDTO> getTaskHallList() {
+    public List<TaskDTO> getTaskHallList(Integer loginUserId) {
         // 1. 获取所有待接单的任务
-        List<SysTask> tasks = sysTaskHandler.getTaskHallList();
-        
+        List<SysTask> tasks = sysTaskHandler.getTaskHallList(loginUserId);
+
         if (tasks.isEmpty()) {
             return List.of();
         }
@@ -165,5 +165,42 @@ public class SysTaskServiceImpl implements SysTaskService {
             dto.setTaskType(typeMap.get(task.getTaskTypeId()));
             return dto;
         }).collect(Collectors.toList());
+    }
+
+    /**
+     * 抢单（接受任务）
+     *
+     * @param taskId 任务ID
+     * @param userId 当前用户ID
+     * @return 操作是否成功
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean acceptTask(Long taskId, Integer userId) {
+        // 1. 获取任务信息
+        SysTask task = sysTaskHandler.getById(taskId.intValue());
+        if (task == null) {
+            throw new IllegalArgumentException("任务不存在");
+        }
+
+        // 2. 校验任务状态
+        if (TaskStatusEnum.PENDING.getCode() != task.getStatus()) {
+            throw new IllegalArgumentException("该任务已被接单或已取消");
+        }
+
+        // 3. 校验是否是自己发布的任务
+        if (userId.equals(task.getPublisherId())) {
+            throw new IllegalArgumentException("不能接自己发布的任务");
+        }
+
+        // 4. 更新任务状态为已接单，并设置接单人
+        task.updateStatus(TaskStatusEnum.ACCEPTED);
+        sysTaskHandler.updateById(task);
+
+        // 5. 记录任务日志
+        SysTaskLog taskLog = new SysTaskLog().init(task.getId(), TaskActionEnum.ACCEPT, "接受任务:" + task.getTitle(), userId);
+        sysTaskLogHandler.save(taskLog);
+
+        return Boolean.TRUE;
     }
 } 

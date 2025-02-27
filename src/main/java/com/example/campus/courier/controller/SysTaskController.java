@@ -76,6 +76,20 @@ public class SysTaskController extends BaseController {
     @GetMapping("/hall")
     @Operation(summary = "获取抢单大厅任务列表")
     public Result<List<TaskDTO>> getTaskHallList() {
-        return Result.success(sysTaskService.getTaskHallList());
+        return Result.success(sysTaskService.getTaskHallList(getLoginUserId()));
+    }
+
+    /**
+     * 抢单（接受任务）
+     *
+     * @param taskId 任务ID
+     * @return 操作结果
+     */
+    @PostMapping("/{taskId}/accept")
+    @Operation(summary = "抢单（接受任务）")
+    public Result<Boolean> acceptTask(
+            @Parameter(description = "任务ID") 
+            @PathVariable("taskId") Long taskId) {
+        return Result.success(sysTaskService.acceptTask(taskId, getLoginUserId()));
     }
 } 

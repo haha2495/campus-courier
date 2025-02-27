@@ -1,7 +1,6 @@
 package com.example.campus.courier.service;
 
 import com.example.campus.courier.model.dto.TaskDTO;
-import com.example.campus.courier.model.entity.SysTask;
 import com.example.campus.courier.model.request.task.TaskAddRequest;
 import com.example.campus.courier.model.request.task.TaskQueryRequest;
 import com.example.campus.courier.model.response.PageResult;
@@ -46,5 +45,14 @@ public interface SysTaskService {
      *
      * @return 任务列表
      */
-    List<TaskDTO> getTaskHallList();
+    List<TaskDTO> getTaskHallList(Integer loginUserId);
+
+    /**
+     * 抢单（接受任务）
+     * 
+     * @param taskId 任务ID
+     * @param userId 当前用户ID
+     * @return 操作是否成功
+     */
+    boolean acceptTask(Long taskId, Integer userId);
 } 
