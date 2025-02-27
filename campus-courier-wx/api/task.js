@@ -72,3 +72,11 @@ export function acceptTask(taskId) {
         method: 'POST'
     })
 }
+
+// 获取我当前接单的任务列表
+export function getMyAcceptedTasks() {
+    return http({
+        url: '/api/tasks/my-accepted',
+        method: 'GET'
+    })
+}

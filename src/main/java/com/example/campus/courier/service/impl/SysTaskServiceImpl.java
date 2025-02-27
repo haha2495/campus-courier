@@ -143,28 +143,7 @@ public class SysTaskServiceImpl implements SysTaskService {
         // 1. 获取所有待接单的任务
         List<SysTask> tasks = sysTaskHandler.getTaskHallList(loginUserId);
 
-        if (tasks.isEmpty()) {
-            return List.of();
-        }
-
-        // 2. 获取所有任务类型ID
-        List<Integer> typeIds = tasks.stream()
-                .map(SysTask::getTaskTypeId)
-                .distinct()
-                .collect(Collectors.toList());
-
-        // 3. 查询任务类型信息
-        List<SysTaskType> taskTypes = sysTaskTypeHandler.getTaskTypesByIds(typeIds);
-        Map<Integer, SysTaskType> typeMap = taskTypes.stream()
-                .collect(Collectors.toMap(SysTaskType::getId, type -> type));
-
-        // 4. 组装DTO
-        return tasks.stream().map(task -> {
-            TaskDTO dto = new TaskDTO();
-            dto.setTask(task);
-            dto.setTaskType(typeMap.get(task.getTaskTypeId()));
-            return dto;
-        }).collect(Collectors.toList());
+        return getTaskDTOS(tasks);
     }
 
     /**
@@ -194,7 +173,7 @@ public class SysTaskServiceImpl implements SysTaskService {
         }
 
         // 4. 更新任务状态为已接单，并设置接单人
-        task.updateStatus(TaskStatusEnum.ACCEPTED);
+        task.acceptTask(userId);
         sysTaskHandler.updateById(task);
 
         // 5. 记录任务日志
@@ -202,5 +181,45 @@ public class SysTaskServiceImpl implements SysTaskService {
         sysTaskLogHandler.save(taskLog);
 
         return Boolean.TRUE;
+    }
+
+    /**
+     * 获取我当前接单的任务列表
+     * 只返回进行中的任务（已接单、进行中、待确认状态）
+     *
+     * @param userId 当前用户ID
+     * @return 任务列表
+     */
+    @Override
+    public List<TaskDTO> getMyAcceptedTasks(Integer userId) {
+        // 1. 获取当前用户接单的未完成任务
+        List<SysTask> tasks = sysTaskHandler.getMyAcceptedTasks(userId);
+
+        return getTaskDTOS(tasks);
+    }
+
+    private List<TaskDTO> getTaskDTOS(List<SysTask> tasks) {
+        if (tasks.isEmpty()) {
+            return List.of();
+        }
+
+        // 2. 获取所有任务类型ID
+        List<Integer> typeIds = tasks.stream()
+                .map(SysTask::getTaskTypeId)
+                .distinct()
+                .collect(Collectors.toList());
+
+        // 3. 查询任务类型信息
+        List<SysTaskType> taskTypes = sysTaskTypeHandler.getTaskTypesByIds(typeIds);
+        Map<Integer, SysTaskType> typeMap = taskTypes.stream()
+                .collect(Collectors.toMap(SysTaskType::getId, type -> type));
+
+        // 4. 组装DTO
+        return tasks.stream().map(task -> {
+            TaskDTO dto = new TaskDTO();
+            dto.setTask(task);
+            dto.setTaskType(typeMap.get(task.getTaskTypeId()));
+            return dto;
+        }).collect(Collectors.toList());
     }
 } 

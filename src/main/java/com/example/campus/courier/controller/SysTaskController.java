@@ -92,4 +92,16 @@ public class SysTaskController extends BaseController {
             @PathVariable("taskId") Long taskId) {
         return Result.success(sysTaskService.acceptTask(taskId, getLoginUserId()));
     }
+
+    /**
+     * 获取我当前接单的任务列表
+     * 只返回进行中的任务（已接单、进行中、待确认状态）
+     *
+     * @return 任务列表
+     */
+    @GetMapping("/my-accepted")
+    @Operation(summary = "获取我当前接单的任务列表")
+    public Result<List<TaskDTO>> getMyAcceptedTasks() {
+        return Result.success(sysTaskService.getMyAcceptedTasks(getLoginUserId()));
+    }
 } 

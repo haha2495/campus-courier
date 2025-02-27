@@ -59,4 +59,22 @@ public class SysTaskHandler extends ServiceImpl<SysTaskMapper, SysTask> {
                 .orderByDesc(SysTask::getCreateTime)
                 .list();
     }
+
+    /**
+     * 获取当前用户接单的未完成任务列表
+     * 只返回进行中的任务（已接单、进行中、待确认状态）
+     *
+     * @param userId 用户ID
+     * @return 任务列表
+     */
+    public List<SysTask> getMyAcceptedTasks(Integer userId) {
+        return lambdaQuery()
+                .eq(SysTask::getRunnerId, userId)
+                .in(SysTask::getStatus, 
+                    TaskStatusEnum.ACCEPTED.getCode(),
+                    TaskStatusEnum.IN_PROGRESS.getCode(),
+                    TaskStatusEnum.AWAITING_CONFIRMATION.getCode())
+                .orderByDesc(SysTask::getCreateTime)
+                .list();
+    }
 } 

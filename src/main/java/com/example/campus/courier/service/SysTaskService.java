@@ -55,4 +55,13 @@ public interface SysTaskService {
      * @return 操作是否成功
      */
     boolean acceptTask(Long taskId, Integer userId);
+
+    /**
+     * 获取我当前接单的任务列表
+     * 只返回进行中的任务（已接单、进行中、待确认状态）
+     *
+     * @param userId 当前用户ID
+     * @return 任务列表
+     */
+    List<TaskDTO> getMyAcceptedTasks(Integer userId);
 } 

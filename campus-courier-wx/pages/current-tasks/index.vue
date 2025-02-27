@@ -95,6 +95,7 @@
 import {onMounted, ref} from 'vue'
 import TaskCard from '@/components/task-card/index.vue'
 import {TASK_STATUS} from '@/constants/taskStatus'
+import {getMyAcceptedTasks} from '@/api/task'
 
 // 状态筛选选项
 const statusOptions = [
@@ -131,28 +132,15 @@ const fetchTaskList = async () => {
     isLoading.value = !isRefreshing.value && currentPage.value === 1
     isLoadingMore.value = currentPage.value > 1
 
-    // TODO: 调用获取当前任务列表API
-    const params = {
-      pageNum: currentPage.value,
-      pageSize: pageSize,
-      status: currentStatus.value
-    }
-
-    // const res = await getCurrentTasks(params)
-    const res = {data: {records: [], total: 0}} // 临时模拟数据
+    // 调用获取当前任务列表API
+    const res = await getMyAcceptedTasks()
 
     // 处理响应数据
-    if (res.data && res.data.records) {
-      if (currentPage.value === 1) {
-        taskList.value = res.data.records
-      } else {
-        taskList.value = [...taskList.value, ...res.data.records]
-      }
-      hasMoreData.value = taskList.value.length < res.data.total
+    if (res.data) {
+      taskList.value = res.data
+      hasMoreData.value = false // 因为不分页，所以没有更多数据
     } else {
-      if (currentPage.value === 1) {
-        taskList.value = []
-      }
+      taskList.value = []
       hasMoreData.value = false
     }
   } catch (error) {
