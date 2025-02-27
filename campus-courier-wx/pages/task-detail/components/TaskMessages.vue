@@ -16,62 +16,75 @@
 
       <!-- 消息列表 -->
       <view class="messages-wrapper">
-        <view
-            v-for="messageDTO in messages"
-            :key="messageDTO.message.id"
-            :id="'msg-' + messageDTO.message.id"
-            class="message-item"
-            :class="{ 
-              'message-right': isPublisher(messageDTO),
-              'message-sending': isTemp(messageDTO)
-            }"
-        >
-          <!-- 头像 -->
-          <image
-              class="avatar"
-              :src="messageDTO.student.avatar || '/static/images/default-avatar.png'"
-              mode="aspectFill"
-              @click="handleAvatarClick(messageDTO.student)"
-          ></image>
+        <template v-for="(messageDTO, index) in mergedMessages" :key="messageDTO.message.id">
+          <!-- 时间分割线 -->
+          <view v-if="shouldShowTimeDivider(messageDTO, index)" class="time-divider">
+            <text class="time-text">{{ formatTime(messageDTO.message.createTime) }}</text>
+          </view>
 
-          <!-- 消息内容 -->
-          <view class="message-content">
-            <!-- 用户名和角色标签 -->
-            <view class="user-info">
-              <text class="username">{{ messageDTO.student.name }}</text>
-              <text class="role-tag" :class="{ 'publisher-tag': isPublisher(messageDTO) }">
-                {{ isPublisher(messageDTO) ? '发布者' : '接单者' }}
-              </text>
-            </view>
-
-            <!-- 文本内容 -->
-            <view class="message-bubble" v-if="messageDTO.message.content">
-              {{ messageDTO.message.content }}
-            </view>
-
-            <!-- 图片内容 -->
-            <view
-                v-if="messageDTO.message.images && messageDTO.message.images.length > 0"
-                class="image-grid"
-                :class="{ 'single-image': messageDTO.message.images.length === 1 }"
-            >
+          <view
+              :id="'msg-' + messageDTO.message.id"
+              class="message-item"
+              :class="{ 
+                'message-right': isPublisher(messageDTO),
+                'message-sending': isTemp(messageDTO)
+              }"
+          >
+            <!-- 头像或首字母头像 -->
+            <view class="avatar-wrapper">
               <image
-                  v-for="(image, index) in messageDTO.message.images"
-                  :key="index"
-                  :src="image"
+                  v-if="messageDTO.student.avatar"
+                  class="avatar"
+                  :src="messageDTO.student.avatar"
                   mode="aspectFill"
-                  class="message-image"
-                  @click="previewImage(image, messageDTO.message.images)"
+                  @click="handleAvatarClick(messageDTO.student)"
               ></image>
+              <view
+                  v-else
+                  class="avatar-letter"
+                  :style="{ backgroundColor: getAvatarColor(messageDTO.student.name) }"
+                  @click="handleAvatarClick(messageDTO.student)"
+              >
+                {{ getNameFirstLetter(messageDTO.student.name) }}
+              </view>
             </view>
 
-            <!-- 发送时间 -->
-            <view class="message-status">
-              <text class="message-time">{{ messageDTO.message.createTime }}</text>
-              <text v-if="isTemp(messageDTO)" class="sending-status">发送中...</text>
+            <!-- 消息内容 -->
+            <view class="message-content">
+              <!-- 用户名和角色标签 -->
+              <view class="user-info">
+                <text class="username">{{ messageDTO.student.name }}</text>
+                <text class="role-tag" :class="{ 'publisher-tag': isPublisher(messageDTO) }">
+                  {{ isPublisher(messageDTO) ? '发布者' : '接单者' }}
+                </text>
+              </view>
+
+              <!-- 文本内容 -->
+              <view class="message-bubble" v-if="messageDTO.message.content">
+                {{ messageDTO.message.content }}
+              </view>
+
+              <!-- 图片内容 -->
+              <view
+                  v-if="messageDTO.message.images && messageDTO.message.images.length > 0"
+                  class="image-grid"
+                  :class="{ 'single-image': messageDTO.message.images.length === 1 }"
+              >
+                <image
+                    v-for="(image, imgIndex) in messageDTO.message.images"
+                    :key="imgIndex"
+                    :src="image"
+                    mode="aspectFill"
+                    class="message-image"
+                    @click="previewImage(image, messageDTO.message.images)"
+                ></image>
+              </view>
+
+              <!-- 发送状态 -->
+              <view v-if="isTemp(messageDTO)" class="sending-status">发送中...</view>
             </view>
           </view>
-        </view>
+        </template>
       </view>
     </scroll-view>
 
@@ -159,6 +172,14 @@ const hasMore = ref(false)
 // 是否正在发送消息
 const isSending = ref(false)
 
+// 本地消息列表
+const localMessages = ref([])
+
+// 合并后的消息列表
+const mergedMessages = computed(() => {
+  return [...props.messages, ...localMessages.value]
+})
+
 // 最后一条消息的ID，用于滚动定位
 const lastMessageId = computed(() => {
   if (props.messages && props.messages.length > 0) {
@@ -241,18 +262,22 @@ const sendMessage = async () => {
   try {
     isSending.value = true
     
+    // 先清空输入内容和已选图片
+    inputContent.value = ''
+    selectedImages.value = []
+    
     // 上传图片（如果有）
     let imageUrls = []
     if (images.length > 0) {
       imageUrls = await Promise.all(images.map(async (imagePath) => {
         try {
           const uploadRes = await uni.uploadFile({
-            url: '/api/upload', // 替换为你的图片上传接口
+            url: '/api/upload',
             filePath: imagePath,
             name: 'file',
           })
           const result = JSON.parse(uploadRes.data)
-          return result.data // 假设返回的是图片URL
+          return result.data
         } catch (error) {
           console.error('图片上传失败:', error)
           throw new Error('图片上传失败')
@@ -267,15 +292,9 @@ const sendMessage = async () => {
       imageUrls: imageUrls
     })
     
-    // 清空输入内容和已选图片
-    inputContent.value = ''
-    selectedImages.value = []
+    // 静默刷新消息列表
+    emit('refresh')
     
-    // 刷新消息列表
-    await emit('refresh')
-    
-    // 滚动到底部
-    await scrollToBottom()
   } catch (e) {
     console.error('发送消息失败:', e)
     uni.showToast({
@@ -309,6 +328,63 @@ const loadMoreMessages = () => {
 watch(() => props.messages, () => {
   scrollToBottom()
 }, {deep: true})
+
+// 格式化时间
+const formatTime = (timeString) => {
+  if (!timeString) return ''
+  const date = new Date(timeString)
+  const now = new Date()
+  const diff = now - date
+  
+  // 如果是今天的消息，只显示时间
+  if (date.toDateString() === now.toDateString()) {
+    return date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+  }
+  
+  // 如果是昨天的消息
+  const yesterday = new Date(now)
+  yesterday.setDate(yesterday.getDate() - 1)
+  if (date.toDateString() === yesterday.toDateString()) {
+    return '昨天 ' + date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+  }
+  
+  // 其他日期显示完整日期和时间
+  return date.toLocaleString('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+}
+
+// 判断是否需要显示时间分割线
+const shouldShowTimeDivider = (currentMessage, index) => {
+  if (index === 0) return true
+  
+  const currentTime = new Date(currentMessage.message.createTime)
+  const prevTime = new Date(mergedMessages.value[index - 1].message.createTime)
+  
+  // 如果两条消息相差超过5分钟，显示时间分割线
+  return (currentTime - prevTime) > 5 * 60 * 1000
+}
+
+// 获取姓名首字母
+const getNameFirstLetter = (name) => {
+  if (!name) return '?'
+  return name.charAt(0).toUpperCase()
+}
+
+// 根据姓名生成头像背景色
+const getAvatarColor = (name) => {
+  if (!name) return '#cccccc'
+  const colors = [
+    '#f56a00', '#7265e6', '#ffbf00', '#00a2ae',
+    '#712fd1', '#04be02', '#2f54eb', '#fa541c'
+  ]
+  const index = Array.from(name).reduce((acc, char) => acc + char.charCodeAt(0), 0)
+  return colors[index % colors.length]
+}
 </script>
 
 <style lang="scss" scoped>
@@ -557,5 +633,60 @@ watch(() => props.messages, () => {
 .image-button.disabled {
   opacity: 0.6;
   pointer-events: none;
+}
+
+.time-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 30rpx 0;
+  
+  .time-text {
+    font-size: 24rpx;
+    color: #999;
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 4rpx 16rpx;
+    border-radius: 24rpx;
+  }
+}
+
+.avatar-wrapper {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.avatar-letter {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  color: #fff;
+  font-weight: bold;
+}
+
+.message-item {
+  margin-bottom: 20rpx;
+  
+  &.message-right {
+    .avatar-wrapper {
+      margin-left: 20rpx;
+      margin-right: 0;
+    }
+  }
+}
+
+.message-content {
+  background-color: #fff;
+  border-radius: 12rpx;
+  padding: 16rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+  
+  .user-info {
+    margin-bottom: 8rpx;
+  }
 }
 </style> 
