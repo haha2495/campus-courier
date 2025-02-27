@@ -149,8 +149,13 @@
             :class="{ active: activeTab === index }"
             @click="handleTabChange(index)"
           >
-            <text>{{ tab.name }}</text>
-            <text v-if="tab.count" class="tab-count">({{ tab.count }})</text>
+            <view class="tab-content-wrapper">
+              <view class="tab-inner">
+                <u-icon :name="tab.icon" size="32" :color="activeTab === index ? '#3B82F6' : '#6B7280'"></u-icon>
+                <text class="tab-text">{{ tab.name }}</text>
+              </view>
+            </view>
+            <view class="tab-line" :class="{ 'tab-line-active': activeTab === index }"></view>
           </view>
         </view>
 
@@ -191,11 +196,11 @@ const taskId = ref(null)
 const tabs = computed(() => [
   {
     name: '任务进度',
-    count: taskDetail.value?.logs?.length || 0
+    icon: 'clock-fill'
   },
   {
     name: '任务留言',
-    count: taskDetail.value?.messages?.length || 0
+    icon: 'chat-fill'
   }
 ])
 
@@ -763,50 +768,117 @@ onMounted(() => {
   }
 }
 
+/* 标签切换样式 */
 .tab-container {
-  margin-top: 30rpx;
-  background: #fff;
+  position: relative;
+  background-color: #ffffff;
+  margin: 30rpx 20rpx;
+  border-radius: 24rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+}
+
+.tab-header {
+  display: flex;
+  align-items: stretch;
+  position: relative;
+  height: 88rpx;
+  background: linear-gradient(to bottom, #ffffff, #f8fafc);
   
-  .tab-header {
+  &::after {
+    content: '';
+    position: absolute;
+    left: 15%;
+    right: 15%;
+    bottom: 0;
+    height: 2rpx;
+    background: linear-gradient(to right, transparent, #E5E7EB, transparent);
+    transform: scaleY(0.5);
+  }
+}
+
+.tab-item {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12rpx 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  .tab-content-wrapper {
     display: flex;
     align-items: center;
-    border-bottom: 2rpx solid #f5f7fa;
-    padding: 0 30rpx;
+    justify-content: center;
+    transform: translateY(0);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .tab-inner {
+    display: flex;
+    align-items: center;
+    gap: 8rpx;
+  }
+  
+  .tab-text {
+    font-size: 28rpx;
+    color: #6B7280;
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .tab-line {
+    position: absolute;
+    bottom: 0;
+    width: 32rpx;
+    height: 4rpx;
+    background: linear-gradient(to right, #3B82F6, #60A5FA);
+    border-radius: 4rpx;
+    opacity: 0;
+    transform: translateY(4rpx);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  &.active {
+    .tab-content-wrapper {
+      transform: translateY(-2rpx);
+    }
     
-    .tab-item {
-      position: relative;
-      padding: 24rpx 40rpx;
-      font-size: 28rpx;
-      color: #666;
-      display: flex;
-      align-items: center;
-      
-      .tab-count {
-        font-size: 24rpx;
-        color: #999;
-        margin-left: 8rpx;
-      }
-      
-      &.active {
-        color: #07c160;
-        font-weight: 600;
-        
-        &::after {
-          content: '';
-          position: absolute;
-          bottom: 0;
-          left: 40rpx;
-          right: 40rpx;
-          height: 4rpx;
-          background: #07c160;
-          border-radius: 4rpx;
-        }
-      }
+    .tab-text {
+      color: #3B82F6;
+      font-weight: 600;
+    }
+    
+    .tab-line {
+      opacity: 1;
+      transform: translateY(0);
+      width: 48rpx;
     }
   }
   
-  .tab-content {
-    min-height: 400rpx;
+  &:active {
+    .tab-content-wrapper {
+      transform: scale(0.98);
+    }
+  }
+}
+
+.tab-content {
+  background-color: #ffffff;
+  min-height: 300rpx;
+  padding: 30rpx;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 20rpx;
+    right: 20rpx;
+    height: 30rpx;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.95), transparent);
+    pointer-events: none;
   }
 }
 </style> 
