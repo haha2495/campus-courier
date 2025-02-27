@@ -43,7 +43,18 @@
 
       <!-- 任务列表 -->
       <view v-else class="task-list">
-        <text>任务列表（待实现）</text>
+        <task-card
+            v-for="task in taskList"
+            :key="task.task.id"
+            :task="task"
+            @click="navigateToTaskDetail(task.task.id)"
+        >
+          <template #actions>
+            <view class="action-btn accept-btn" @click.stop="acceptTask(task.task.id)">
+              抢单
+            </view>
+          </template>
+        </task-card>
       </view>
 
       <!-- 加载更多 -->
@@ -57,6 +68,7 @@
 
 <script setup>
 import {onMounted, ref} from 'vue'
+import TaskCard from '@/components/task-card/index.vue'
 
 // 搜索关键词
 const searchKeyword = ref('')
@@ -67,8 +79,6 @@ const isRefreshing = ref(false)
 const isLoading = ref(false)
 const isLoadingMore = ref(false)
 const hasMoreData = ref(true)
-const currentPage = ref(1)
-const pageSize = 10
 
 // 搜索处理
 const onSearch = () => {
@@ -84,11 +94,18 @@ const onClear = () => {
 // 获取任务列表
 const fetchTaskList = async () => {
   try {
-    isLoading.value = currentPage.value === 1 && !isRefreshing.value
-    isLoadingMore.value = currentPage.value > 1
+    isLoading.value = !isRefreshing.value
 
-    // TODO: 调用获取任务列表API
-    
+    // 调用获取任务列表API
+    // const res = await getTaskHallList()
+
+    // if (res.data) {
+    //   taskList.value = res.data
+    // } else {
+    //   taskList.value = []
+    // }
+
+    hasMoreData.value = false // 因为不分页，所以没有更多数据
   } catch (error) {
     console.error('获取任务列表失败：', error)
     uni.showToast({
@@ -105,19 +122,55 @@ const fetchTaskList = async () => {
 // 刷新任务列表
 const refreshTasks = async () => {
   isRefreshing.value = true
-  currentPage.value = 1
   await fetchTaskList()
-  
+
   setTimeout(() => {
     isRefreshing.value = false
   }, 300)
 }
 
-// 加载更多任务
+// 加载更多任务 - 因为不分页，所以这个函数实际上不会做任何事
 const loadMoreTasks = async () => {
-  if (!hasMoreData.value || isLoadingMore.value) return
-  currentPage.value++
-  await fetchTaskList()
+  // Do nothing
+}
+
+// 跳转到任务详情
+const navigateToTaskDetail = (taskId) => {
+  uni.navigateTo({
+    url: '/pages/task-detail/index?id=' + taskId
+  })
+}
+
+// 抢单
+const acceptTask = async (taskId) => {
+  uni.showModal({
+    title: '确认抢单',
+    content: '确定要接这个任务吗？',
+    async success(res) {
+      if (res.confirm) {
+        uni.showLoading({title: '抢单中...'})
+
+        try {
+          // TODO: 调用抢单API
+          await uni.showToast({
+            title: '抢单成功',
+            icon: 'success'
+          })
+
+          // 刷新列表
+          await refreshTasks()
+        } catch (error) {
+          console.error('抢单失败：', error)
+          uni.showToast({
+            title: error.message || '抢单失败',
+            icon: 'none'
+          })
+        } finally {
+          uni.hideLoading()
+        }
+      }
+    }
+  })
 }
 
 // 页面加载时获取任务列表
@@ -173,5 +226,25 @@ onMounted(() => {
 
 .load-more {
   padding: 20rpx 0;
+}
+
+.action-btn {
+  font-size: 24rpx;
+  padding: 8rpx 20rpx;
+  border-radius: 20rpx;
+  transition: all 0.2s;
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &.accept-btn {
+    color: #07c160;
+    background-color: #e8f8f1;
+
+    &:active {
+      background-color: #d7f6e6;
+    }
+  }
 }
 </style> 
