@@ -164,7 +164,7 @@
           <!-- 任务进度 -->
           <TaskTimeline 
             v-if="activeTab === 0" 
-            :taskLogs="taskDetail.logs"
+            :taskLogs="taskDetail.taskLogs"
           />
 
           <!-- 任务留言 -->
