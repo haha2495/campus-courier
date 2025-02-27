@@ -26,4 +26,9 @@ public class SysTaskEvaluationHandler extends ServiceImpl<SysTaskEvaluationMappe
         return count(new LambdaQueryWrapper<SysTaskEvaluation>()
                 .eq(SysTaskEvaluation::getTaskId, taskId)) > 0;
     }
-} 
+
+    public SysTaskEvaluation getByTaskId(Integer taskId) {
+        return baseMapper.selectOne(new LambdaQueryWrapper<SysTaskEvaluation>()
+                .eq(SysTaskEvaluation::getTaskId, taskId));
+    }
+}

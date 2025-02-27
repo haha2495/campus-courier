@@ -284,7 +284,7 @@ public class SysTaskServiceImpl implements SysTaskService {
         List<SysTaskLog> taskLogs = sysTaskLogHandler.getTaskLogs(taskId);
 
         // 8. 查询任务评价信息
-        SysTaskEvaluation evaluation = sysTaskEvaluationHandler.getById(taskId);
+        SysTaskEvaluation evaluation = sysTaskEvaluationHandler.getByTaskId(taskId);
 
         // 9. 构建并返回DTO
         return TaskDetailDTO.build(task, taskType, messageDTOs, taskLogs, evaluation);
