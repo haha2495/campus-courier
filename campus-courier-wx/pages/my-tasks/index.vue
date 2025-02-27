@@ -63,8 +63,17 @@
             @click="navigateToTaskDetail(task.task.id)"
         >
           <template #actions>
+            <!-- 已完成状态显示评价按钮 -->
+            <template v-if="task.task.status === TASK_STATUS.COMPLETED">
+              <view class="action-buttons">
+                <view class="action-btn evaluate-btn" @tap.stop="showEvaluateModal(task)">
+                  评价跑腿者
+                </view>
+              </view>
+            </template>
+
             <!-- 待确认状态 -->
-            <template v-if="task.task.status === TASK_STATUS.AWAITING_CONFIRMATION">
+            <template v-else-if="task.task.status === TASK_STATUS.AWAITING_CONFIRMATION">
               <view class="action-buttons">
                 <view class="action-btn confirm-btn" @click.stop="confirmTask(task.task.id)">
                   确认完成
@@ -74,11 +83,11 @@
                 </view>
               </view>
             </template>
-            
+
             <!-- 待接单状态可取消 -->
-            <view 
-                v-else-if="canCancelTask(task.task.status)" 
-                class="action-btn cancel-btn" 
+            <view
+                v-else-if="canCancelTask(task.task.status)"
+                class="action-btn cancel-btn"
                 @click.stop="cancelTask(task.task.id)"
             >
               取消任务
@@ -93,19 +102,38 @@
         <u-loadmore v-else-if="!hasMoreData" status="nomore"/>
       </view>
     </scroll-view>
+
+    <!-- 评价弹窗 -->
+    <task-evaluate
+      v-model:show="showEvaluate"
+      :taskId="currentTask?.task?.id"
+      @submit="handleEvaluateSubmit"
+    />
   </view>
 </template>
 
 <script setup>
-import {onMounted, ref} from 'vue'
+import {computed, onMounted, ref} from 'vue'
 import {
-  cancelTask as apiCancelTask, 
+  cancelTask as apiCancelTask,
   getMyPublishedTasks,
   confirmTask as apiConfirmTask,
-  submitDispute as apiSubmitDispute
+  submitDispute as apiSubmitDispute,
+  addTaskEvaluation
 } from '@/api/task'
 import {TASK_STATUS} from '@/constants/taskStatus'
 import TaskCard from '@/components/task-card/index.vue'
+
+// 引入 uview-plus 组件
+import uPopup from 'uview-plus/components/u-popup/u-popup.vue'
+import uIcon from 'uview-plus/components/u-icon/u-icon.vue'
+import uRate from 'uview-plus/components/u-rate/u-rate.vue'
+import uSwitch from 'uview-plus/components/u-switch/u-switch.vue'
+import uLoadingIcon from 'uview-plus/components/u-loading-icon/u-loading-icon.vue'
+import uLoadmore from 'uview-plus/components/u-loadmore/u-loadmore.vue'
+
+// 导入评价组件
+import TaskEvaluate from '@/components/task-evaluate/index.vue'
 
 // 状态筛选选项
 const statusOptions = TASK_STATUS.getStatusOptions()
@@ -120,6 +148,29 @@ const hasMoreData = ref(true)
 const currentPage = ref(1)
 const pageSize = 10
 const total = ref(0)
+
+// 评价相关数据
+const showEvaluate = ref(false)
+const currentTask = ref(null)
+const submitting = ref(false)
+
+// 评价表单
+const evaluateForm = ref({
+  taskId: null,
+  score: 5,
+  content: '',
+  tags: [],
+  anonymous: false
+})
+
+// 评价标签选项
+const evaluateTags = [
+  '准时送达',
+  '态度友好',
+  '服务周到',
+  '包装完好',
+  '沟通顺畅'
+]
 
 // 格式化时间显示 (YYYY-MM-DD HH:MM)
 const formatTime = (timeString) => {
@@ -400,6 +451,61 @@ const submitDispute = async (taskId) => {
   })
 }
 
+// 显示评价弹窗
+const showEvaluateModal = (task) => {
+  currentTask.value = task
+  showEvaluate.value = true
+}
+
+// 处理评价提交
+const handleEvaluateSubmit = async (formData) => {
+  try {
+    await addTaskEvaluation(formData)
+    uni.showToast({
+      title: '评价成功',
+      icon: 'success'
+    })
+    showEvaluate.value = false
+    refreshTasks()
+  } catch (error) {
+    console.error('评价失败：', error)
+    uni.showToast({
+      title: error.message || '评价失败',
+      icon: 'none'
+    })
+  }
+}
+
+// 切换标签选择
+const toggleTag = (tag) => {
+  const index = evaluateForm.value.tags.indexOf(tag)
+  if (index > -1) {
+    evaluateForm.value.tags.splice(index, 1)
+  } else if (evaluateForm.value.tags.length < 5) {
+    evaluateForm.value.tags.push(tag)
+  }
+}
+
+// 是否可以提交
+const canSubmit = computed(() => {
+  return evaluateForm.value.score > 0
+})
+
+// 获取评分对应的文本和样式
+const getScoreText = (score) => {
+  if (score >= 4.5) return '非常满意';
+  if (score >= 4) return '满意';
+  if (score >= 3) return '一般';
+  return '不满意';
+}
+
+const getScoreClass = (score) => {
+  if (score >= 4.5) return 'score-excellent';
+  if (score >= 4) return 'score-good';
+  if (score >= 3) return 'score-normal';
+  return 'score-bad';
+}
+
 // 页面加载时获取任务列表
 onMounted(() => {
   refreshTasks()
@@ -623,6 +729,15 @@ onMounted(() => {
       background-color: #ffe7e5;
     }
   }
+
+  &.evaluate-btn {
+    color: #ff9500;
+    background-color: #fff7e6;
+
+    &:active {
+      background-color: #fff0d9;
+    }
+  }
 }
 
 @keyframes drive {
@@ -661,5 +776,243 @@ onMounted(() => {
 /* 刷新完成后应用此动画，平滑过渡 */
 .refresh-completed {
   animation: refreshCompleted 0.3s ease;
+}
+
+.evaluate-popup {
+  background: linear-gradient(to bottom, #ffffff, #f8fafc);
+  border-radius: 24rpx 24rpx 0 0;
+  padding-bottom: env(safe-area-inset-bottom);
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+
+  .evaluate-header {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30rpx;
+    border-bottom: 2rpx solid rgba(0, 0, 0, 0.05);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    position: relative;
+    z-index: 1;
+
+    .title {
+      font-size: 36rpx;
+      font-weight: 600;
+      color: #333;
+      letter-spacing: 1px;
+    }
+
+    .close-btn {
+      width: 64rpx;
+      height: 64rpx;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: #f5f5f5;
+      transition: all 0.3s;
+
+      &:active {
+        transform: scale(0.9);
+        background: #e8e8e8;
+      }
+    }
+  }
+
+  .evaluate-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 30rpx;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 120rpx;
+
+    .section-title {
+      font-size: 30rpx;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 24rpx;
+      display: flex;
+      align-items: center;
+      gap: 10rpx;
+
+      .tag-tip {
+        font-size: 24rpx;
+        color: #999;
+        font-weight: normal;
+      }
+    }
+
+    .score-section {
+      margin-bottom: 30rpx !important;
+      padding: 20rpx !important;
+    }
+
+    .score-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16rpx;
+      margin: 20rpx 0;
+    }
+
+    .score-text {
+      font-size: 32rpx;
+      font-weight: 600;
+      margin-top: 16rpx;
+      
+      &.score-excellent {
+        color: #ff9500;
+        animation: pulse 1s infinite;
+      }
+      
+      &.score-good {
+        color: #07c160;
+      }
+      
+      &.score-normal {
+        color: #2b85e4;
+      }
+      
+      &.score-bad {
+        color: #ff4d4f;
+      }
+    }
+
+    .score-value {
+      font-size: 48rpx;
+      font-weight: 700;
+      color: #ff9500;
+      margin-top: 16rpx;
+      font-family: 'DIN Condensed', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+
+    .tags-section {
+      margin-bottom: 30rpx !important;
+    }
+
+    .tags-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16rpx;
+
+      .tag-item {
+        padding: 16rpx 24rpx;
+        border-radius: 30rpx;
+        font-size: 28rpx;
+        color: #666;
+        background: #f5f5f5;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 8rpx;
+        border: 2rpx solid transparent;
+
+        .tag-text {
+          transition: all 0.3s;
+        }
+
+        .tag-icon {
+          opacity: 0;
+          transform: scale(0);
+          transition: all 0.3s;
+        }
+
+        &.active {
+          color: #ff9500;
+          background: #fff7e6;
+          border-color: #ff9500;
+          font-weight: 500;
+
+          .tag-icon {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+
+        &:active {
+          transform: scale(0.95);
+        }
+      }
+    }
+
+    .content-section {
+      margin-bottom: 30rpx !important;
+    }
+
+    .textarea-wrapper {
+      position: relative;
+      background: #fff;
+      border-radius: 16rpx;
+      padding: 20rpx;
+      box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+
+      .evaluate-textarea {
+        width: 100%;
+        height: 200rpx;
+        font-size: 28rpx;
+        line-height: 1.6;
+        color: #333;
+        padding: 0;
+      }
+
+      .word-count {
+        position: absolute;
+        right: 20rpx;
+        bottom: 20rpx;
+        font-size: 24rpx;
+        color: #999;
+
+        &.word-limit {
+          color: #ff4d4f;
+        }
+      }
+    }
+
+    .anonymous-section {
+      margin-bottom: 100rpx !important;
+      padding: 20rpx !important;
+    }
+  }
+
+  .evaluate-footer {
+    flex-shrink: 0;
+    padding: 30rpx;
+    border-top: 2rpx solid rgba(0, 0, 0, 0.05);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+  }
+}
+
+@keyframes shine {
+  0% {
+    transform: translateX(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) rotate(45deg);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* 优化滚动条样式 */
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  background: transparent;
 }
 </style> 

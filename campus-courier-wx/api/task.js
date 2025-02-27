@@ -143,3 +143,31 @@ export function submitDispute(taskId) {
         method: 'POST'
     })
 }
+
+/**
+ * 添加任务评价
+ * @param {Object} data 评价数据
+ * @param {number} data.taskId 任务ID
+ * @param {number} data.score 评分
+ * @param {string} data.content 评价内容
+ * @param {Array<string>} data.tags 评价标签
+ * @param {boolean} data.anonymous 是否匿名
+ */
+export function addTaskEvaluation(data) {
+    return http({
+        url: '/api/task-evaluations',
+        method: 'POST',
+        data
+    })
+}
+
+/**
+ * 检查任务是否已评价
+ * @param {number} taskId 任务ID
+ */
+export function checkTaskEvaluated(taskId) {
+    return http({
+        url: `/api/task-evaluations/check/${taskId}`,
+        method: 'GET'
+    })
+}
