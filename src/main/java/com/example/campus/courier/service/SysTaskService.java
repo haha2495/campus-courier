@@ -64,4 +64,14 @@ public interface SysTaskService {
      * @return 任务列表
      */
     List<TaskDTO> getMyAcceptedTasks(Integer userId);
+
+    /**
+     * 开始执行任务
+     * 将任务状态从"已接单"变更为"进行中"
+     *
+     * @param taskId 任务ID
+     * @param userId 当前用户ID
+     * @return 操作是否成功
+     */
+    boolean startTask(Long taskId, Integer userId);
 } 

@@ -104,4 +104,18 @@ public class SysTaskController extends BaseController {
     public Result<List<TaskDTO>> getMyAcceptedTasks() {
         return Result.success(sysTaskService.getMyAcceptedTasks(getLoginUserId()));
     }
+
+    /**
+     * 开始执行任务
+     *
+     * @param taskId 任务ID
+     * @return 操作结果
+     */
+    @PostMapping("/{taskId}/start")
+    @Operation(summary = "开始执行任务")
+    public Result<Boolean> startTask(
+            @Parameter(description = "任务ID") 
+            @PathVariable("taskId") Long taskId) {
+        return Result.success(sysTaskService.startTask(taskId, getLoginUserId()));
+    }
 } 

@@ -67,7 +67,7 @@
               <!-- 已接单状态 -->
               <template v-if="task.task.status === TASK_STATUS.ACCEPTED">
                 <view class="action-btn primary-btn" @click.stop="startTask(task.task.id)">
-                  开始配送
+                  开始执行
                 </view>
               </template>
               
@@ -95,7 +95,7 @@
 import {onMounted, ref} from 'vue'
 import TaskCard from '@/components/task-card/index.vue'
 import {TASK_STATUS} from '@/constants/taskStatus'
-import {getMyAcceptedTasks} from '@/api/task'
+import {getMyAcceptedTasks, startTask as startTaskApi} from '@/api/task'
 
 // 状态筛选选项
 const statusOptions = [
@@ -173,18 +173,18 @@ const loadMoreTasks = async () => {
   await fetchTaskList()
 }
 
-// 开始配送任务
+// 开始执行任务
 const startTask = async (taskId) => {
   uni.showModal({
     title: '确认开始',
-    content: '确定要开始配送这个任务吗？',
+    content: '确定要开始执行这个任务吗？',
     async success(res) {
       if (res.confirm) {
         uni.showLoading({title: '处理中...'})
         try {
-          // TODO: 调用开始任务API
+          await startTaskApi(taskId)
           await uni.showToast({
-            title: '已开始配送',
+            title: '已开始执行',
             icon: 'success'
           })
           await refreshTasks()

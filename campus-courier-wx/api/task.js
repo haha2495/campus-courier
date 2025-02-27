@@ -80,3 +80,11 @@ export function getMyAcceptedTasks() {
         method: 'GET'
     })
 }
+
+// 开始执行任务
+export function startTask(taskId) {
+    return http({
+        url: '/api/tasks/' + taskId + '/start',
+        method: 'POST'
+    })
+}

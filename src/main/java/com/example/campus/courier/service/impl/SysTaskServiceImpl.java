@@ -198,6 +198,44 @@ public class SysTaskServiceImpl implements SysTaskService {
         return getTaskDTOS(tasks);
     }
 
+    /**
+     * 开始执行任务
+     * 将任务状态从"已接单"变更为"进行中"
+     *
+     * @param taskId 任务ID
+     * @param userId 当前用户ID
+     * @return 操作是否成功
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean startTask(Long taskId, Integer userId) {
+        // 1. 获取任务信息
+        SysTask task = sysTaskHandler.getById(taskId.intValue());
+        if (task == null) {
+            throw new IllegalArgumentException("任务不存在");
+        }
+
+        // 2. 校验任务状态
+        if (TaskStatusEnum.ACCEPTED.getCode() != task.getStatus()) {
+            throw new IllegalArgumentException("只有已接单的任务才能开始执行");
+        }
+
+        // 3. 校验是否是接单人
+        if (!userId.equals(task.getRunnerId())) {
+            throw new IllegalArgumentException("只有接单人才能开始执行任务");
+        }
+
+        // 4. 更新任务状态为进行中
+        task.updateStatus(TaskStatusEnum.IN_PROGRESS);
+        sysTaskHandler.updateById(task);
+
+        // 5. 记录任务日志
+        SysTaskLog taskLog = new SysTaskLog().init(task.getId(), TaskActionEnum.START, "开始执行任务:" + task.getTitle(), userId);
+        sysTaskLogHandler.save(taskLog);
+
+        return Boolean.TRUE;
+    }
+
     private List<TaskDTO> getTaskDTOS(List<SysTask> tasks) {
         if (tasks.isEmpty()) {
             return List.of();
