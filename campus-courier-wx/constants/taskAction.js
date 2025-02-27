@@ -6,7 +6,7 @@ export const TASK_ACTION = {
   ACCEPT: 2,         // 接受任务
   CANCEL: 3,         // 取消任务
   START: 4,          // 开始执行
-  COMPLETE: 5,       // 完成任务
+  DELIVER: 5,       // 完成任务
   CONFIRM: 6,        // 确认完成
   SUBMIT_DISPUTE: 7, // 提交纠纷
   RESOLVE_DISPUTE: 8, // 解决纠纷
@@ -24,7 +24,7 @@ export const getActionText = (action) => {
     [TASK_ACTION.ACCEPT]: '接受任务',
     [TASK_ACTION.CANCEL]: '取消任务',
     [TASK_ACTION.START]: '开始执行',
-    [TASK_ACTION.COMPLETE]: '完成任务',
+    [TASK_ACTION.DELIVER]: '完成任务',
     [TASK_ACTION.CONFIRM]: '确认完成',
     [TASK_ACTION.SUBMIT_DISPUTE]: '提交纠纷',
     [TASK_ACTION.RESOLVE_DISPUTE]: '解决纠纷',
@@ -44,7 +44,7 @@ export const getActionIcon = (action) => {
     [TASK_ACTION.ACCEPT]: 'checkmark-circle-fill',     // 接单
     [TASK_ACTION.CANCEL]: 'close-circle-fill',         // 取消
     [TASK_ACTION.START]: 'play-circle-fill',           // 开始
-    [TASK_ACTION.COMPLETE]: 'checkbox-circle-fill',     // 完成
+    [TASK_ACTION.DELIVER]: 'car-fill',                 // 送达 - 改用送货车图标
     [TASK_ACTION.CONFIRM]: 'star-fill',                // 确认
     [TASK_ACTION.SUBMIT_DISPUTE]: 'warning-circle-fill', // 纠纷
     [TASK_ACTION.RESOLVE_DISPUTE]: 'checkmark-circle-fill', // 解决
@@ -64,7 +64,7 @@ export const getActionColor = (action) => {
     [TASK_ACTION.ACCEPT]: '#10B981',     // 接单 - 绿色
     [TASK_ACTION.CANCEL]: '#EF4444',     // 取消 - 红色
     [TASK_ACTION.START]: '#F59E0B',      // 开始 - 橙色
-    [TASK_ACTION.COMPLETE]: '#10B981',   // 完成 - 绿色
+    [TASK_ACTION.DELIVER]: '#06B6D4',    // 送达 - 青色
     [TASK_ACTION.CONFIRM]: '#6366F1',    // 确认 - 靛蓝色
     [TASK_ACTION.SUBMIT_DISPUTE]: '#F97316', // 纠纷 - 深橙色
     [TASK_ACTION.RESOLVE_DISPUTE]: '#10B981', // 解决 - 绿色
@@ -84,7 +84,7 @@ export const getActionClass = (action) => {
     [TASK_ACTION.ACCEPT]: 'node-accept',
     [TASK_ACTION.CANCEL]: 'node-cancel',
     [TASK_ACTION.START]: 'node-start',
-    [TASK_ACTION.COMPLETE]: 'node-complete',
+    [TASK_ACTION.DELIVER]: 'node-deliver',  // 修改类名
     [TASK_ACTION.CONFIRM]: 'node-confirm',
     [TASK_ACTION.SUBMIT_DISPUTE]: 'node-dispute',
     [TASK_ACTION.RESOLVE_DISPUTE]: 'node-resolve',

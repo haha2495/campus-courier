@@ -343,7 +343,7 @@ public class SysTaskServiceImpl implements SysTaskService {
         sysTaskHandler.updateById(task);
 
         // 5. 记录任务日志
-        SysTaskLog taskLog = new SysTaskLog().init(task.getId(), TaskActionEnum.COMPLETE, "送达任务:" + task.getTitle(), userId);
+        SysTaskLog taskLog = new SysTaskLog().init(task.getId(), TaskActionEnum.DELIVER, "送达任务:" + task.getTitle(), userId);
         sysTaskLogHandler.save(taskLog);
 
         return Boolean.TRUE;

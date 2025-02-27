@@ -13,7 +13,7 @@ public enum TaskActionEnum {
     ACCEPT(2, "接受任务"),
     CANCEL(3, "取消任务"),
     START(4, "开始执行"),
-    COMPLETE(5, "完成任务"),
+    DELIVER(5, "送达任务"),
     CONFIRM(6, "确认完成"),
     SUBMIT_DISPUTE(7, "提交纠纷"),
     RESOLVE_DISPUTE(8, "解决纠纷"),

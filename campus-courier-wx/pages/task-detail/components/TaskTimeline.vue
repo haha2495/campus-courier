@@ -218,8 +218,11 @@ const previewImage = (current, urls) => {
   --timeline-line-color: rgba(245, 158, 11, 0.5);
 }
 
-.node-complete {
-  --timeline-line-color: rgba(16, 185, 129, 0.5);
+.node-deliver {
+  --timeline-line-color: rgba(6, 182, 212, 0.5);
+  .u-icon {
+    animation: slideInRight 0.3s ease;
+  }
 }
 
 .node-confirm {
@@ -247,6 +250,17 @@ const previewImage = (current, urls) => {
   to {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(-20rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
 
