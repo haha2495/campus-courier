@@ -187,6 +187,10 @@ onMounted(() => {
   flex-direction: column;
   height: 100vh;
   background-color: #f5f7fa;
+  box-sizing: border-box;
+  /* 添加安全区域，确保适配刘海屏 */
+  padding-top: constant(safe-area-inset-top); /* iOS 11.0及以下 */
+  padding-top: env(safe-area-inset-top); /* iOS 11.2+ */
 }
 
 .search-bar {
@@ -197,15 +201,30 @@ onMounted(() => {
   left: 0;
   right: 0;
   z-index: 100;
-  /* 添加安全区域，确保适配刘海屏 */
-  padding-top: calc(20rpx + constant(safe-area-inset-top));
-  padding-top: calc(20rpx + env(safe-area-inset-top));
+  /* 移除安全区域，因为已经在容器中处理了 */
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
 }
 
 .task-list-scroll {
   flex: 1;
+  height: 0; /* 关键修复：添加这一行 */
   padding: 20rpx 30rpx;
   box-sizing: border-box;
+  /* 添加弹性滚动 */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 修改scroll-view的滚动条样式 */
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  background: transparent;
+}
+
+/* 确保内容区域可以正常滚动 */
+.task-list {
+  padding-bottom: env(safe-area-inset-bottom); /* 适配底部安全区域 */
+  min-height: 101%; /* 确保有足够的滚动空间 */
 }
 
 .loading-container {
@@ -220,10 +239,6 @@ onMounted(() => {
     color: #999;
     margin-top: 20rpx;
   }
-}
-
-.task-list {
-  padding-bottom: 30rpx;
 }
 
 .load-more {

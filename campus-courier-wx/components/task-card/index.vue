@@ -159,17 +159,53 @@ const handleClick = () => {
 
   // 加急任务卡片样式
   &.urgent-card {
-    background: linear-gradient(to right, #fffafa, #fff7f7);
+    background: linear-gradient(135deg, #fff5f5 0%, #fff8f8 100%);
     border-left: 8rpx solid #ff4d4f;
-    box-shadow: 0 4rpx 16rpx rgba(255, 77, 79, 0.15);
-    border: 1px solid rgba(255, 77, 79, 0.2);
+    box-shadow: 0 4rpx 20rpx rgba(255, 77, 79, 0.2);
+    border: 1px solid rgba(255, 77, 79, 0.3);
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4rpx;
+      background: linear-gradient(90deg, #ff4d4f, #ff7875);
+    }
 
     .card-header {
       border-bottom-color: rgba(255, 77, 79, 0.1);
+      background: linear-gradient(90deg, rgba(255, 77, 79, 0.05) 0%, transparent 100%);
     }
 
     .card-footer {
       border-top-color: rgba(255, 77, 79, 0.1);
+      background: linear-gradient(90deg, rgba(255, 77, 79, 0.05) 0%, transparent 100%);
+    }
+
+    .task-title {
+      color: #ff4d4f !important;
+    }
+
+    // 闪光效果
+    &::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.1) 50%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      transform: rotate(45deg);
+      animation: shine 3s infinite;
     }
   }
 
@@ -178,14 +214,15 @@ const handleClick = () => {
     position: absolute;
     top: -8rpx;
     right: 30rpx;
-    background: #ff4d4f;
+    background: linear-gradient(135deg, #ff4d4f 0%, #ff7875 100%);
     color: white;
     font-size: 22rpx;
     font-weight: bold;
-    padding: 6rpx 16rpx;
+    padding: 8rpx 20rpx;
     border-radius: 20rpx;
-    box-shadow: 0 4rpx 8rpx rgba(255, 77, 79, 0.3);
+    box-shadow: 0 4rpx 12rpx rgba(255, 77, 79, 0.4);
     z-index: 10;
+    animation: float 2s ease-in-out infinite;
 
     &::after {
       content: '';
@@ -351,6 +388,26 @@ const handleClick = () => {
             color: #ff4d4f;
             margin-left: 6rpx;
             font-weight: 600;
+            display: inline-block;
+            animation: bounce 1s ease infinite;
+            position: relative;
+
+            &::before {
+              content: '+';
+              color: #ff4d4f;
+              margin-right: 2rpx;
+            }
+
+            &::after {
+              content: '加急';
+              position: absolute;
+              top: -20rpx;
+              right: -10rpx;
+              font-size: 20rpx;
+              color: #ff4d4f;
+              transform: scale(0.8);
+              opacity: 0.8;
+            }
           }
         }
 
@@ -386,6 +443,36 @@ const handleClick = () => {
       display: flex;
       gap: 16rpx;
     }
+  }
+}
+
+// 闪光动画
+@keyframes shine {
+  0% {
+    transform: translateX(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) rotate(45deg);
+  }
+}
+
+// 浮动动画
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6rpx);
+  }
+}
+
+// 弹跳动画
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4rpx);
   }
 }
 </style> 
