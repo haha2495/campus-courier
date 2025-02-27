@@ -91,6 +91,7 @@
 <script setup>
 import { ref } from 'vue'
 import { addTaskMessage } from '@/api/task'
+import { uploadApi } from '@/api/upload'
 
 // 接收父组件传递的数据
 const props = defineProps({
@@ -202,18 +203,25 @@ const handleSendMessage = async () => {
     // 先上传图片
     const imageUrls = []
     if (selectedImages.value.length > 0) {
-      for (const image of selectedImages.value) {
-        try {
-          const uploadRes = await uploadImage(image)
-          imageUrls.push(uploadRes.url)
-        } catch (error) {
-          console.error('上传图片失败:', error)
-          uni.showToast({
-            title: '上传图片失败',
-            icon: 'none'
-          })
-          return
-        }
+      uni.showLoading({
+        title: '上传图片中...',
+        mask: true
+      })
+
+      try {
+        // 使用 Promise.all 并行上传所有图片
+        const uploadPromises = selectedImages.value.map(image => uploadApi.upload(image))
+        const results = await Promise.all(uploadPromises)
+        imageUrls.push(...results)
+      } catch (error) {
+        console.error('上传图片失败:', error)
+        uni.showToast({
+          title: '上传图片失败',
+          icon: 'none'
+        })
+        return
+      } finally {
+        uni.hideLoading()
       }
     }
 
@@ -242,26 +250,6 @@ const handleSendMessage = async () => {
       icon: 'none'
     })
   }
-}
-
-// 上传图片
-const uploadImage = (filePath) => {
-  return new Promise((resolve, reject) => {
-    uni.uploadFile({
-      url: '/api/upload', // 替换为实际的上传接口
-      filePath,
-      name: 'file',
-      success: (res) => {
-        const data = JSON.parse(res.data)
-        if (data.code === 200) {
-          resolve(data.data)
-        } else {
-          reject(new Error(data.message))
-        }
-      },
-      fail: reject
-    })
-  })
 }
 </script>
 
