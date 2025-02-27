@@ -117,7 +117,7 @@ public class SysTaskController extends BaseController {
     @Operation(summary = "开始执行任务")
     public Result<Boolean> startTask(
             @Parameter(description = "任务ID") 
-            @PathVariable("taskId") Long taskId) {
+            @PathVariable("taskId") Integer taskId) {
         return Result.success(sysTaskService.startTask(taskId, getLoginUserId()));
     }
 
@@ -131,7 +131,7 @@ public class SysTaskController extends BaseController {
     @Operation(summary = "获取任务详情")
     public Result<TaskDetailDTO> getTaskDetail(
             @Parameter(description = "任务ID") 
-            @PathVariable("taskId") Long taskId) {
+            @PathVariable("taskId") Integer taskId) {
         return Result.success(sysTaskService.getTaskDetail(taskId));
     }
 

@@ -75,7 +75,7 @@ public interface SysTaskService {
      * @param userId 当前用户ID
      * @return 操作是否成功
      */
-    boolean startTask(Long taskId, Integer userId);
+    boolean startTask(Integer taskId, Integer userId);
 
     /**
      * 获取任务详情
@@ -84,7 +84,7 @@ public interface SysTaskService {
      * @param taskId 任务ID
      * @return 任务详情DTO
      */
-    TaskDetailDTO getTaskDetail(Long taskId);
+    TaskDetailDTO getTaskDetail(Integer taskId);
 
     /**
      * 添加任务留言

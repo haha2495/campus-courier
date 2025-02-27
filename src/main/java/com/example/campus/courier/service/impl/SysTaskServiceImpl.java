@@ -213,9 +213,9 @@ public class SysTaskServiceImpl implements SysTaskService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean startTask(Long taskId, Integer userId) {
+    public boolean startTask(Integer taskId, Integer userId) {
         // 1. 获取任务信息
-        SysTask task = sysTaskHandler.getById(taskId.intValue());
+        SysTask task = sysTaskHandler.getById(taskId);
         if (task == null) {
             throw new IllegalArgumentException("任务不存在");
         }
@@ -243,15 +243,15 @@ public class SysTaskServiceImpl implements SysTaskService {
 
     /**
      * 获取任务详情
-     * 包含任务信息、任务类型信息和留言列表
+     * 包含任务信息、任务类型信息、留言列表和任务日志列表
      *
      * @param taskId 任务ID
      * @return 任务详情DTO
      */
     @Override
-    public TaskDetailDTO getTaskDetail(Long taskId) {
-        // 1. 获取任务基本信息
-        SysTask task = sysTaskHandler.getById(taskId.intValue());
+    public TaskDetailDTO getTaskDetail(Integer taskId) {
+        // 1. 获取任务基础信息
+        SysTask task = sysTaskHandler.getById(taskId);
         if (task == null) {
             throw new IllegalArgumentException("任务不存在");
         }
@@ -260,10 +260,13 @@ public class SysTaskServiceImpl implements SysTaskService {
         SysTaskType taskType = sysTaskTypeHandler.getById(task.getTaskTypeId());
 
         // 3. 获取任务留言列表
-        List<SysTaskMessage> messages = sysTaskMessageHandler.getTaskMessages(task.getId());
+        List<SysTaskMessage> messages = sysTaskMessageHandler.getTaskMessages(taskId);
 
-        // 4. 使用build方法构建并返回DTO
-        return TaskDetailDTO.build(task, taskType, messages);
+        // 4. 获取任务日志列表(按时间倒序排序)
+        List<SysTaskLog> taskLogs = sysTaskLogHandler.getTaskLogs(taskId);
+
+        // 5. 构建并返回DTO
+        return TaskDetailDTO.build(task, taskType, messages, taskLogs);
     }
 
     /**
