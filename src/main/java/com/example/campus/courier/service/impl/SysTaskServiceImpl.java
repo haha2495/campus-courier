@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.campus.courier.mapper.handler.SysTaskHandler;
 import com.example.campus.courier.mapper.handler.SysTaskLogHandler;
 import com.example.campus.courier.mapper.handler.SysTaskTypeHandler;
+import com.example.campus.courier.mapper.handler.SysTaskMessageHandler;
 import com.example.campus.courier.model.dto.TaskDTO;
 import com.example.campus.courier.model.entity.SysTask;
 import com.example.campus.courier.model.entity.SysTaskLog;
@@ -34,6 +35,7 @@ public class SysTaskServiceImpl implements SysTaskService {
     private final SysTaskHandler sysTaskHandler;
     private final SysTaskLogHandler sysTaskLogHandler;
     private final SysTaskTypeHandler sysTaskTypeHandler;
+    private final SysTaskMessageHandler sysTaskMessageHandler;
 
     /**
      * 保存任务
