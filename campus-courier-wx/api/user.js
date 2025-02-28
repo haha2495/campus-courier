@@ -52,5 +52,15 @@ export const userApi = {
                 amount
             }
         })
+    },
+    // 余额提现
+    withdraw(amount) {
+        return http({
+            url: '/api/student/withdraw',
+            method: 'POST',
+            data: {
+                amount
+            }
+        })
     }
 } 

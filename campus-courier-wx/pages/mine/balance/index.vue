@@ -71,9 +71,8 @@ const handleRecharge = () => {
 
 // 处理提现按钮点击
 const handleWithdraw = () => {
-  uni.showToast({
-    title: '提现功能开发中',
-    icon: 'none'
+  uni.navigateTo({
+    url: '/pages/mine/balance/withdraw'
   })
 }
 

@@ -80,17 +80,19 @@
     {
       "path": "pages/mine/balance/index",
       "style": {
-        "navigationBarTitleText": "余额详情",
-        "navigationBarTextStyle": "black",
-        "navigationBarBackgroundColor": "#ffffff"
+        "navigationBarTitleText": "我的余额"
       }
     },
     {
       "path": "pages/mine/balance/recharge",
       "style": {
-        "navigationBarTitleText": "余额充值",
-        "navigationBarTextStyle": "black",
-        "navigationBarBackgroundColor": "#ffffff"
+        "navigationBarTitleText": "余额充值"
+      }
+    },
+    {
+      "path": "pages/mine/balance/withdraw",
+      "style": {
+        "navigationBarTitleText": "余额提现"
       }
     }
   ],
