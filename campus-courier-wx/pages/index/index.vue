@@ -412,7 +412,7 @@ const handleTabNavigation = (tab) => {
         })
         break
       case TabPageName.TASKS:
-        // 跳转到我的任务页面 - 使用navigateTo而不是switchTab
+        // 跳转到我的任务页面
         uni.navigateTo({
           url: '/pages/my-tasks/index'
         })
@@ -421,7 +421,10 @@ const handleTabNavigation = (tab) => {
         showMessage('纠纷大厅功能待实现')
         break
       case TabPageName.MINE:
-        showMessage('个人中心功能待实现')
+        // 跳转到个人中心页面
+        uni.navigateTo({
+          url: '/pages/mine/index'
+        })
         break
     }
   } else {
@@ -439,13 +442,16 @@ const handleTabNavigation = (tab) => {
         })
         break
       case TabPageName.RECORDS:
-        // 跑腿者的我的任务页面 - 使用navigateTo而不是switchTab
+        // 跑腿者的我的任务页面
         uni.navigateTo({
           url: '/pages/my-tasks/index'
         })
         break
       case TabPageName.MINE:
-        showMessage('个人中心功能待实现')
+        // 跳转到个人中心页面
+        uni.navigateTo({
+          url: '/pages/mine/index'
+        })
         break
     }
   }

@@ -64,6 +64,13 @@
 				"enablePullDownRefresh": true,
 				"backgroundTextStyle": "dark"
 			}
+		},
+		{
+			"path": "pages/mine/index",
+			"style": {
+				"navigationBarTitleText": "个人中心",
+				"navigationStyle": "custom"
+			}
 		}
 	],
 	"globalStyle": {
