@@ -153,7 +153,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['update:show', 'submit', 'success'])
+const emit = defineEmits(['update:show', 'submit', 'success', 'refresh'])
 
 // 滚动相关
 const scrollTop = ref(0)
@@ -234,6 +234,13 @@ const handleClose = () => {
   resetForm()
 }
 
+// 监听 show 的变化，当打开弹窗时重置表单
+watch(() => props.show, (newVal) => {
+  if (newVal) {
+    resetForm()
+  }
+})
+
 // 重置表单
 const resetForm = () => {
   form.value = {
@@ -248,6 +255,13 @@ const resetForm = () => {
 // 提交表单
 const submit = async () => {
   // 表单验证
+  if (!props.taskId) {
+    uni.showToast({
+      title: '任务ID不能为空',
+      icon: 'none'
+    })
+    return
+  }
   if (!form.value.type) {
     uni.showToast({
       title: '请选择纠纷类型',
@@ -274,22 +288,33 @@ const submit = async () => {
     loading.value = true
     
     // 调用创建纠纷接口
-    await disputeApi.create({
-      taskId: form.value.taskId,
+    const result = await disputeApi.create({
+      taskId: props.taskId,
       type: form.value.type,
       title: form.value.title,
       content: form.value.content,
       evidence: form.value.images
     })
 
-    uni.showToast({
-      title: '提交成功',
-      icon: 'success'
-    })
+    // 提交成功的处理
+    if (result) {
+      uni.showToast({
+        title: '提交成功',
+        icon: 'success'
+      })
 
-    // 关闭弹窗并触发成功事件
-    emit('success')
-    emit('update:show', false)
+      // 重置表单
+      resetForm()
+      
+      // 发送刷新事件
+      emit('refresh')
+      
+      // 关闭弹窗
+      emit('update:show', false)
+      
+      // 触发成功回调
+      emit('success', result)
+    }
   } catch (error) {
     uni.showToast({
       title: error.message || '提交失败',

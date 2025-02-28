@@ -1,8 +1,10 @@
 package com.example.campus.courier.model.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.example.campus.courier.model.request.dispute.DisputeCreateRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -12,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-@TableName("sys_dispute")
+@TableName(value = "sys_dispute", autoResultMap = true)
 @Schema(description = "纠纷实体")
 public class SysDispute {
 
@@ -42,7 +44,8 @@ public class SysDispute {
     private String content;
 
     @Schema(description = "证据图片列表,JSON数组存储图片URL")
-    private String evidence;
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private List<String> evidence;
 
     @Schema(description = "管理员处理备注")
     private String adminRemark;
@@ -59,8 +62,8 @@ public class SysDispute {
     /**
      * 初始化纠纷实体
      *
-     * @param request 创建请求
-     * @param initiatorId 发起人ID
+     * @param request      创建请求
+     * @param initiatorId  发起人ID
      * @param respondentId 被投诉人ID
      * @return 纠纷实体
      */
@@ -70,7 +73,7 @@ public class SysDispute {
         dispute.setType(request.getType());
         dispute.setTitle(request.getTitle());
         dispute.setContent(request.getContent());
-        dispute.setEvidence(String.join(",", request.getEvidence()));
+        dispute.setEvidence(request.getEvidence());
         dispute.setStatus(0); // 初始状态：待处理
         dispute.setInitiatorId(initiatorId);
         dispute.setRespondentId(respondentId);
