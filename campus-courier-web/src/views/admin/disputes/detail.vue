@@ -199,87 +199,90 @@
             </div>
           </div>
 
-          <!-- 任务日志 -->
-          <div class="logs-section">
-            <h3 class="section-title">任务日志</h3>
-            <el-timeline>
-              <el-timeline-item
-                  v-for="log in detail.taskLogs"
-                  :key="log.id"
-                  :timestamp="formatTime(log.actionTime)"
-                  :type="getLogType(log.action)"
-              >
-                <div class="log-content">
-                  <div class="log-text">{{ log.remark }}</div>
-                  <!-- 日志图片展示 -->
-                  <div v-if="log.images?.length" class="log-images">
-                    <el-image
-                      v-for="(url, index) in log.images"
-                      :key="index"
-                      :src="url"
-                      :preview-src-list="log.images"
-                      :initial-index="index"
-                      fit="cover"
-                      class="log-image"
-                    >
-                      <template #error>
-                        <div class="image-error">
-                          <el-icon><Picture /></el-icon>
-                        </div>
-                      </template>
-                    </el-image>
-                  </div>
-                </div>
-              </el-timeline-item>
-            </el-timeline>
-          </div>
+          <!-- 任务日志和留言记录 -->
+          <el-tabs class="detail-tabs">
+            <el-tab-pane label="任务日志">
+              <div class="logs-section">
+                <el-timeline>
+                  <el-timeline-item
+                      v-for="log in detail.taskLogs"
+                      :key="log.id"
+                      :timestamp="formatTime(log.actionTime)"
+                      :type="getLogType(log.action)"
+                  >
+                    <div class="log-content">
+                      <div class="log-text">{{ log.remark }}</div>
+                      <!-- 日志图片展示 -->
+                      <div v-if="log.images?.length" class="log-images">
+                        <el-image
+                          v-for="(url, index) in log.images"
+                          :key="index"
+                          :src="url"
+                          :preview-src-list="log.images"
+                          :initial-index="index"
+                          fit="cover"
+                          class="log-image"
+                        >
+                          <template #error>
+                            <div class="image-error">
+                              <el-icon><Picture /></el-icon>
+                            </div>
+                          </template>
+                        </el-image>
+                      </div>
+                    </div>
+                  </el-timeline-item>
+                </el-timeline>
+              </div>
+            </el-tab-pane>
 
-          <!-- 留言记录 -->
-          <div class="messages-section">
-            <h3 class="section-title">留言记录</h3>
-            <div class="message-list">
-              <div
-                  v-for="msg in detail.messages"
-                  :key="msg.message.id"
-                  class="message-item"
-                  :class="{ 'self-message': msg.student.id === detail.publisher.id }"
-              >
-                <el-avatar 
-                  :src="msg.student?.avatar || null"
-                  size="small"
-                >
-                  {{ msg.student?.name?.[0]?.toUpperCase() || '?' }}
-                </el-avatar>
-                <div class="message-content">
-                  <div class="message-header">
-                    <span class="sender-name">{{ msg.student?.name || '未知用户' }}</span>
-                    <span class="message-time">{{ formatTime(msg.message.createTime) }}</span>
-                  </div>
-                  <div class="message-body">
-                    <div class="message-text">{{ msg.message.content || '无内容' }}</div>
-                    <!-- 消息图片展示 -->
-                    <div v-if="msg.message.images?.length && msg.message.images[0]" class="message-images">
-                      <el-image
-                        v-for="(url, index) in msg.message.images"
-                        :key="index"
-                        :src="url"
-                        :preview-src-list="msg.message.images"
-                        :initial-index="index"
-                        fit="cover"
-                        class="message-image"
-                      >
-                        <template #error>
-                          <div class="image-error">
-                            <el-icon><Picture /></el-icon>
-                          </div>
-                        </template>
-                      </el-image>
+            <el-tab-pane label="留言记录">
+              <div class="messages-section">
+                <div class="message-list">
+                  <div
+                      v-for="msg in detail.messages"
+                      :key="msg.message.id"
+                      class="message-item"
+                      :class="{ 'self-message': msg.student.id === detail.publisher.id }"
+                  >
+                    <el-avatar 
+                      :src="msg.student?.avatar || null"
+                      size="small"
+                    >
+                      {{ msg.student?.name?.[0]?.toUpperCase() || '?' }}
+                    </el-avatar>
+                    <div class="message-content">
+                      <div class="message-header">
+                        <span class="sender-name">{{ msg.student?.name || '未知用户' }}</span>
+                        <span class="message-time">{{ formatTime(msg.message.createTime) }}</span>
+                      </div>
+                      <div class="message-body">
+                        <div class="message-text">{{ msg.message.content || '无内容' }}</div>
+                        <!-- 消息图片展示 -->
+                        <div v-if="msg.message.images?.length && msg.message.images[0]" class="message-images">
+                          <el-image
+                            v-for="(url, index) in msg.message.images"
+                            :key="index"
+                            :src="url"
+                            :preview-src-list="msg.message.images"
+                            :initial-index="index"
+                            fit="cover"
+                            class="message-image"
+                          >
+                            <template #error>
+                              <div class="image-error">
+                                <el-icon><Picture /></el-icon>
+                              </div>
+                            </template>
+                          </el-image>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
+            </el-tab-pane>
+          </el-tabs>
         </template>
       </div>
     </el-card>
@@ -870,52 +873,105 @@ onBeforeUnmount(() => {
   }
 }
 
-/* 任务日志区域 */
-.logs-section {
-  margin-bottom: 24px;
+/* 标签页样式 */
+.detail-tabs {
+  margin-top: 24px;
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+
+  :deep(.el-tabs__header) {
+    margin-bottom: 20px;
+  }
+
+  :deep(.el-tabs__nav-wrap::after) {
+    height: 1px;
+    background-color: #f0f0f0;
+  }
+
+  :deep(.el-tabs__item) {
+    font-size: 15px;
+    color: #666;
+    padding: 0 20px;
+    height: 40px;
+    line-height: 40px;
+
+    &.is-active {
+      color: #409EFF;
+      font-weight: 500;
+    }
+
+    &:hover {
+      color: #409EFF;
+    }
+  }
+
+  :deep(.el-tabs__active-bar) {
+    height: 3px;
+    border-radius: 1.5px;
+  }
 }
 
-/* 留言记录区域 */
+/* 任务日志区域样式优化 */
+.logs-section {
+  padding: 0 10px;
+
+  :deep(.el-timeline-item__node) {
+    width: 12px;
+    height: 12px;
+  }
+
+  :deep(.el-timeline-item__timestamp) {
+    color: #999;
+    font-size: 13px;
+  }
+
+  .log-content {
+    background: #f9fafb;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+
+    .log-text {
+      color: #333;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+  }
+}
+
+/* 留言记录区域样式优化 */
 .messages-section {
-  .message-list {
-    .message-item {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 16px;
+  padding: 0 10px;
 
-      &:last-child {
-        margin-bottom: 0;
-      }
-
+  .message-item {
+    margin-bottom: 20px;
+    
+    &.self-message {
+      flex-direction: row-reverse;
+      
       .message-content {
-        flex: 1;
-
+        align-items: flex-end;
+        
         .message-header {
-          display: flex;
-          justify-content: space-between;
-          margin-bottom: 4px;
-
-          .sender-name {
-            font-size: 14px;
-            font-weight: 500;
-            color: #333;
-          }
-
-          .message-time {
-            font-size: 12px;
-            color: #999;
-          }
+          flex-direction: row-reverse;
         }
-
-        .message-text {
-          font-size: 14px;
-          color: #666;
-          line-height: 1.6;
-          background: #f9fafb;
-          padding: 8px 12px;
-          border-radius: 4px;
+        
+        .message-body {
+          background: #e6f3ff;
+          border-radius: 8px 2px 8px 8px;
         }
       }
+    }
+  }
+
+  .message-content {
+    .message-body {
+      background: #f9fafb;
+      padding: 12px;
+      border-radius: 2px 8px 8px 8px;
+      margin-top: 4px;
     }
   }
 }
