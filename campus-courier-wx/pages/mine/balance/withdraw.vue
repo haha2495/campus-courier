@@ -17,10 +17,15 @@
         <input
           type="digit"
           v-model="amount"
-          placeholder="请输入提现金额"
+          :placeholder="'可提现金额: ' + (userInfo?.balance || '0.00') + '元'"
           @input="handleAmountInput"
           @blur="handleAmountBlur"
         />
+      </view>
+      <view class="amount-tips" v-if="amount">
+        <text :class="['tip-text', {'error': !isValidAmount}]">
+          {{ amountTipText }}
+        </text>
       </view>
       <view class="quick-actions">
         <text class="quick-action" @click="handleAllWithdraw">全部提现</text>
@@ -89,6 +94,27 @@ const canWithdraw = computed(() => {
   return withdrawAmount >= 1 && withdrawAmount <= balance
 })
 
+// 金额是否有效
+const isValidAmount = computed(() => {
+  const withdrawAmount = Number(amount.value)
+  const balance = Number(userInfo.value?.balance || 0)
+  return withdrawAmount >= 1 && withdrawAmount <= balance
+})
+
+// 金额提示文本
+const amountTipText = computed(() => {
+  const withdrawAmount = Number(amount.value)
+  const balance = Number(userInfo.value?.balance || 0)
+  
+  if (withdrawAmount < 1) {
+    return '提现金额不能小于1元'
+  }
+  if (withdrawAmount > balance) {
+    return `提现金额不能超过可提现余额${balance}元`
+  }
+  return `当前提现金额：${withdrawAmount.toFixed(2)}元`
+})
+
 // 获取用户信息
 const getUserInfo = async () => {
   try {
@@ -108,10 +134,23 @@ const getUserInfo = async () => {
 // 处理金额输入
 const handleAmountInput = (e) => {
   const value = e.detail.value
+  const balance = Number(userInfo.value?.balance || 0)
+  
   // 限制只能输入数字和小数点，且最多两位小数
   if (value && !/^\d*\.?\d{0,2}$/.test(value)) {
     return
   }
+  
+  // 如果输入的金额超过可提现余额，直接设置为可提现余额
+  if (Number(value) > balance) {
+    amount.value = balance.toString()
+    uni.showToast({
+      title: '已超过可提现余额',
+      icon: 'none'
+    })
+    return
+  }
+  
   amount.value = value
 }
 
@@ -261,6 +300,20 @@ onMounted(() => {
       flex: 1;
       font-size: 40rpx;
       color: #333;
+    }
+  }
+
+  .amount-tips {
+    margin-top: 10rpx;
+    padding: 0 30rpx;
+    
+    .tip-text {
+      font-size: 24rpx;
+      color: #666;
+      
+      &.error {
+        color: #ff4d4f;
+      }
     }
   }
 
