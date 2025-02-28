@@ -35,5 +35,12 @@ export const userApi = {
                 confirmPassword: data.confirmPassword
             }
         })
+    },
+    // 退出登录
+    logout() {
+        return http({
+            url: '/api/student/logout',
+            method: 'POST'
+        })
     }
 } 

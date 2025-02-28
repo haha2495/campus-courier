@@ -113,14 +113,38 @@ const handleLogout = () => {
   uni.showModal({
     title: '提示',
     content: '确定要退出登录吗？',
-    success: (res) => {
+    success: async (res) => {
       if (res.confirm) {
-        // 清除登录状态
-        uni.clearStorageSync()
-        // 跳转到登录页
-        uni.reLaunch({
-          url: '/pages/login/index'
-        })
+        try {
+          // 调用退出登录接口
+          const res = await userApi.logout()
+          if (res.code === 200) {
+            // 清除本地存储的token和其他用户信息
+            uni.removeStorageSync('token')
+            uni.removeStorageSync('userInfo')
+            
+            // 显示退出成功提示
+            uni.showToast({
+              title: '退出成功',
+              icon: 'success',
+              duration: 1500
+            })
+            
+            // 延迟跳转到登录页，让用户看到提示
+            setTimeout(() => {
+              uni.reLaunch({
+                url: '/pages/login/index'
+              })
+            }, 1500)
+          } else {
+            throw new Error(res.message)
+          }
+        } catch (error) {
+          uni.showToast({
+            title: error.message || '退出失败',
+            icon: 'none'
+          })
+        }
       }
     }
   })
