@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.campus.courier.mapper.SysBalanceRecordMapper;
 import com.example.campus.courier.model.entity.SysBalanceRecord;
 import com.example.campus.courier.model.entity.SysStudent;
+import com.example.campus.courier.model.enums.BalanceChangeTypeEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -24,13 +25,22 @@ public class SysBalanceRecordHandler extends ServiceImpl<SysBalanceRecordMapper,
      * @param description 变动说明
      */
     public void createRecord(SysStudent student, BigDecimal amount, Integer type, String description) {
+        // 判断是否为收入类型（充值=1, 收入=3）
+        boolean isIncome = type.equals(BalanceChangeTypeEnum.RECHARGE.getCode()) 
+                       || type.equals(BalanceChangeTypeEnum.INCOME.getCode());
+        
+        // 计算变动前的余额
+        BigDecimal beforeBalance = isIncome ? 
+            student.getBalance().subtract(amount) :  // 收入类型：当前余额减去变动金额
+            student.getBalance().add(amount);        // 支出类型：当前余额加上变动金额
+        
         // 创建记录
         SysBalanceRecord record = new SysBalanceRecord()
                 .setStudentId(student.getId())
                 .setAmount(amount)
                 .setType(type)
-                .setBeforeBalance(student.getBalance())
-                .setAfterBalance(student.getBalance().add(amount))
+                .setBeforeBalance(beforeBalance)
+                .setAfterBalance(student.getBalance())
                 .setDescription(description);
 
         // 保存记录
