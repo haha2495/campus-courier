@@ -32,47 +32,80 @@
         <el-empty v-if="tableData.length === 0" description="暂无纠纷数据"/>
         <div v-else class="disputes-list">
           <div v-for="item in tableData" :key="item.id" class="dispute-card" @click="handleView(item)">
-            <!-- 卡片内容保持不变 -->
+            <!-- 卡片头部 - 任务编号和状态 -->
             <div class="card-header">
-              <div class="task-type">
-                <img class="type-icon" :src="item.taskType.icon" alt="任务类型图标">
-                <span>{{ item.taskType.typeName }}</span>
-              </div>
-              <div class="task-no">{{ item.task.taskNo }}</div>
-              <el-tag
+              <div class="left-section">
+                <span class="task-no">{{ item.task.taskNo }}</span>
+                <el-tag
                   :type="getStatusType(item.task.status)"
                   effect="light"
                   class="status-tag"
-              >
-                {{ getStatusText(item.task.status) }}
-              </el-tag>
+                >
+                  {{ getStatusText(item.task.status) }}
+                </el-tag>
+              </div>
+              <div v-if="item.task.urgent" class="urgent-tag">加急</div>
             </div>
 
+            <!-- 卡片内容 -->
             <div class="card-body">
-              <div class="task-title">{{ item.task.title }}</div>
-              <div class="task-desc">{{ item.task.description }}</div>
-              <div class="user-info">
-                <div class="user-item">
-                  <el-icon><UserFilled /></el-icon>
-                  <span class="label">发布者：</span>
-                  <span class="value">{{ item.publisherName }}</span>
+              <!-- 任务类型 -->
+              <div class="task-type">
+                <img class="type-icon" :src="item.taskType.icon" alt="任务类型">
+                <span>{{ item.taskType.typeName }}</span>
+              </div>
+
+              <!-- 任务标题和描述 -->
+              <div class="task-info">
+                <div class="task-title">{{ item.task.title }}</div>
+                <div class="task-desc">{{ item.task.description }}</div>
+              </div>
+
+              <!-- 地址信息 -->
+              <div class="address-info">
+                <div class="address-item" v-if="item.task.pickupAddress">
+                  <div class="address-icon pickup">取</div>
+                  <div class="address-content">
+                    <div class="address-label">取件地址</div>
+                    <div class="address-value">{{ item.task.pickupAddress }}</div>
+                  </div>
                 </div>
-                <div class="user-item">
-                  <el-icon><User /></el-icon>
-                  <span class="label">接单者：</span>
-                  <span class="value">{{ item.runnerName }}</span>
+                <div class="address-item" v-if="item.task.deliveryAddress">
+                  <div class="address-icon delivery">送</div>
+                  <div class="address-content">
+                    <div class="address-label">送达地址</div>
+                    <div class="address-value">{{ item.task.deliveryAddress }}</div>
+                  </div>
                 </div>
               </div>
-              <div class="time-info">
-                <el-icon><Timer /></el-icon>
-                <span>{{ formatDateTime(item.task.createTime) }}</span>
+
+              <!-- 规格信息 -->
+              <div class="specs-info">
+                <div class="spec-item">
+                  <span class="spec-label">重量</span>
+                  <span class="spec-value">{{ item.task.estimatedWeight }}kg</span>
+                </div>
+                <div class="spec-item">
+                  <span class="spec-label">大小</span>
+                  <span class="spec-value">{{ item.task.estimatedSize }}</span>
+                </div>
               </div>
             </div>
 
+            <!-- 卡片底部 -->
             <div class="card-footer">
-              <el-button type="primary" @click.stop="handleView(item)">
-                <el-icon><View /></el-icon>
-                查看详情
+              <div class="left-info">
+                <div class="price-info">
+                  <span class="amount">¥{{ item.task.reward }}</span>
+                  <span v-if="item.task.urgent" class="urgent-price">{{ item.task.urgentReward }}</span>
+                </div>
+                <div class="time-info">
+                  <el-icon><Timer /></el-icon>
+                  <span>{{ formatDateTime(item.task.createTime) }}</span>
+                </div>
+              </div>
+              <el-button type="primary" plain @click.stop="handleView(item)">
+                前去处理
               </el-button>
             </div>
           </div>
@@ -86,7 +119,7 @@
         <el-pagination
             v-model:current-page="currentPage"
             v-model:page-size="pageSize"
-            :page-sizes="[8, 12, 16, 20]"
+            :page-sizes="[4, 8, 12, 16, 20]"
             layout="total, sizes, prev, pager, next, jumper"
             :total="total"
             @size-change="handleSizeChange"
@@ -124,7 +157,7 @@ const tableData = ref([])
 const loading = ref(false)
 const total = ref(0)
 const currentPage = ref(1)
-const pageSize = ref(8)  // 默认每页显示8条
+const pageSize = ref(4)  // 默认每页显示4条
 
 // 获取状态类型
 const getStatusType = (status) => {
@@ -318,40 +351,84 @@ onMounted(() => {
 /* 卡片网格布局 */
 .disputes-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 16px;
-  padding: 8px;
+  grid-template-columns: repeat(4, 1fr); // 固定4列
+  gap: 24px; // 增加间距
+  padding: 16px; // 增加内边距
 }
 
-/* 纠纷卡片样式 */
+/* 卡片基础样式 */
 .dispute-card {
   background: white;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   overflow: hidden;
   transition: all 0.3s ease;
   cursor: pointer;
-  border: 1px solid #f0f0f0;
-  display: flex;
-  flex-direction: column;
+  border: 1px solid #ebeef5;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  min-width: 320px; // 设置最小宽度
 
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
   }
 
+  /* 卡片头部 */
   .card-header {
-    padding: 16px;
+    padding: 12px 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid #f0f0f0;
-    background: linear-gradient(to right, #f8fafc, #ffffff);
+    background: #fafafa;
+
+    .left-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .task-no {
+      font-family: monospace;
+      color: #666;
+      font-size: 13px;
+    }
+
+    .status-tag {
+      font-size: 12px;
+      padding: 2px 10px;
+      border-radius: 12px;
+    }
+
+    .urgent-tag {
+      background: #fff2f0;
+      color: #ff4d4f;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+
+      &::before {
+        content: '🔥';
+        font-size: 14px;
+      }
+    }
+  }
+
+  /* 卡片内容 */
+  .card-body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 
     .task-type {
       display: flex;
       align-items: center;
       gap: 8px;
+      margin-bottom: 12px;
 
       .type-icon {
         width: 24px;
@@ -366,130 +443,161 @@ onMounted(() => {
       }
     }
 
-    .task-no {
-      font-size: 14px;
-      color: #666;
-      font-family: monospace;
+    .task-info {
+      margin-bottom: 16px;
+
+      .task-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 8px;
+        line-height: 1.4;
+      }
+
+      .task-desc {
+        font-size: 14px;
+        color: #666;
+        line-height: 1.6;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+      }
     }
 
-    .status-tag {
-      border-radius: 20px;
-      padding: 2px 12px;
-      font-weight: 500;
+    .address-info {
+      margin-bottom: 20px;
+
+      .address-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+        margin-bottom: 16px;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        .address-icon {
+          width: 28px;  // 增加图标大小
+          height: 28px;
+          border-radius: 6px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          font-size: 12px;
+          flex-shrink: 0;
+
+          &.pickup {
+            background: #409eff;
+          }
+
+          &.delivery {
+            background: #67c23a;
+          }
+        }
+
+        .address-content {
+          flex: 1;
+
+          .address-label {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 4px;
+          }
+
+          .address-value {
+            font-size: 14px;
+            color: #333;
+            line-height: 1.4;
+          }
+        }
+      }
+    }
+
+    .specs-info {
+      padding: 16px 20px;
+      margin-bottom: 20px;
       display: flex;
-      align-items: center;
-      gap: 4px;
-      
-      // 使用状态颜色
-      &.el-tag--info {
-        color: #1989fa;
-        background-color: #ecf5ff;
-        border-color: #d9ecff;
-      }
-      
-      &.el-tag--warning {
-        color: #ff9500;
-        background-color: #fff7e6;
-        border-color: #ffd591;
-      }
-      
-      &.el-tag--danger {
-        color: #ee0a24;
-        background-color: #feecef;
-        border-color: #fde2e5;
-      }
-      
-      &.el-tag--success {
-        color: #10B981;
-        background-color: #ECFDF5;
-        border-color: #D1FAE5;
-      }
-      
-      &.el-tag--primary {
-        color: #07c160;
-        background-color: #e8f8f1;
-        border-color: #d1f2e4;
+      gap: 24px;
+      background: #f9fafb;
+      border-radius: 8px;
+
+      .spec-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .spec-label {
+          font-size: 13px;
+          color: #999;
+        }
+
+        .spec-value {
+          font-size: 14px;
+          color: #333;
+          font-weight: 500;
+        }
       }
     }
   }
 
-  .card-body {
-    padding: 16px;
-    flex: 1;
+  /* 卡片底部 */
+  .card-footer {
+    padding: 16px 20px;
+    border-top: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fafafa;
 
-    .task-title {
-      font-size: 16px;
-      font-weight: 600;
-      color: #333;
-      margin-bottom: 8px;
-      line-height: 1.4;
+    .left-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
 
-    .task-desc {
-      font-size: 14px;
-      color: #666;
-      margin-bottom: 16px;
-      line-height: 1.5;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
+    .price-info {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
 
-    .user-info {
-      margin-bottom: 16px;
+      .amount {
+        font-size: 20px;
+        font-weight: 600;
+        color: #ff9500;
 
-      .user-item {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 8px;
-        color: #666;
+        &::before {
+          content: '¥';
+          font-size: 14px;
+          margin-right: 2px;
+        }
+      }
+
+      .urgent-price {
         font-size: 14px;
-
-        .el-icon {
-          font-size: 16px;
-          color: #409EFF;
-        }
-
-        .label {
-          color: #999;
-        }
-
-        .value {
-          color: #333;
-          font-weight: 500;
-        }
+        color: #ff4d4f;
+        font-weight: 500;
       }
     }
 
     .time-info {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
       color: #999;
-      font-size: 13px;
+      font-size: 12px;
 
       .el-icon {
         font-size: 14px;
       }
     }
-  }
-
-  .card-footer {
-    padding: 12px 16px;
-    border-top: 1px solid #f0f0f0;
-    display: flex;
-    justify-content: flex-end;
-    background: #fafafa;
 
     .el-button {
-      padding: 8px 16px;
+      padding: 8px 20px;
       border-radius: 20px;
-      
-      .el-icon {
-        margin-right: 4px;
-      }
+      font-size: 14px;
     }
   }
 }
@@ -506,5 +614,16 @@ onMounted(() => {
   display: flex;
   justify-content: center;
   padding: 8px 0;
+}
+
+/* 调整分页选项 */
+:deep(.el-pagination) {
+  .el-pagination__sizes {
+    .el-select {
+      .el-input {
+        width: 110px;  // 调整选择器宽度
+      }
+    }
+  }
 }
 </style> 
