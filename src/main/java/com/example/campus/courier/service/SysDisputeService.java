@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.campus.courier.model.entity.SysTask;
 import com.example.campus.courier.model.request.dispute.DisputeCreateRequest;
 import com.example.campus.courier.model.request.dispute.DisputePageRequest;
+import com.example.campus.courier.model.response.PageResult;
 import jakarta.validation.Valid;
 
 /**
@@ -25,6 +26,6 @@ public interface SysDisputeService {
      * @param request 分页查询参数
      * @return 分页结果
      */
-    Page<SysTask> pageDisputeTasks(DisputePageRequest request);
+    PageResult<SysTask> pageDisputeTasks(DisputePageRequest request);
 
 }

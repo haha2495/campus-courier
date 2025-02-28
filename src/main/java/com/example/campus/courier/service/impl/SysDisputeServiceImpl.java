@@ -1,12 +1,9 @@
 package com.example.campus.courier.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.campus.courier.mapper.handler.SysDisputeHandler;
 import com.example.campus.courier.mapper.handler.SysTaskHandler;
 import com.example.campus.courier.mapper.handler.SysTaskLogHandler;
-import com.example.campus.courier.mapper.SysDisputeMapper;
-import com.example.campus.courier.mapper.SysTaskMapper;
 import com.example.campus.courier.model.entity.SysDispute;
 import com.example.campus.courier.model.entity.SysTask;
 import com.example.campus.courier.model.entity.SysTaskLog;
@@ -14,6 +11,7 @@ import com.example.campus.courier.model.enums.TaskActionEnum;
 import com.example.campus.courier.model.enums.TaskStatusEnum;
 import com.example.campus.courier.model.request.dispute.DisputeCreateRequest;
 import com.example.campus.courier.model.request.dispute.DisputePageRequest;
+import com.example.campus.courier.model.response.PageResult;
 import com.example.campus.courier.service.SysDisputeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,13 +27,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class SysDisputeServiceImpl implements SysDisputeService {
-    
+
     private final SysDisputeHandler disputeHandler;
     private final SysTaskHandler taskHandler;
     private final SysTaskLogHandler taskLogHandler;
-    private final SysDisputeMapper disputeMapper;
-    private final SysTaskMapper taskMapper;
-    
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Integer createDispute(DisputeCreateRequest request) {
@@ -44,11 +40,11 @@ public class SysDisputeServiceImpl implements SysDisputeService {
         if (task == null) {
             throw new RuntimeException("任务不存在");
         }
-        
+
         // 2. 构建并保存纠纷实体
         SysDispute dispute = SysDispute.init(request, task.getPublisherId(), task.getRunnerId());
         disputeHandler.save(dispute);
-        
+
         // 3. 更新任务状态为纠纷中
         task.updateStatus(TaskStatusEnum.DISPUTED);
         taskHandler.updateById(task);
@@ -56,23 +52,23 @@ public class SysDisputeServiceImpl implements SysDisputeService {
         // 4. 记录任务日志
         SysTaskLog taskLog = new SysTaskLog();
         taskLog.init(
-            task.getId(),
-            TaskActionEnum.SUBMIT_DISPUTE,
-            String.format("提交纠纷：%s", dispute.getTitle()),
-            dispute.getInitiatorId()
+                task.getId(),
+                TaskActionEnum.SUBMIT_DISPUTE,
+                String.format("提交纠纷：%s", dispute.getTitle()),
+                dispute.getInitiatorId()
         );
         // 如果有证据图片，添加到日志中
         if (request.getEvidence() != null && !request.getEvidence().isEmpty()) {
             taskLog.setImages(request.getEvidence());
         }
         taskLogHandler.save(taskLog);
-        
+
         log.info("纠纷创建成功: {}", dispute.getId());
         return dispute.getId();
     }
 
     @Override
-    public Page<SysTask> pageDisputeTasks(DisputePageRequest request) {
+    public PageResult<SysTask> pageDisputeTasks(DisputePageRequest request) {
         // 1. 查询纠纷分页数据
         Page<SysDispute> disputes = disputeHandler.pageDisputes(request);
 
@@ -86,13 +82,7 @@ public class SysDisputeServiceImpl implements SysDisputeService {
         List<SysTask> tasks = taskHandler.listByIds(taskIds);
 
         // 4. 构建任务分页结果
-        Page<SysTask> taskPage = new Page<>(
-                disputes.getCurrent(),
-                disputes.getSize(),
-                disputes.getTotal()
-        );
-        taskPage.setRecords(tasks);
 
-        return taskPage;
+        return PageResult.build(disputes.getTotal(), tasks);
     }
 }
