@@ -39,25 +39,104 @@
             </div>
           </div>
 
-          <!-- 用户信息 -->
+          <!-- 相关用户 -->
           <div class="users-section">
             <h3 class="section-title">相关用户</h3>
             <div class="user-cards">
-              <div class="user-card">
+              <div class="user-card" v-if="detail.publisher">
                 <div class="user-role">发布者</div>
-                <el-avatar :src="detail.publisher.avatar"/>
+                <el-avatar 
+                  :src="detail.publisher.avatar || null"
+                >
+                  {{ detail.publisher.name?.[0]?.toUpperCase() || '?' }}
+                </el-avatar>
                 <div class="user-info">
-                  <div class="user-name">{{ detail.publisher.name }}</div>
-                  <div class="user-no">{{ detail.publisher.studentNo }}</div>
+                  <div class="user-name">{{ detail.publisher.name || '未知用户' }}</div>
+                  <div class="user-no">{{ detail.publisher.studentNo || '无学号' }}</div>
                 </div>
               </div>
               <div class="user-card" v-if="detail.runner">
                 <div class="user-role">跑腿者</div>
-                <el-avatar :src="detail.runner.avatar"/>
+                <el-avatar 
+                  :src="detail.runner.avatar || null"
+                >
+                  {{ detail.runner.name?.[0]?.toUpperCase() || '?' }}
+                </el-avatar>
                 <div class="user-info">
-                  <div class="user-name">{{ detail.runner.name }}</div>
-                  <div class="user-no">{{ detail.runner.studentNo }}</div>
+                  <div class="user-name">{{ detail.runner.name || '未知用户' }}</div>
+                  <div class="user-no">{{ detail.runner.studentNo || '无学号' }}</div>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 配送信息 -->
+          <div class="delivery-section">
+            <h3 class="section-title">配送信息</h3>
+            <div class="info-content">
+              <div class="info-item">
+                <span class="info-label">取件地址</span>
+                <span class="info-value">{{ detail.task?.pickupAddress || '无' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">送达地址</span>
+                <span class="info-value">{{ detail.task?.deliveryAddress || '无' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 物品信息和赏金信息区域 -->
+          <div class="info-row">
+            <!-- 物品信息 -->
+            <div class="item-section">
+              <h3 class="section-title">物品信息</h3>
+              <div class="specs-grid">
+                <div class="spec-item">
+                  <span class="info-label">预估重量</span>
+                  <span class="info-value">{{ detail.task?.estimatedWeight || '0' }}kg</span>
+                </div>
+                <div class="spec-item">
+                  <span class="info-label">预估大小</span>
+                  <span class="info-value">{{ detail.task?.estimatedSize || '未知' }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 赏金信息 -->
+            <div class="reward-section">
+              <h3 class="section-title">赏金信息</h3>
+              <div class="reward-content">
+                <div class="reward-row">
+                  <div class="reward-item">
+                    <span class="reward-label">赏金金额</span>
+                    <div class="reward-value">
+                      <span class="currency">¥</span>
+                      <span class="amount">{{ detail.task?.reward || '0' }}</span>
+                    </div>
+                  </div>
+                  <div v-if="detail.task?.urgent" class="reward-item urgent">
+                    <span class="reward-label">加急奖励</span>
+                    <div class="reward-value">
+                      <span class="currency">+¥</span>
+                      <span class="amount">{{ detail.task?.urgentReward || '0' }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 联系方式 -->
+          <div class="contact-section">
+            <h3 class="section-title">联系方式</h3>
+            <div class="info-content">
+              <div class="info-item">
+                <span class="info-label">联系人</span>
+                <span class="info-value">{{ detail.task?.contactName || '无' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">联系电话</span>
+                <span class="info-value">{{ detail.task?.contactPhone || '无' }}</span>
               </div>
             </div>
           </div>
@@ -67,34 +146,54 @@
             <h3 class="section-title">纠纷信息</h3>
             <div class="dispute-content">
               <div class="dispute-header">
-                <el-tag :type="getDisputeTypeStyle(detail.dispute.type)">
-                  <el-icon>
-                    <component :is="getDisputeTypeIcon(detail.dispute.type)"/>
-                  </el-icon>
-                  {{ getDisputeType(detail.dispute.type) }}
-                </el-tag>
-                <el-tag :type="DisputeStatusEnum.getType(detail.dispute.status)">
-                  <el-icon>
-                    <component :is="DisputeStatusEnum.getIcon(detail.dispute.status)"/>
-                  </el-icon>
-                  {{ getDisputeStatus(detail.dispute.status) }}
-                </el-tag>
+                <div class="dispute-tags">
+                  <el-tag 
+                    :type="getDisputeTypeStyle(detail.dispute.type)"
+                    class="dispute-tag"
+                    size="large"
+                  >
+                    <el-icon class="tag-icon">
+                      <component :is="getDisputeTypeIcon(detail.dispute.type)"/>
+                    </el-icon>
+                    <span>{{ getDisputeType(detail.dispute.type) }}</span>
+                  </el-tag>
+                  <el-tag 
+                    :type="DisputeStatusEnum.getType(detail.dispute.status)"
+                    class="dispute-tag"
+                    size="large"
+                  >
+                    <el-icon class="tag-icon">
+                      <component :is="DisputeStatusEnum.getIcon(detail.dispute.status)"/>
+                    </el-icon>
+                    <span>{{ getDisputeStatus(detail.dispute.status) }}</span>
+                  </el-tag>
+                </div>
               </div>
-              <h4>{{ detail.dispute.title }}</h4>
-              <p>{{ detail.dispute.content }}</p>
-              <!-- 证据图片 -->
-              <div class="evidence-list" v-if="detail.dispute.evidence?.length">
-                <h5>证据图片</h5>
-                <el-image-group>
-                  <el-image
+              <div class="dispute-main">
+                <h4>{{ detail.dispute.title }}</h4>
+                <p>{{ detail.dispute.content }}</p>
+                <!-- 证据图片 -->
+                <div class="evidence-list" v-if="detail.dispute.evidence?.length">
+                  <h5>证据图片</h5>
+                  <div class="evidence-grid">
+                    <el-image
                       v-for="(url, index) in detail.dispute.evidence"
                       :key="index"
                       :src="url"
                       :preview-src-list="detail.dispute.evidence"
                       fit="cover"
                       class="evidence-image"
-                  />
-                </el-image-group>
+                      :hide-on-click-modal="false"
+                    >
+                      <template #error>
+                        <div class="image-error">
+                          <el-icon><Picture /></el-icon>
+                          <span>加载失败</span>
+                        </div>
+                      </template>
+                    </el-image>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -106,10 +205,10 @@
               <el-timeline-item
                   v-for="log in detail.taskLogs"
                   :key="log.id"
-                  :timestamp="log.createTime"
+                  :timestamp="log.actionTime"
                   :type="getLogType(log.action)"
               >
-                {{ log.content }}
+                {{ log.remark }}
               </el-timeline-item>
             </el-timeline>
           </div>
@@ -123,13 +222,18 @@
                   :key="msg.id"
                   class="message-item"
               >
-                <el-avatar :src="msg.sender.avatar" size="small"/>
+                <el-avatar 
+                  :src="msg.sender?.avatar || null"
+                  size="small"
+                >
+                  {{ msg.sender?.name?.[0]?.toUpperCase() || '?' }}
+                </el-avatar>
                 <div class="message-content">
                   <div class="message-header">
-                    <span class="sender-name">{{ msg.sender.name }}</span>
-                    <span class="message-time">{{ msg.createTime }}</span>
+                    <span class="sender-name">{{ msg.sender?.name || '未知用户' }}</span>
+                    <span class="message-time">{{ msg.createTime || '' }}</span>
                   </div>
-                  <div class="message-text">{{ msg.content }}</div>
+                  <div class="message-text">{{ msg.content || '无内容' }}</div>
                 </div>
               </div>
             </div>
@@ -143,12 +247,13 @@
 <script setup>
 import {onBeforeUnmount, onMounted, ref} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
-import {ArrowLeft} from '@element-plus/icons-vue'
+import {ArrowLeft, Phone, Picture} from '@element-plus/icons-vue'
 import {ElMessage} from 'element-plus'
-import {getTaskDetail} from '@/api/task'
+import {getDisputeDetail} from '@/api/dispute'
 import {TaskStatusEnum} from '@/utils/enums/taskEnums'
 import {DisputeStatusEnum} from '@/utils/enums/disputeEnums'
 import {DisputeTypeEnum} from "@/utils/enums/disputeTypeEnums.js";
+import {getTaskDetail} from "@/api/task.js";
 
 const router = useRouter()
 const route = useRoute()
@@ -163,38 +268,56 @@ const handleBack = () => {
   router.back()
 }
 
+// 拨打电话
+const handleCall = (phone) => {
+  window.location.href = `tel:${phone}`
+}
+
+// 格式化时间
+const formatTime = (timeString) => {
+  if (!timeString) return ''
+  const date = new Date(timeString)
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  const hours = String(date.getHours()).padStart(2, '0')
+  const minutes = String(date.getMinutes()).padStart(2, '0')
+  return `${year}-${month}-${day} ${hours}:${minutes}`
+}
+
 // 获取任务状态类型
 const getStatusType = (status) => {
-  return TaskStatusEnum.getType(status)
+  return status ? TaskStatusEnum.getType(status) : ''
 }
 
 // 获取任务状态文本
 const getStatusText = (status) => {
-  return TaskStatusEnum.getDesc(status)
+  return status ? TaskStatusEnum.getDesc(status) : ''
 }
 
 // 获取纠纷状态
 const getDisputeStatus = (status) => {
-  return DisputeStatusEnum.getDesc(status)
+  return status ? DisputeStatusEnum.getDesc(status) : ''
 }
 
 // 获取纠纷类型
 const getDisputeType = (type) => {
-  return DisputeTypeEnum.getDesc(type)
+  return type ? DisputeTypeEnum.getDesc(type) : ''
 }
 
 // 获取纠纷类型样式
 const getDisputeTypeStyle = (type) => {
-  return DisputeTypeEnum.getType(type)
+  return type ? DisputeTypeEnum.getType(type) : ''
 }
 
 // 获取纠纷类型图标
 const getDisputeTypeIcon = (type) => {
-  return DisputeTypeEnum.getIcon(type)
+  return type ? DisputeTypeEnum.getIcon(type) : ''
 }
 
 // 获取日志类型
 const getLogType = (action) => {
+  if (!action) return 'info'
   switch (action) {
     case 'SUBMIT_DISPUTE':
       return 'danger'
@@ -219,6 +342,7 @@ const fetchDetail = async () => {
   } catch (error) {
     console.error('获取纠纷详情失败:', error)
     ElMessage.error('系统异常，请稍后重试')
+    router.replace('/admin/disputes')
   } finally {
     loading.value = false
   }
@@ -239,12 +363,13 @@ onBeforeUnmount(() => {
 
 <style scoped lang="scss">
 .dispute-detail {
-  padding: 16px;
-  min-height: calc(100vh - 50px);
+  height: 100vh;
   display: flex;
   flex-direction: column;
   background-color: #f0f2f5;
-  gap: 16px;
+  padding: 16px;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 /* 头部卡片样式 */
@@ -253,6 +378,8 @@ onBeforeUnmount(() => {
   border: none;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  margin-bottom: 16px;
+  flex-shrink: 0;
 
   :deep(.el-card__body) {
     padding: 16px 20px;
@@ -300,15 +427,32 @@ onBeforeUnmount(() => {
   border: none;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  background: #fff;
+  overflow: hidden;
 
   :deep(.el-card__body) {
-    padding: 24px;
+    height: 100%;
+    padding: 0;
   }
 }
 
 .content-wrapper {
-  min-height: inherit;
+  height: 100%;
+  padding: 24px;
+  overflow-y: auto;
+  box-sizing: border-box;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #dcdfe6;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: #f5f7fa;
+  }
 }
 
 /* 各个区块通用样式 */
@@ -319,6 +463,17 @@ onBeforeUnmount(() => {
   margin-bottom: 16px;
   padding-bottom: 12px;
   border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+
+  &::before {
+    content: '';
+    width: 4px;
+    height: 18px;
+    background-color: #409EFF;
+    margin-right: 8px;
+    border-radius: 2px;
+  }
 }
 
 /* 任务信息区域 */
@@ -334,12 +489,24 @@ onBeforeUnmount(() => {
     .task-type {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 12px;
+
+      .urgent-tag {
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+      }
 
       .type-icon {
         width: 24px;
         height: 24px;
         border-radius: 4px;
+      }
+
+      span {
+        font-size: 16px;
+        font-weight: 500;
+        color: #333;
       }
     }
 
@@ -351,6 +518,10 @@ onBeforeUnmount(() => {
   }
 
   .task-content {
+    background: #f9fafb;
+    padding: 16px;
+    border-radius: 8px;
+
     h4 {
       font-size: 16px;
       color: #333;
@@ -360,6 +531,141 @@ onBeforeUnmount(() => {
     p {
       color: #666;
       line-height: 1.6;
+    }
+  }
+}
+
+/* 配送信息区域 */
+.delivery-section, .contact-section {
+  margin-bottom: 24px;
+
+  .info-content {
+    background: #f9fafb;
+    border-radius: 8px;
+    overflow: hidden;
+
+    .info-item {
+      display: flex;
+      padding: 16px;
+      border-bottom: 1px solid #f0f0f0;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .info-label {
+        width: 100px;
+        color: #666;
+        font-size: 14px;
+      }
+
+      .info-value {
+        flex: 1;
+        color: #333;
+        font-size: 14px;
+
+        &.phone-wrapper {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+      }
+    }
+  }
+}
+
+/* 物品信息和赏金信息并排布局 */
+.info-row {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 24px;
+
+  .item-section,
+  .reward-section {
+    flex: 1;
+    margin-bottom: 0;
+  }
+}
+
+/* 物品信息区域 */
+.item-section {
+  .specs-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+
+    .spec-item {
+      background: #f9fafb;
+      padding: 16px;
+      border-radius: 8px;
+      text-align: center;
+
+      .info-label {
+        display: block;
+        color: #666;
+        font-size: 14px;
+        margin-bottom: 8px;
+      }
+
+      .info-value {
+        color: #333;
+        font-size: 16px;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+/* 赏金信息区域 */
+.reward-section {
+  .reward-content {
+    background: linear-gradient(135deg, #fff9f0, #fff5f5);
+    border-radius: 8px;
+    padding: 16px;
+
+    .reward-row {
+      display: flex;
+      gap: 24px;
+
+      .reward-item {
+        flex: 1;
+        background: #fff;
+        border-radius: 8px;
+        padding: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .reward-label {
+          color: #666;
+          font-size: 14px;
+        }
+
+        .reward-value {
+          display: flex;
+          align-items: baseline;
+
+          .currency {
+            color: #ff9500;
+            font-size: 16px;
+            margin-right: 4px;
+          }
+
+          .amount {
+            color: #ff9500;
+            font-size: 24px;
+            font-weight: bold;
+          }
+        }
+
+        &.urgent {
+          .reward-value {
+            .currency, .amount {
+              color: #ff4d4f;
+            }
+          }
+        }
+      }
     }
   }
 }
@@ -412,51 +718,111 @@ onBeforeUnmount(() => {
   .dispute-content {
     background: #fff5f5;
     border-radius: 8px;
-    padding: 16px;
+    padding: 20px;
 
     .dispute-header {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
 
-      .el-tag {
+      .dispute-tags {
         display: flex;
-        align-items: center;
-        gap: 5px;
-        padding: 6px 12px;
+        gap: 12px;
 
-        .el-icon {
-          font-size: 16px;
+        :deep(.dispute-tag) {
+          display: inline-flex;
+          align-items: center;
+          height: 32px;
+          padding: 0 12px;
+          font-size: 14px;
+          border-radius: 16px;
+          border: none;
+
+          .tag-icon {
+            margin-right: 6px;
+            font-size: 16px;
+          }
+
+          &.el-tag--warning {
+            background-color: #fff7e6;
+            color: #d46b08;
+          }
+
+          &.el-tag--danger {
+            background-color: #fff1f0;
+            color: #cf1322;
+          }
+
+          &.el-tag--success {
+            background-color: #f6ffed;
+            color: #389e0d;
+          }
         }
       }
     }
 
-    h4 {
-      font-size: 16px;
-      color: #333;
-      margin-bottom: 8px;
-    }
-
-    p {
-      color: #666;
-      line-height: 1.6;
-      margin-bottom: 16px;
-    }
-
-    .evidence-list {
-      h5 {
-        font-size: 14px;
+    .dispute-main {
+      h4 {
+        font-size: 16px;
         color: #333;
         margin-bottom: 12px;
+        font-weight: 500;
       }
 
-      .evidence-image {
-        width: 100px;
-        height: 100px;
-        border-radius: 4px;
-        margin-right: 8px;
-        margin-bottom: 8px;
-        cursor: pointer;
+      p {
+        color: #666;
+        line-height: 1.6;
+        margin-bottom: 20px;
+        font-size: 14px;
+      }
+
+      .evidence-list {
+        h5 {
+          font-size: 14px;
+          color: #333;
+          margin-bottom: 12px;
+          font-weight: 500;
+        }
+
+        .evidence-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+          gap: 12px;
+          margin-top: 16px;
+        }
+
+        .evidence-image {
+          width: 100%;
+          height: 100px;
+          border-radius: 8px;
+          overflow: hidden;
+          cursor: pointer;
+          
+          .el-image__inner {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+          }
+          
+          &:hover .el-image__inner {
+            transform: scale(1.05);
+          }
+          
+          .image-error {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #909399;
+            font-size: 12px;
+            background: #f5f7fa;
+            
+            .el-icon {
+              font-size: 24px;
+              margin-bottom: 8px;
+            }
+          }
+        }
       }
     }
   }
@@ -474,6 +840,10 @@ onBeforeUnmount(() => {
       display: flex;
       gap: 12px;
       margin-bottom: 16px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
 
       .message-content {
         flex: 1;
@@ -504,6 +874,75 @@ onBeforeUnmount(() => {
           border-radius: 4px;
         }
       }
+    }
+  }
+}
+
+/* 纠纷信息区域的图片样式 */
+.evidence-list {
+  .evidence-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  :deep(.evidence-image) {
+    width: 100%;
+    height: 100px;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    
+    .el-image__inner {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+    
+    &:hover .el-image__inner {
+      transform: scale(1.05);
+    }
+    
+    .image-error {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #909399;
+      font-size: 12px;
+      background: #f5f7fa;
+      
+      .el-icon {
+        font-size: 24px;
+        margin-bottom: 8px;
+      }
+    }
+  }
+}
+
+:deep(.el-image-viewer__wrapper) {
+  .el-image-viewer__mask {
+    background-color: rgba(0, 0, 0, 0.9);
+  }
+  
+  .el-image-viewer__close {
+    color: #fff;
+    
+    &:hover {
+      color: #409EFF;
+    }
+  }
+  
+  .el-image-viewer__prev,
+  .el-image-viewer__next {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.2);
     }
   }
 }
