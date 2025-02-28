@@ -1,6 +1,6 @@
 <template>
   <div class="disputes-manage">
-    <!-- 顶部搜索区域 -->
+    <!-- 顶部筛选区域 -->
     <el-card class="search-card" shadow="hover">
       <div class="search-area">
         <div class="filter-wrapper">
@@ -26,68 +26,61 @@
       </div>
     </el-card>
 
-    <!-- 卡片列表区域 -->
-    <div class="disputes-grid" v-loading="loading">
-      <el-empty v-if="tableData.length === 0" description="暂无纠纷数据" />
-      <div v-else class="disputes-list">
-        <div v-for="item in tableData" :key="item.id" class="dispute-card" @click="handleView(item)">
-          <!-- 卡片头部 - 编号和状态 -->
-          <div class="card-header">
-            <div class="task-type">
-              <img class="type-icon" :src="item.taskType.icon" alt="任务类型图标">
-              <span>{{ item.taskType.typeName }}</span>
-            </div>
-            <div class="task-no">{{ item.task.taskNo }}</div>
-            <el-tag
-                :type="getStatusType(item.task.status)"
-                effect="light"
-                class="status-tag"
-            >
-              {{ getStatusText(item.task.status) }}
-            </el-tag>
-          </div>
-
-          <!-- 卡片内容 -->
-          <div class="card-body">
-            <!-- 任务标题 -->
-            <div class="task-title">{{ item.task.title }}</div>
-
-            <!-- 任务描述 -->
-            <div class="task-desc">{{ item.task.description }}</div>
-
-            <!-- 用户信息 -->
-            <div class="user-info">
-              <div class="user-item">
-                <el-icon><UserFilled /></el-icon>
-                <span class="label">发布者：</span>
-                <span class="value">{{ item.publisherName }}</span>
+    <!-- 内容区域 -->
+    <el-card class="content-card" shadow="hover">
+      <div class="content-area" v-loading="loading">
+        <el-empty v-if="tableData.length === 0" description="暂无纠纷数据"/>
+        <div v-else class="disputes-list">
+          <div v-for="item in tableData" :key="item.id" class="dispute-card" @click="handleView(item)">
+            <!-- 卡片内容保持不变 -->
+            <div class="card-header">
+              <div class="task-type">
+                <img class="type-icon" :src="item.taskType.icon" alt="任务类型图标">
+                <span>{{ item.taskType.typeName }}</span>
               </div>
-              <div class="user-item">
-                <el-icon><User /></el-icon>
-                <span class="label">接单者：</span>
-                <span class="value">{{ item.runnerName }}</span>
+              <div class="task-no">{{ item.task.taskNo }}</div>
+              <el-tag
+                  :type="getStatusType(item.task.status)"
+                  effect="light"
+                  class="status-tag"
+              >
+                {{ getStatusText(item.task.status) }}
+              </el-tag>
+            </div>
+
+            <div class="card-body">
+              <div class="task-title">{{ item.task.title }}</div>
+              <div class="task-desc">{{ item.task.description }}</div>
+              <div class="user-info">
+                <div class="user-item">
+                  <el-icon><UserFilled /></el-icon>
+                  <span class="label">发布者：</span>
+                  <span class="value">{{ item.publisherName }}</span>
+                </div>
+                <div class="user-item">
+                  <el-icon><User /></el-icon>
+                  <span class="label">接单者：</span>
+                  <span class="value">{{ item.runnerName }}</span>
+                </div>
+              </div>
+              <div class="time-info">
+                <el-icon><Timer /></el-icon>
+                <span>{{ formatDateTime(item.task.createTime) }}</span>
               </div>
             </div>
 
-            <!-- 时间信息 -->
-            <div class="time-info">
-              <el-icon><Timer /></el-icon>
-              <span>{{ formatDateTime(item.task.createTime) }}</span>
+            <div class="card-footer">
+              <el-button type="primary" @click.stop="handleView(item)">
+                <el-icon><View /></el-icon>
+                查看详情
+              </el-button>
             </div>
-          </div>
-
-          <!-- 卡片底部 - 操作按钮 -->
-          <div class="card-footer">
-            <el-button type="primary" @click.stop="handleView(item)">
-              <el-icon><View /></el-icon>
-              查看详情
-            </el-button>
           </div>
         </div>
       </div>
-    </div>
+    </el-card>
 
-    <!-- 底部分页区域 -->
+    <!-- 分页区域 -->
     <el-card class="pagination-card" shadow="hover">
       <div class="pagination-container">
         <el-pagination
@@ -218,31 +211,41 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   background-color: #f0f2f5;
+  gap: 16px;
 }
 
 /* 搜索卡片样式 */
 .search-card {
-  margin-bottom: 16px;
   border-radius: 12px;
   border: none;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  }
 }
 
-.search-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+/* 内容卡片样式 */
+.content-card {
+  flex: 1;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  background: #fff;
+  
+  &:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  }
+
+  :deep(.el-card__body) {
+    padding: 20px;
+  }
 }
 
-.search-area {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.filter-wrapper {
-  display: flex;
-  align-items: center;
+.content-area {
+  min-height: 300px;
 }
 
 /* 自定义状态筛选器样式 */
@@ -312,13 +315,6 @@ onMounted(() => {
 }
 
 /* 卡片网格布局 */
-.disputes-grid {
-  flex: 1;
-  margin-bottom: 16px;
-  position: relative;
-  min-height: 300px;
-}
-
 .disputes-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
