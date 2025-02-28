@@ -34,4 +34,17 @@ public class SysDisputeHandler extends ServiceImpl<SysDisputeMapper, SysDispute>
         // 3. 执行分页查询
         return this.page(page, queryWrapper);
     }
+
+    /**
+     * 根据任务ID获取纠纷信息
+     *
+     * @param taskId 任务ID
+     * @return 纠纷信息
+     */
+    public SysDispute getByTaskId(Integer taskId) {
+        return this.getOne(
+            new LambdaQueryWrapper<SysDispute>()
+                .eq(SysDispute::getTaskId, taskId)
+        );
+    }
 } 

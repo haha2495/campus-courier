@@ -3,8 +3,8 @@ package com.example.campus.courier.controller;
 import com.example.campus.courier.model.dto.TaskDTO;
 import com.example.campus.courier.model.dto.TaskDetailDTO;
 import com.example.campus.courier.model.request.task.TaskAddRequest;
-import com.example.campus.courier.model.request.task.TaskQueryRequest;
 import com.example.campus.courier.model.request.task.TaskMessageAddRequest;
+import com.example.campus.courier.model.request.task.TaskQueryRequest;
 import com.example.campus.courier.model.response.PageResult;
 import com.example.campus.courier.model.response.Result;
 import com.example.campus.courier.service.SysTaskService;
@@ -64,7 +64,7 @@ public class SysTaskController extends BaseController {
     @PostMapping("/{taskId}/cancel")
     @Operation(summary = "取消任务")
     public Result<Boolean> cancelTask(
-            @Parameter(description = "任务ID") 
+            @Parameter(description = "任务ID")
             @PathVariable("taskId") Long taskId) {
         return Result.success(sysTaskService.cancelTask(taskId, getLoginUserId()));
     }
@@ -90,7 +90,7 @@ public class SysTaskController extends BaseController {
     @PostMapping("/{taskId}/accept")
     @Operation(summary = "抢单（接受任务）")
     public Result<Boolean> acceptTask(
-            @Parameter(description = "任务ID") 
+            @Parameter(description = "任务ID")
             @PathVariable("taskId") Long taskId) {
         return Result.success(sysTaskService.acceptTask(taskId, getLoginUserId()));
     }
@@ -116,7 +116,7 @@ public class SysTaskController extends BaseController {
     @PostMapping("/{taskId}/start")
     @Operation(summary = "开始执行任务")
     public Result<Boolean> startTask(
-            @Parameter(description = "任务ID") 
+            @Parameter(description = "任务ID")
             @PathVariable("taskId") Integer taskId) {
         return Result.success(sysTaskService.startTask(taskId, getLoginUserId()));
     }
@@ -130,7 +130,7 @@ public class SysTaskController extends BaseController {
     @GetMapping("/{taskId}")
     @Operation(summary = "获取任务详情")
     public Result<TaskDetailDTO> getTaskDetail(
-            @Parameter(description = "任务ID") 
+            @Parameter(description = "任务ID")
             @PathVariable("taskId") Integer taskId) {
         return Result.success(sysTaskService.getTaskDetail(taskId));
     }
@@ -157,7 +157,7 @@ public class SysTaskController extends BaseController {
     @PostMapping("/{taskId}/deliver")
     @Operation(summary = "送达任务")
     public Result<Boolean> deliverTask(
-            @Parameter(description = "任务ID") 
+            @Parameter(description = "任务ID")
             @PathVariable("taskId") Integer taskId) {
         return Result.success(sysTaskService.deliverTask(taskId, getLoginUserId()));
     }
@@ -172,7 +172,7 @@ public class SysTaskController extends BaseController {
     @PostMapping("/{taskId}/confirm")
     @Operation(summary = "确认任务完成")
     public Result<Boolean> confirmTask(
-            @Parameter(description = "任务ID") 
+            @Parameter(description = "任务ID")
             @PathVariable("taskId") Integer taskId) {
         return Result.success(sysTaskService.confirmTask(taskId, getLoginUserId()));
     }

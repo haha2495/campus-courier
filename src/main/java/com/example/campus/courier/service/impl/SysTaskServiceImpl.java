@@ -7,6 +7,7 @@ import com.example.campus.courier.mapper.handler.SysTaskTypeHandler;
 import com.example.campus.courier.mapper.handler.SysTaskMessageHandler;
 import com.example.campus.courier.mapper.handler.SysStudentHandler;
 import com.example.campus.courier.mapper.handler.SysTaskEvaluationHandler;
+import com.example.campus.courier.mapper.handler.SysDisputeHandler;
 import com.example.campus.courier.model.dto.TaskDTO;
 import com.example.campus.courier.model.dto.TaskDetailDTO;
 import com.example.campus.courier.model.dto.TaskMessageDTO;
@@ -41,6 +42,7 @@ public class SysTaskServiceImpl implements SysTaskService {
     private final SysTaskMessageHandler sysTaskMessageHandler;
     private final SysStudentHandler sysStudentHandler;
     private final SysTaskEvaluationHandler sysTaskEvaluationHandler;
+    private final SysDisputeHandler sysDisputeHandler;
 
     /**
      * 保存任务
@@ -245,14 +247,14 @@ public class SysTaskServiceImpl implements SysTaskService {
 
     /**
      * 获取任务详情
-     * 包含任务信息、任务类型信息、留言列表和任务日志列表
+     * 包含任务信息、任务类型信息、发布者信息、跑腿者信息、纠纷信息、留言列表和任务日志列表
      *
      * @param taskId 任务ID
      * @return 任务详情DTO
      */
     @Override
     public TaskDetailDTO getTaskDetail(Integer taskId) {
-        // 1. 获取任务基础信息
+        // 1. 获取任务基本信息
         SysTask task = sysTaskHandler.getById(taskId);
         if (task == null) {
             throw new IllegalArgumentException("任务不存在");
@@ -261,33 +263,50 @@ public class SysTaskServiceImpl implements SysTaskService {
         // 2. 获取任务类型信息
         SysTaskType taskType = sysTaskTypeHandler.getById(task.getTaskTypeId());
 
-        // 3. 获取任务留言列表
-        List<SysTaskMessage> messages = sysTaskMessageHandler.getTaskMessages(taskId);
+        // 3. 获取发布者和跑腿者信息
+        SysStudent publisher = sysStudentHandler.getById(task.getPublisherId());
+        SysStudent runner = task.getRunnerId() != null ? 
+                sysStudentHandler.getById(task.getRunnerId()) : null;
 
-        // 4. 获取所有留言发送者的ID
+        // 4. 获取纠纷信息
+        SysDispute dispute = sysDisputeHandler.getByTaskId(taskId);
+
+        // 5. 获取任务留言列表
+        List<SysTaskMessage> messages = sysTaskMessageHandler.getTaskMessages(taskId);
+        
+        // 6. 获取所有留言发送者的ID
         List<Integer> studentIds = messages.stream()
                 .map(SysTaskMessage::getUserId)
                 .distinct()
                 .collect(Collectors.toList());
 
-        // 5. 批量获取学生信息
+        // 7. 批量获取学生信息
         List<SysStudent> students = sysStudentHandler.getStudentsByIds(studentIds);
         Map<Integer, SysStudent> studentMap = students.stream()
                 .collect(Collectors.toMap(SysStudent::getId, student -> student));
 
-        // 6. 构建留言DTO列表
+        // 8. 构建留言DTO列表
         List<TaskMessageDTO> messageDTOs = messages.stream()
                 .map(message -> TaskMessageDTO.build(message, studentMap.get(message.getUserId())))
                 .collect(Collectors.toList());
 
-        // 7. 获取任务日志列表(按时间倒序)
+        // 9. 获取任务日志列表(按时间倒序)
         List<SysTaskLog> taskLogs = sysTaskLogHandler.getTaskLogs(taskId);
 
-        // 8. 查询任务评价信息
+        // 10. 获取任务评价信息
         SysTaskEvaluation evaluation = sysTaskEvaluationHandler.getByTaskId(taskId);
 
-        // 9. 构建并返回DTO
-        return TaskDetailDTO.build(task, taskType, messageDTOs, taskLogs, evaluation);
+        // 11. 构建并返回DTO
+        return TaskDetailDTO.build(
+                task,
+                taskType,
+                publisher,
+                runner,
+                dispute,
+                messageDTOs,
+                taskLogs,
+                evaluation
+        );
     }
 
     /**
