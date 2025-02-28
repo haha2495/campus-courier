@@ -402,4 +402,34 @@ public class SysStudentServiceImpl extends ServiceImpl<SysStudentMapper, SysStud
 
         log.info("学生充值成功，学生ID：{}，充值金额：{}", studentId, amount);
     }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void withdraw(Integer studentId, BigDecimal amount) {
+        // 获取学生信息
+        SysStudent student = getById(studentId);
+        if (student == null) {
+            throw new BusinessException("学生不存在");
+        }
+
+        // 验证提现金额
+        if (amount.compareTo(BigDecimal.ONE) < 0) {
+            throw new BusinessException("提现金额必须大于1元");
+        }
+        if (amount.compareTo(student.getBalance()) > 0) {
+            throw new BusinessException("提现金额不能超过账户余额");
+        }
+
+        // 扣减余额
+        student.decreaseBalance(amount);
+        updateById(student);
+
+        // 创建提现记录
+        sysBalanceRecordHandler.createRecord(
+            student,
+            amount,
+            BalanceChangeTypeEnum.WITHDRAW.getCode(),
+            "余额提现"
+        );
+    }
 }

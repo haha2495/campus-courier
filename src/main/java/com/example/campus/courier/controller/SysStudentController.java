@@ -166,4 +166,11 @@ public class SysStudentController extends BaseController {
         sysStudentService.recharge(getLoginUserId(), request.getAmount());
         return Result.success();
     }
+
+    @Operation(summary = "学生提现")
+    @PostMapping("/withdraw")
+    public Result<Void> withdraw(@Valid @RequestBody StudentWithdrawRequest request) {
+        sysStudentService.withdraw(getLoginUserId(), request.getAmount());
+        return Result.success();
+    }
 } 

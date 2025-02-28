@@ -131,15 +131,13 @@ public class SysStudent {
 
     /**
      * 减少余额
+     *
      * @param amount 减少的金额
-     * @return 是否扣减成功
      */
-    public boolean decreaseBalance(BigDecimal amount) {
+    public void decreaseBalance(BigDecimal amount) {
         if (amount.compareTo(BigDecimal.ZERO) > 0 && this.balance.compareTo(amount) >= 0) {
             this.balance = this.balance.subtract(amount);
-            return true;
         }
-        return false;
     }
 
     /**

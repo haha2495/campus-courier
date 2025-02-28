@@ -134,4 +134,12 @@ public interface SysStudentService extends IService<SysStudent> {
      * @param amount    充值金额
      */
     void recharge(Integer studentId, BigDecimal amount);
+
+    /**
+     * 学生提现
+     *
+     * @param studentId 学生ID
+     * @param amount    提现金额
+     */
+    void withdraw(Integer studentId, BigDecimal amount);
 }
