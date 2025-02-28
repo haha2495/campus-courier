@@ -59,9 +59,8 @@ const getUserInfo = async () => {
 
 // 处理充值按钮点击
 const handleRecharge = () => {
-  uni.showToast({
-    title: '充值功能开发中',
-    icon: 'none'
+  uni.navigateTo({
+    url: '/pages/mine/balance/recharge'
   })
 }
 
