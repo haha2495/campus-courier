@@ -174,6 +174,63 @@
             :messages="taskDetail.messages"
             @refresh="fetchTaskDetail"
           />
+
+          <!-- 评价信息 -->
+          <view v-else-if="activeTab === 2" class="evaluation-section">
+            <template v-if="taskDetail.evaluation">
+              <view class="evaluation-card">
+                <!-- 评分展示 -->
+                <view class="score-section">
+                  <view class="score-value">
+                    <text class="score-number">{{ taskDetail.evaluation.score }}</text>
+                    <text class="score-unit">分</text>
+                  </view>
+                  <view class="star-container">
+                    <u-rate
+                      v-model="taskDetail.evaluation.score"
+                      :readonly="true"
+                      :count="5"
+                      active-color="#FFB800"
+                      inactive-color="#E0E0E0"
+                      size="40"
+                    ></u-rate>
+                  </view>
+                </view>
+
+                <!-- 评价标签 -->
+                <view v-if="taskDetail.evaluation.tags && taskDetail.evaluation.tags.length > 0" class="tags-section">
+                  <view 
+                    v-for="(tag, index) in taskDetail.evaluation.tags" 
+                    :key="index"
+                    class="tag-item"
+                  >
+                    {{ tag }}
+                  </view>
+                </view>
+
+                <!-- 评价内容 -->
+                <view v-if="taskDetail.evaluation.content" class="content-section">
+                  <text class="content-text">{{ taskDetail.evaluation.content }}</text>
+                </view>
+
+                <!-- 评价信息 -->
+                <view class="evaluation-info">
+                  <view class="evaluator">
+                    <text v-if="!taskDetail.evaluation.anonymous">{{ taskDetail.evaluation.evaluatorName }}</text>
+                    <text v-else>匿名用户</text>
+                  </view>
+                  <text class="evaluation-time">{{ formatTime(taskDetail.evaluation.createTime) }}</text>
+                </view>
+              </view>
+            </template>
+            <view v-else class="no-evaluation">
+              <u-empty
+                mode="data"
+                text="暂无评价信息"
+                margin-top="40"
+              ></u-empty>
+            </view>
+          </view>
         </view>
       </view>
     </template>
@@ -193,20 +250,35 @@ const activeTab = ref(0)
 const taskId = ref(null)
 
 // 标签页配置
-const tabs = computed(() => [
-  {
-    name: '任务进度',
-    icon: 'clock-fill'
-  },
-  {
-    name: '任务留言',
-    icon: 'chat-fill'
+const tabs = computed(() => {
+  const baseTabs = [
+    {
+      name: '任务进度',
+      icon: 'clock-fill'
+    },
+    {
+      name: '任务留言',
+      icon: 'chat-fill'
+    }
+  ]
+  
+  // 只有当任务有评价信息时，才添加评价标签页
+  if (taskDetail.value?.evaluation) {
+    baseTabs.push({
+      name: '评价信息',
+      icon: 'star-fill'
+    })
   }
-])
+  
+  return baseTabs
+})
 
 // 切换标签页
 const handleTabChange = (index) => {
-  activeTab.value = index
+  // 确保切换到的标签页存在
+  if (index < tabs.value.length) {
+    activeTab.value = index
+  }
 }
 
 // 获取任务详情
@@ -231,6 +303,10 @@ const fetchTaskDetail = async () => {
     const res = await getTaskDetail(taskId.value)
     if (res.data) {
       taskDetail.value = res.data
+      // 如果当前是评价标签页，但没有评价信息，则切换到第一个标签
+      if (activeTab.value === 2 && !taskDetail.value.evaluation) {
+        activeTab.value = 0
+      }
     }
   } catch (error) {
     console.error('获取任务详情失败：', error)
@@ -879,6 +955,103 @@ onMounted(() => {
     height: 30rpx;
     background: linear-gradient(to bottom, rgba(255,255,255,0.95), transparent);
     pointer-events: none;
+  }
+}
+
+.evaluation-section {
+  padding: 20rpx;
+  
+  .evaluation-card {
+    background: #FFFFFF;
+    border-radius: 16rpx;
+    padding: 30rpx;
+    box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+    
+    .score-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 30rpx;
+      
+      .score-value {
+        margin-bottom: 20rpx;
+        display: flex;
+        align-items: flex-end;
+        
+        .score-number {
+          font-size: 64rpx;
+          font-weight: bold;
+          color: #FFB800;
+          font-family: 'DIN Condensed', sans-serif;
+          line-height: 1;
+        }
+
+        .score-unit {
+          font-size: 24rpx;
+          color: #FFB800;
+          margin-left: 4rpx;
+          margin-bottom: 12rpx;
+        }
+      }
+      
+      .star-container {
+        display: flex;
+        justify-content: center;
+      }
+    }
+    
+    .tags-section {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16rpx;
+      margin-bottom: 30rpx;
+      
+      .tag-item {
+        padding: 8rpx 20rpx;
+        background: #F0F7FF;
+        color: #3B82F6;
+        border-radius: 30rpx;
+        font-size: 24rpx;
+      }
+    }
+    
+    .content-section {
+      margin-bottom: 30rpx;
+      padding: 20rpx;
+      background: #F8F9FA;
+      border-radius: 12rpx;
+      
+      .content-text {
+        font-size: 28rpx;
+        color: #333;
+        line-height: 1.6;
+      }
+    }
+    
+    .evaluation-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 20rpx;
+      border-top: 2rpx solid #F0F0F0;
+      
+      .evaluator {
+        font-size: 26rpx;
+        color: #666;
+      }
+      
+      .evaluation-time {
+        font-size: 24rpx;
+        color: #999;
+      }
+    }
+  }
+  
+  .no-evaluation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300rpx;
   }
 }
 </style> 
