@@ -118,4 +118,36 @@ public class SysStudent {
     public void updatePassword(String newPassword) {
         this.password = DigestUtils.md5DigestAsHex(newPassword.getBytes(StandardCharsets.UTF_8));
     }
+
+    /**
+     * 增加余额
+     * @param amount 增加的金额
+     */
+    public void increaseBalance(BigDecimal amount) {
+        if (amount.compareTo(BigDecimal.ZERO) > 0) {
+            this.balance = this.balance.add(amount);
+        }
+    }
+
+    /**
+     * 减少余额
+     * @param amount 减少的金额
+     * @return 是否扣减成功
+     */
+    public boolean decreaseBalance(BigDecimal amount) {
+        if (amount.compareTo(BigDecimal.ZERO) > 0 && this.balance.compareTo(amount) >= 0) {
+            this.balance = this.balance.subtract(amount);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 检查余额是否足够
+     * @param amount 要检查的金额
+     * @return 余额是否足够
+     */
+    public boolean hasEnoughBalance(BigDecimal amount) {
+        return this.balance.compareTo(amount) >= 0;
+    }
 }

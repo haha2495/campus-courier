@@ -23,9 +23,14 @@
       </view>
       
       <!-- 余额展示 -->
-      <view class="balance-section">
-        <text class="balance-label">我的余额</text>
-        <text class="balance-value">￥{{ userInfo?.balance || '0.00' }}</text>
+      <view class="balance-section" @click="handleBalanceClick" hover-class="balance-section-hover">
+        <view class="balance-left">
+          <text class="balance-label">我的余额</text>
+          <text class="balance-value">￥{{ userInfo?.balance || '0.00' }}</text>
+        </view>
+        <view class="balance-right">
+          <u-icon name="arrow-right" color="#ffffff" size="32"></u-icon>
+        </view>
       </view>
     </view>
 
@@ -161,6 +166,13 @@ const handleProfileClick = () => {
   })
 }
 
+// 处理余额点击
+const handleBalanceClick = () => {
+  uni.navigateTo({
+    url: '/pages/mine/balance/index'
+  })
+}
+
 onMounted(() => {
   getSystemInfo()
   getUserInfo()
@@ -267,22 +279,33 @@ defineExpose({
   }
   
   .balance-section {
-    background: rgba(255, 255, 255, 0.15);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20rpx;
     border-radius: 16rpx;
-    padding: 24rpx;
-    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
     
-    .balance-label {
-      font-size: 26rpx;
-      opacity: 0.9;
-      margin-bottom: 8rpx;
-      display: block;
+    &-hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: scale(0.98);
     }
     
-    .balance-value {
-      font-size: 48rpx;
-      font-weight: 600;
-      text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
+    .balance-left {
+      display: flex;
+      flex-direction: column;
+      
+      .balance-label {
+        font-size: 28rpx;
+        opacity: 0.9;
+        margin-bottom: 8rpx;
+      }
+      
+      .balance-value {
+        font-size: 48rpx;
+        font-weight: 600;
+        text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
+      }
     }
   }
 }
