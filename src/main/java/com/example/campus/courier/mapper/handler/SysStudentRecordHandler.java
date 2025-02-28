@@ -61,7 +61,7 @@ public class SysStudentRecordHandler extends ServiceImpl<SysStudentRecordMapper,
                 .map(record -> {
                     StudentRecordDTO dto = new StudentRecordDTO();
                     StudentRecordType recordType = StudentRecordType.getByCode(record.getType());
-                    dto.setType(recordType != null ? recordType.getDesc() : "未知操作");
+                    dto.setType(recordType != null ? recordType.getDescription() : "未知操作");
                     dto.setContent(record.getContent());
                     dto.setCreateTime(record.getCreateTime());
                     return dto;

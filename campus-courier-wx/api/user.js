@@ -23,5 +23,13 @@ export const userApi = {
             url: `/api/student/avatar?avatarUrl=${avatarUrl}`,
             method: 'PUT'
         })
+    },
+    // 修改密码
+    changePassword(data) {
+        return http({
+            url: '/api/student/password',
+            method: 'PUT',
+            data: data
+        })
     }
 } 

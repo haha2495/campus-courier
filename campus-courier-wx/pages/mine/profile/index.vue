@@ -90,6 +90,9 @@
         <u-icon name="arrow-right" color="#999" size="30"></u-icon>
       </view>
     </view>
+
+    <!-- 修改密码弹窗 -->
+    <ChangePasswordPopup ref="passwordPopupRef" @success="handlePasswordSuccess" />
   </view>
 </template>
 
@@ -97,6 +100,7 @@
 import { ref, onMounted } from 'vue'
 import { userApi } from '@/api/user'
 import { uploadApi } from '@/api/upload'
+import ChangePasswordPopup from '@/components/ChangePasswordPopup.vue'
 
 // 状态栏高度
 const statusBarHeight = ref(20)
@@ -184,10 +188,19 @@ const handleChangeAvatar = () => {
   })
 }
 
-// 修改密码
+// 密码修改弹窗引用
+const passwordPopupRef = ref(null)
+
+// 打开修改密码弹窗
 const handleChangePassword = () => {
-  uni.navigateTo({
-    url: '/pages/mine/change-password/index'
+  passwordPopupRef.value?.open()
+}
+
+// 密码修改成功回调
+const handlePasswordSuccess = () => {
+  uni.showToast({
+    title: '密码修改成功',
+    icon: 'success'
   })
 }
 
