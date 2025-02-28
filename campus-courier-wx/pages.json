@@ -94,6 +94,12 @@
       "style": {
         "navigationBarTitleText": "余额提现"
       }
+    },
+    {
+      "path": "pages/mine/evaluation/index",
+      "style": {
+        "navigationBarTitleText": "我收到的评价"
+      }
     }
   ],
   "globalStyle": {

@@ -113,7 +113,9 @@ const getUserInfo = async () => {
 // 处理菜单点击
 const handleMenuClick = (type) => {
   if (type === 'evaluation') {
-    uni.showToast({ title: '评价功能开发中', icon: 'none' })
+    uni.navigateTo({
+      url: '/pages/mine/evaluation/index'
+    })
   }
 }
 
