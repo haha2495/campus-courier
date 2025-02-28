@@ -10,6 +10,16 @@
           <span>返回列表</span>
         </div>
         <div class="title">纠纷详情</div>
+        <el-button 
+          v-if="detail?.dispute?.status === 0"
+          type="primary" 
+          size="small" 
+          class="handle-btn"
+          @click="handleDisputeClick"
+        >
+          <el-icon class="btn-icon"><Tools /></el-icon>
+          处理纠纷
+        </el-button>
       </div>
     </el-card>
 
@@ -171,7 +181,9 @@
 
           <!-- 纠纷信息 -->
           <div class="dispute-section" v-if="detail.dispute">
-            <h3 class="section-title">纠纷信息</h3>
+            <h3 class="section-title">
+              纠纷信息
+            </h3>
             <div class="dispute-content">
               <div class="dispute-header">
                 <div class="dispute-tags">
@@ -315,13 +327,53 @@
         </template>
       </div>
     </el-card>
+
+    <!-- 处理纠纷弹窗 -->
+    <el-dialog
+      v-model="dialogVisible"
+      title="处理纠纷"
+      width="400px"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <div class="handle-options">
+        <el-radio-group v-model="handleResult" class="handle-radio-group">
+          <el-radio label="PUBLISHER_WIN" border>
+            <div class="radio-content">
+              <div class="radio-title">发布者胜</div>
+              <div class="radio-desc">判定发布者胜诉，退还订单金额</div>
+            </div>
+          </el-radio>
+          <el-radio label="RUNNER_WIN" border>
+            <div class="radio-content">
+              <div class="radio-title">跑腿者胜</div>
+              <div class="radio-desc">判定跑腿者胜诉，订单金额归跑腿者</div>
+            </div>
+          </el-radio>
+          <el-radio label="UNCERTAIN" border>
+            <div class="radio-content">
+              <div class="radio-title">存在疑问</div>
+              <div class="radio-desc">发布到纠纷大厅进行筛选</div>
+            </div>
+          </el-radio>
+        </el-radio-group>
+      </div>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="dialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="handleSubmit" :loading="submitting">
+            确认
+          </el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
 import {onBeforeUnmount, onMounted, ref} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
-import {ArrowLeft, Phone, Picture} from '@element-plus/icons-vue'
+import {ArrowLeft, Phone, Picture, Tools} from '@element-plus/icons-vue'
 import {ElMessage} from 'element-plus'
 import {getDisputeDetail} from '@/api/dispute'
 import {TaskStatusEnum} from '@/utils/enums/taskEnums'
@@ -333,6 +385,9 @@ const router = useRouter()
 const route = useRoute()
 const loading = ref(false)
 const detail = ref(null)
+const dialogVisible = ref(false)
+const handleResult = ref('')
+const submitting = ref(false)
 
 // 获取路由参数
 const taskId = route.query.taskId
@@ -433,6 +488,35 @@ onBeforeUnmount(() => {
   detail.value = null
   loading.value = false
 })
+
+// 点击处理纠纷按钮
+const handleDisputeClick = () => {
+  dialogVisible.value = true
+  handleResult.value = ''
+}
+
+// 提交处理结果
+const handleSubmit = async () => {
+  if (!handleResult.value) {
+    ElMessage.warning('请选择处理结果')
+    return
+  }
+
+  submitting.value = true
+  try {
+    // TODO: 调用后端API处理纠纷
+    await handleDispute(detail.value.dispute.id, handleResult.value)
+    ElMessage.success('处理成功')
+    dialogVisible.value = false
+    // 重新加载详情
+    await fetchDetail()
+  } catch (error) {
+    console.error('处理纠纷失败:', error)
+    ElMessage.error('处理失败，请重试')
+  } finally {
+    submitting.value = false
+  }
+}
 </script>
 
 <style scoped lang="scss">
@@ -463,7 +547,8 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   position: relative;
-  height: 32px;
+  height: 48px;
+  padding: 0 130px;
 
   .back-section {
     display: flex;
@@ -473,7 +558,7 @@ onBeforeUnmount(() => {
     color: #666;
     transition: all 0.3s;
     position: absolute;
-    left: 0;
+    left: 24px;
 
     &:hover {
       color: #409EFF;
@@ -490,6 +575,52 @@ onBeforeUnmount(() => {
     font-size: 16px;
     font-weight: 600;
     color: #333;
+  }
+
+  .handle-btn {
+    position: absolute;
+    right: 0;
+    height: 40px;
+    min-width: 120px;
+    background: linear-gradient(45deg, #409EFF, #36cfc9);
+    border: none;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(64, 158, 255, 0.2);
+    font-size: 15px;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(64, 158, 255, 0.3);
+      background: linear-gradient(45deg, #66b1ff, #5cdbd3);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    .btn-icon {
+      font-size: 18px;
+      animation: rotate 2s linear infinite;
+    }
+
+    @keyframes rotate {
+      0% {
+        transform: rotate(0deg);
+      }
+      25% {
+        transform: rotate(-15deg);
+      }
+      75% {
+        transform: rotate(15deg);
+      }
+      100% {
+        transform: rotate(0deg);
+      }
+    }
   }
 }
 
@@ -546,6 +677,10 @@ onBeforeUnmount(() => {
     background: #409EFF;
     margin-right: 8px;
     border-radius: 2px;
+  }
+
+  .handle-btn {
+    margin-left: auto;
   }
 }
 
@@ -1099,5 +1234,66 @@ onBeforeUnmount(() => {
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   gap: 12px;
   margin-top: 12px;
+}
+
+.handle-options {
+  padding: 10px;
+
+  .handle-radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+
+    :deep(.el-radio) {
+      margin: 0;
+      padding: 16px;
+      width: 100%;
+      height: auto;
+      display: flex;
+      align-items: flex-start;
+
+      &.is-bordered {
+        border-radius: 8px;
+        border-color: #e5e7eb;
+
+        &:hover {
+          border-color: #409EFF;
+        }
+
+        &.is-checked {
+          border-color: #409EFF;
+          background: #f0f9ff;
+        }
+      }
+
+      .el-radio__input {
+        margin-top: 4px;
+      }
+    }
+  }
+}
+
+.radio-content {
+  margin-left: 8px;
+
+  .radio-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: #1f2937;
+    margin-bottom: 4px;
+  }
+
+  .radio-desc {
+    font-size: 12px;
+    color: #6b7280;
+  }
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 16px;
 }
 </style> 
