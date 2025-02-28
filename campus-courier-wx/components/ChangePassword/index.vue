@@ -55,6 +55,7 @@
               padding: '24rpx 32rpx',
               borderRadius: '16rpx'
             }"
+            @change="checkPasswordStrength"
             @input="checkPasswordStrength"
           >
             <template #suffix>
@@ -65,26 +66,25 @@
           </u-input>
           <!-- 密码强度提示 -->
           <view class="password-strength" v-if="form.newPassword">
-            <text>密码强度：</text>
+            <text class="strength-label">密码强度：</text>
             <view class="strength-bars">
               <view 
                 class="bar" 
                 v-for="i in 3" 
                 :key="i"
-                :class="[
-                  passwordStrength >= i ? 'active' : '',
-                  passwordStrength === 1 ? 'weak' : '',
-                  passwordStrength === 2 ? 'medium' : '',
-                  passwordStrength === 3 ? 'strong' : ''
-                ]"
+                :class="{
+                  'active': passwordStrength >= i,
+                  'weak': passwordStrength === 1,
+                  'medium': passwordStrength === 2,
+                  'strong': passwordStrength === 3
+                }"
               ></view>
             </view>
-            <text :class="[
-              'strength-text',
-              passwordStrength === 1 ? 'weak' : '',
-              passwordStrength === 2 ? 'medium' : '',
-              passwordStrength === 3 ? 'strong' : ''
-            ]">{{ strengthText }}</text>
+            <text class="strength-text" :class="{
+              'weak': passwordStrength === 1,
+              'medium': passwordStrength === 2,
+              'strong': passwordStrength === 3
+            }">{{ strengthText }}</text>
           </view>
         </view>
         
@@ -194,11 +194,19 @@ const checkPasswordStrength = (value) => {
   
   let strength = 0
   // 检查长度
-  if (value.length >= 6) strength++
+  if (value.length >= 6) {
+    strength++
+  }
+  
   // 检查是否包含数字和字母
-  if (/[a-zA-Z]/.test(value) && /[0-9]/.test(value)) strength++
+  if (/[a-zA-Z]/.test(value) && /[0-9]/.test(value)) {
+    strength++
+  }
+  
   // 检查是否包含特殊字符
-  if (/[!@#$%^&*]/.test(value)) strength++
+  if (/[!@#$%^&*]/.test(value)) {
+    strength++
+  }
   
   passwordStrength.value = strength
 }
@@ -342,21 +350,23 @@ const handleSubmit = async () => {
       align-items: center;
       gap: 12rpx;
       
-      text {
+      .strength-label {
         font-size: 24rpx;
         color: #909399;
+        white-space: nowrap;
       }
       
       .strength-bars {
         display: flex;
         gap: 8rpx;
+        flex: 1;
         
         .bar {
-          width: 40rpx;
+          flex: 1;
           height: 8rpx;
           background: #ebeef5;
           border-radius: 4rpx;
-          transition: all 0.3s;
+          transition: all 0.3s ease;
           
           &.active {
             &.weak {
@@ -373,6 +383,11 @@ const handleSubmit = async () => {
       }
       
       .strength-text {
+        font-size: 24rpx;
+        font-weight: 500;
+        min-width: 30rpx;
+        text-align: center;
+        
         &.weak {
           color: #ff4d4f;
         }

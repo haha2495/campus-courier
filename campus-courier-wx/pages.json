@@ -1,88 +1,88 @@
 {
-	"easycom": {
-		"autoscan": true,
-		"custom": {
-			"^u-(.*)": "uview-plus/components/u-$1/u-$1.vue"
-		}
-	},
-	"pages": [
-		{
-			"path": "pages/login/index",
-			"style": {
-				"navigationBarTitleText": "登录",
-				"navigationStyle": "custom"
-			}
-		},
-		{
-			"path": "pages/index/index",
-			"style": {
-				"navigationBarTitleText": "校园跑腿",
-				"navigationStyle": "custom"
-			}
-		},
-		{
-			"path": "pages/publish/index",
-			"style": {
-				"navigationBarTitleText": "发布任务",
-				"navigationStyle": "custom",
-				"pageAnimation": {
-					"type": "slide",
-					"duration": 300,
-					"timingFunc": "ease-in-out"
-				}
-			}
-		},
-		{
-			"path": "pages/my-tasks/index",
-			"style": {
-				"navigationBarTitleText": "我的任务"
-			}
-		},
-		{
-			"path": "pages/task-detail/index",
-			"style": {
-				"navigationBarTitleText": "任务详情",
-				"pageAnimation": {
-					"type": "slide",
-					"duration": 300,
-					"timingFunc": "ease-in-out"
-				}
-			}
-		},
-		{
-			"path": "pages/task-hall/index",
-			"style": {
-				"navigationBarTitleText": "抢单大厅",
-				"enablePullDownRefresh": true,
-				"backgroundTextStyle": "dark"
-			}
-		},
-		{
-			"path": "pages/current-tasks/index",
-			"style": {
-				"navigationBarTitleText": "当前任务",
-				"enablePullDownRefresh": true,
-				"backgroundTextStyle": "dark"
-			}
-		},
-		{
-			"path": "pages/mine/index",
-			"style": {
-				"navigationBarTitleText": "个人中心",
-			}
-		},
-		{
-			"path": "pages/mine/profile/index",
-			"style": {
-				"navigationStyle": "custom"
-			}
-		}
-	],
-	"globalStyle": {
-		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "校园跑腿",
-		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8"
-	},
-	"uniIdRouter": {}
+  "easycom": {
+    "autoscan": true,
+    "custom": {
+      "^u-(.*)": "uview-plus/components/u-$1/u-$1.vue"
+    }
+  },
+  "pages": [
+    {
+      "path": "pages/login/index",
+      "style": {
+        "navigationBarTitleText": "登录",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "校园跑腿",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/publish/index",
+      "style": {
+        "navigationBarTitleText": "发布任务",
+        "navigationStyle": "custom",
+        "pageAnimation": {
+          "type": "slide",
+          "duration": 300,
+          "timingFunc": "ease-in-out"
+        }
+      }
+    },
+    {
+      "path": "pages/my-tasks/index",
+      "style": {
+        "navigationBarTitleText": "我的任务"
+      }
+    },
+    {
+      "path": "pages/task-detail/index",
+      "style": {
+        "navigationBarTitleText": "任务详情",
+        "pageAnimation": {
+          "type": "slide",
+          "duration": 300,
+          "timingFunc": "ease-in-out"
+        }
+      }
+    },
+    {
+      "path": "pages/task-hall/index",
+      "style": {
+        "navigationBarTitleText": "抢单大厅",
+        "enablePullDownRefresh": true,
+        "backgroundTextStyle": "dark"
+      }
+    },
+    {
+      "path": "pages/current-tasks/index",
+      "style": {
+        "navigationBarTitleText": "当前任务",
+        "enablePullDownRefresh": true,
+        "backgroundTextStyle": "dark"
+      }
+    },
+    {
+      "path": "pages/mine/index",
+      "style": {
+        "navigationBarTitleText": "个人中心"
+      }
+    },
+    {
+      "path": "pages/mine/profile/index",
+      "style": {
+        "navigationBarTitleText": "个人信息"
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "校园跑腿",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+  "uniIdRouter": {}
 }

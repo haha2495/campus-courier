@@ -1,16 +1,5 @@
 <template>
   <view class="profile-container">
-    <!-- 状态栏占位 -->
-    <view class="status-bar" :style="{ height: statusBarHeight + 'px' }"></view>
-
-    <!-- 顶部导航栏 -->
-    <view class="nav-bar">
-      <view class="nav-left" @click="handleBack">
-        <u-icon name="arrow-left" color="#333" size="40"></u-icon>
-      </view>
-      <text class="nav-title">个人信息</text>
-    </view>
-
     <!-- 个人信息表单 -->
     <view class="profile-form">
       <!-- 头像 -->
@@ -93,8 +82,8 @@
 
     <!-- 修改密码弹窗 -->
     <change-password
-      v-model:show="showPasswordModal"
-      @success="handlePasswordSuccess"
+        v-model:show="showPasswordModal"
+        @success="handlePasswordSuccess"
     />
 
   </view>
@@ -106,24 +95,11 @@ import {userApi} from '@/api/user'
 import {uploadApi} from '@/api/upload'
 import ChangePassword from '@/components/ChangePassword/index.vue'
 
-// 状态栏高度
-const statusBarHeight = ref(20)
-
 // 用户信息
 const userInfo = ref(null)
 
 // 修改密码弹窗显示状态
 const showPasswordModal = ref(false)
-
-// 获取系统信息
-const getSystemInfo = () => {
-  try {
-    const info = uni.getSystemInfoSync()
-    statusBarHeight.value = info.statusBarHeight || 20
-  } catch (e) {
-    console.error('获取系统信息失败', e)
-  }
-}
 
 // 获取用户名第一个字
 const getFirstChar = (name) => {
@@ -210,7 +186,6 @@ const handlePasswordSuccess = () => {
 }
 
 onMounted(() => {
-  getSystemInfo()
   getUserInfo()
 })
 </script>
