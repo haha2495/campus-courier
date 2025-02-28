@@ -1,5 +1,6 @@
 import {http} from '../utils/request'
 
+
 // 用户相关接口
 export const userApi = {
     // 用户登录
@@ -10,10 +11,17 @@ export const userApi = {
             data: data
         })
     },
-    getCurrentUser(){
+    getCurrentUser() {
         return http({
             url: '/api/student/current',
             method: 'get'
+        })
+    },
+    // 更新头像
+    updateAvatar(avatarUrl) {
+        return http({
+            url: `/api/student/avatar?avatarUrl=${avatarUrl}`,
+            method: 'PUT'
         })
     }
 } 

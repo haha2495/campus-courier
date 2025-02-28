@@ -96,6 +96,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { userApi } from '@/api/user'
+import { uploadApi } from '@/api/upload'
 
 // 状态栏高度
 const statusBarHeight = ref(20)
@@ -153,17 +154,31 @@ const handleChangeAvatar = () => {
     success: async (res) => {
       const tempFilePath = res.tempFilePaths[0]
       try {
-        // TODO: 调用上传头像API
         uni.showLoading({ title: '上传中...' })
-        // const uploadRes = await userApi.uploadAvatar(tempFilePath)
-        // if (uploadRes.code === 200) {
-        //   getUserInfo()
-        //   uni.showToast({ title: '上传成功', icon: 'success' })
-        // }
+        
+        // 使用uploadApi上传文件
+        const fileUrl = await uploadApi.upload(tempFilePath)
+        console.log(fileUrl)
+        
+        // 更新头像URL
+        const res = await userApi.updateAvatar(fileUrl)
+        if (res.code === 200) {
+          await getUserInfo() // 刷新用户信息
+          uni.showToast({
+            title: '更新成功',
+            icon: 'success'
+          })
+        } else {
+          throw new Error(res.message)
+        }
+        
         uni.hideLoading()
       } catch (error) {
         uni.hideLoading()
-        uni.showToast({ title: '上传失败', icon: 'none' })
+        uni.showToast({
+          title: error.message || '更新失败',
+          icon: 'none'
+        })
       }
     }
   })

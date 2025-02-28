@@ -128,6 +128,18 @@ public class SysStudentController extends BaseController {
         return Result.success();
     }
 
+    @Operation(summary = "更新当前学生头像")
+    @PutMapping("/avatar")
+    public Result<Void> updateAvatar(
+            @Parameter(description = "头像URL", required = true)
+            @RequestParam String avatarUrl
+    ) {
+        StudentProfileUpdateRequest request = new StudentProfileUpdateRequest();
+        request.setAvatar(avatarUrl);
+        sysStudentService.updateProfile(getLoginUserId(), request);
+        return Result.success();
+    }
+
     @Operation(summary = "更新当前学生个人信息")
     @PutMapping("/profile")
     public Result<Void> updateProfile(
