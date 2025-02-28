@@ -140,10 +140,25 @@ onMounted(() => {
   refreshBalance()
 })
 
+// 返回上一页并刷新数据
+const navigateBack = () => {
+  // 获取页面栈
+  const pages = getCurrentPages()
+  const prevPage = pages[pages.length - 2]
+  
+  // 如果上一页存在且有onShow方法，调用它来刷新数据
+  if (prevPage && prevPage.$vm && typeof prevPage.$vm.onShow === 'function') {
+    prevPage.$vm.onShow()
+  }
+  
+  // 返回上一页
+  uni.navigateBack({ delta: 1 })
+}
+
 // 暴露页面方法
 defineExpose({
   onShow() {
-    getUserInfo()
+    refreshBalance()
   },
   refreshBalance
 })
@@ -154,6 +169,23 @@ defineExpose({
   min-height: 100vh;
   background-color: #f7f8fa;
   padding: 30rpx;
+}
+
+.nav-bar {
+  padding: 20rpx 30rpx;
+  display: flex;
+  align-items: center;
+  
+  .back-btn {
+    width: 60rpx;
+    height: 60rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
+    border-radius: 30rpx;
+    box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+  }
 }
 
 .balance-card {
