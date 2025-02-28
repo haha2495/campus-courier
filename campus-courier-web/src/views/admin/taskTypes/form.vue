@@ -79,14 +79,6 @@
                   >
                     {{ formData.icon ? '更换图标' : '选择图标' }}
                   </el-button>
-                  <el-button
-                      v-if="formData.icon"
-                      @click="uploadCustomIcon"
-                      plain
-                      class="select-icon-btn"
-                  >
-                    上传自定义图标
-                  </el-button>
                 </div>
 
                 <div class="icon-tip" v-if="!formData.icon">
@@ -274,43 +266,6 @@
               />
             </div>
           </el-tab-pane>
-
-          <el-tab-pane label="上传自定义图标" name="upload">
-            <div class="upload-container">
-              <el-upload
-                  class="avatar-uploader"
-                  action="#"
-                  :http-request="uploadIcon"
-                  :show-file-list="false"
-                  :before-upload="beforeIconUpload"
-                  drag
-              >
-                <div v-if="formData.icon && iconSelectionMode === 'upload'" class="avatar-preview">
-                  <el-avatar :size="120" :src="formData.icon"/>
-                </div>
-                <template v-else>
-                  <el-icon class="avatar-uploader-icon">
-                    <Plus/>
-                  </el-icon>
-                  <div class="upload-text">
-                    <p>点击或拖拽图片到此处上传</p>
-                    <p class="upload-subtext">自定义你的专属图标</p>
-                  </div>
-                </template>
-              </el-upload>
-              <div class="upload-tip">
-                <div class="tip-header">
-                  <el-icon>
-                    <InfoFilled/>
-                  </el-icon>
-                  <span>上传提示</span>
-                </div>
-                <p>支持JPG、PNG格式，建议尺寸100x100px</p>
-                <p>图标将显示在任务类型列表和任务详情中</p>
-                <p>精美的图标能提升用户体验，建议使用浅色背景</p>
-              </div>
-            </div>
-          </el-tab-pane>
         </el-tabs>
 
         <!-- 选择预览区域 -->
@@ -341,63 +296,6 @@
         </span>
       </template>
     </el-dialog>
-
-    <!-- 自定义图标上传弹窗 -->
-    <el-dialog
-        v-model="uploadDialogVisible"
-        title="上传自定义图标"
-        width="500px"
-        :destroy-on-close="false"
-        :close-on-click-modal="false"
-        class="icon-selection-dialog"
-    >
-      <div class="upload-dialog-content">
-        <el-upload
-            class="custom-icon-uploader"
-            action="#"
-            :http-request="uploadCustomIconHandler"
-            :show-file-list="false"
-            :before-upload="beforeIconUpload"
-            drag
-        >
-          <div v-if="tempUploadIcon" class="upload-preview">
-            <el-avatar :size="100" :src="tempUploadIcon"/>
-          </div>
-          <template v-else>
-            <el-icon class="upload-icon">
-              <Plus/>
-            </el-icon>
-            <div class="upload-text">
-              <p>点击或拖拽图片到此处上传</p>
-              <p class="upload-subtext">支持JPG、PNG格式</p>
-            </div>
-          </template>
-        </el-upload>
-
-        <div class="upload-instructions">
-          <p>
-            <el-icon>
-              <InfoFilled/>
-            </el-icon>
-            上传说明：
-          </p>
-          <ul>
-            <li>推荐使用简洁明了的图标</li>
-            <li>图标尺寸建议100x100像素</li>
-            <li>图标将作为识别任务类型的主要视觉元素</li>
-          </ul>
-        </div>
-      </div>
-
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button @click="cancelUpload" class="cancel-button">取消</el-button>
-          <el-button type="primary" @click="confirmUpload" :disabled="!tempUploadIcon" class="submit-button">
-            确认使用
-          </el-button>
-        </span>
-      </template>
-    </el-dialog>
   </div>
 </template>
 
@@ -416,8 +314,7 @@ const submitting = ref(false)
 
 // 弹窗相关状态
 const iconDialogVisible = ref(false)
-const uploadDialogVisible = ref(false)
-const tempUploadIcon = ref('')
+const iconSelectionMode = ref('select') // 只保留select模式
 
 // 判断是新增还是编辑模式
 const isEdit = computed(() => {
@@ -459,7 +356,6 @@ const rules = reactive({
 })
 
 // 图标选择相关状态
-const iconSelectionMode = ref('select') // 'select' 或 'upload'
 const currentCategory = ref('delivery')
 const iconSearchText = ref('')
 
@@ -480,38 +376,6 @@ const getSelectedIconName = () => {
 // 打开图标选择弹窗
 const openIconDialog = () => {
   iconDialogVisible.value = true
-}
-
-// 打开自定义图标上传弹窗
-const uploadCustomIcon = () => {
-  tempUploadIcon.value = ''
-  uploadDialogVisible.value = true
-}
-
-// 处理自定义图标上传
-const uploadCustomIconHandler = (options) => {
-  const file = options.file
-  const reader = new FileReader()
-  reader.readAsDataURL(file)
-  reader.onload = () => {
-    tempUploadIcon.value = reader.result
-  }
-}
-
-// 确认使用上传的图标
-const confirmUpload = () => {
-  if (tempUploadIcon.value) {
-    formData.icon = tempUploadIcon.value
-    // 重置其他自动填充状态
-    formData.lastSelectedIconName = ''
-    uploadDialogVisible.value = false
-  }
-}
-
-// 取消上传
-const cancelUpload = () => {
-  tempUploadIcon.value = ''
-  uploadDialogVisible.value = false
 }
 
 // 截断描述文本（用于预览）
@@ -644,48 +508,6 @@ const goBack = () => {
   }).catch(() => {
   })
 }
-
-// 图标上传前的验证
-const beforeIconUpload = (file) => {
-  const isJPG = file.type === 'image/jpeg'
-  const isPNG = file.type === 'image/png'
-  const isLt2M = file.size / 1024 / 1024 < 2
-
-  if (!isJPG && !isPNG) {
-    ElMessage.error('图标只能是 JPG 或 PNG 格式!')
-    return false
-  }
-  if (!isLt2M) {
-    ElMessage.error('图标大小不能超过 2MB!')
-    return false
-  }
-  return true
-}
-
-// 上传图标
-const uploadIcon = (options) => {
-  // 这里应该调用实际的上传API，现在只是模拟
-  const file = options.file
-  const reader = new FileReader()
-  reader.readAsDataURL(file)
-  reader.onload = () => {
-    formData.icon = reader.result
-    iconDialogVisible.value = false
-    // 实际项目中，这里应该调用上传API，获取返回的URL
-    // 然后将URL赋值给formData.icon
-  }
-}
-
-// 切换图标选择模式时重置一些状态
-watch(iconSelectionMode, (newMode) => {
-  if (newMode === 'select' && !formData.icon) {
-    // 如果切换到选择模式且当前没有选择图标，可以设置一个默认图标
-    if (filteredIcons.value.length > 0) {
-      // 可选择不自动选择默认图标
-      // selectIcon(filteredIcons.value[0])
-    }
-  }
-})
 
 // 表单提交
 const submitForm = () => {
