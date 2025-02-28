@@ -6,16 +6,16 @@
         <div class="filter-wrapper">
           <!-- 状态筛选器 -->
           <div class="custom-filter-group">
-            <div 
-              v-for="option in filterOptions" 
-              :key="option.value" 
-              class="filter-option" 
-              :class="{ active: searchForm.status === option.value }"
-              @click="selectStatus(option.value)"
+            <div
+                v-for="option in filterOptions"
+                :key="option.value"
+                class="filter-option"
+                :class="{ active: searchForm.status === option.value }"
+                @click="selectStatus(option.value)"
             >
               <div class="option-content">
                 <el-icon v-if="option.icon" class="option-icon">
-                  <component :is="option.icon" />
+                  <component :is="option.icon"/>
                 </el-icon>
                 <span>{{ option.label }}</span>
               </div>
@@ -42,7 +42,9 @@
         <el-table-column prop="taskNo" label="任务编号" min-width="120" align="left">
           <template v-slot:header>
             <div class="column-header">
-              <el-icon class="header-icon"><Document /></el-icon>
+              <el-icon class="header-icon">
+                <Document/>
+              </el-icon>
               <span class="header-text">任务编号</span>
             </div>
           </template>
@@ -52,7 +54,9 @@
         <el-table-column prop="title" label="任务标题" min-width="180" align="left">
           <template v-slot:header>
             <div class="column-header">
-              <el-icon class="header-icon"><InfoFilled /></el-icon>
+              <el-icon class="header-icon">
+                <InfoFilled/>
+              </el-icon>
               <span class="header-text">任务标题</span>
             </div>
           </template>
@@ -62,15 +66,17 @@
         <el-table-column prop="status" label="纠纷状态" width="100" align="center">
           <template v-slot:header>
             <div class="column-header">
-              <el-icon class="header-icon"><Warning /></el-icon>
+              <el-icon class="header-icon">
+                <Warning/>
+              </el-icon>
               <span class="header-text">纠纷状态</span>
             </div>
           </template>
           <template #default="scope">
             <el-tag
-              :type="getStatusType(scope.row.status)"
-              effect="light"
-              class="status-tag"
+                :type="getStatusType(scope.row.status)"
+                effect="light"
+                class="status-tag"
             >
               {{ getStatusText(scope.row.status) }}
             </el-tag>
@@ -81,7 +87,9 @@
         <el-table-column prop="publisherName" label="发布者" width="120" align="center">
           <template v-slot:header>
             <div class="column-header">
-              <el-icon class="header-icon"><User /></el-icon>
+              <el-icon class="header-icon">
+                <User/>
+              </el-icon>
               <span class="header-text">发布者</span>
             </div>
           </template>
@@ -91,7 +99,9 @@
         <el-table-column prop="runnerName" label="接单者" width="120" align="center">
           <template v-slot:header>
             <div class="column-header">
-              <el-icon class="header-icon"><User /></el-icon>
+              <el-icon class="header-icon">
+                <User/>
+              </el-icon>
               <span class="header-text">接单者</span>
             </div>
           </template>
@@ -101,13 +111,17 @@
         <el-table-column prop="createTime" label="创建时间" width="180" align="center">
           <template v-slot:header>
             <div class="column-header">
-              <el-icon class="header-icon"><Calendar /></el-icon>
+              <el-icon class="header-icon">
+                <Calendar/>
+              </el-icon>
               <span class="header-text">创建时间</span>
             </div>
           </template>
           <template #default="scope">
             <div class="time-cell">
-              <el-icon><Timer /></el-icon>
+              <el-icon>
+                <Timer/>
+              </el-icon>
               <span>{{ scope.row.createTime }}</span>
             </div>
           </template>
@@ -117,7 +131,9 @@
         <el-table-column label="操作" width="120" align="center" fixed="right">
           <template v-slot:header>
             <div class="column-header">
-              <el-icon class="header-icon"><SetUp /></el-icon>
+              <el-icon class="header-icon">
+                <SetUp/>
+              </el-icon>
               <span class="header-text">操作</span>
             </div>
           </template>
@@ -125,11 +141,11 @@
             <div class="operation-cell">
               <el-tooltip content="查看详情" placement="top" :effect="tooltipEffect">
                 <el-button
-                  circle
-                  type="primary"
-                  :icon="View"
-                  @click="handleView(scope.row)"
-                  class="op-icon-btn"
+                    circle
+                    type="primary"
+                    :icon="View"
+                    @click="handleView(scope.row)"
+                    class="op-icon-btn"
                 />
               </el-tooltip>
             </div>
@@ -157,14 +173,12 @@
 </template>
 
 <script setup>
-import {ref, reactive, onMounted, onUnmounted} from 'vue'
+import {onMounted, onUnmounted, reactive, ref} from 'vue'
 import {useRouter} from 'vue-router'
-import {
-  Document, View, Calendar, User, Warning,
-  InfoFilled, Timer, SetUp
-} from '@element-plus/icons-vue'
+import {Calendar, Document, InfoFilled, SetUp, Timer, User, View, Warning} from '@element-plus/icons-vue'
 import {ElMessage} from 'element-plus'
-import { DisputeStatusEnum } from '@/utils/enums/disputeEnums'
+import {DisputeStatusEnum} from '@/utils/enums/disputeEnums'
+import {pageDisputes} from '@/api/dispute'
 
 const router = useRouter()
 const tooltipEffect = 'dark'
@@ -236,10 +250,10 @@ const fetchData = async () => {
       status: searchForm.status
     }
 
-    // TODO: 调用API获取数据
-    // const res = await pageDisputes(params)
-    // tableData.value = res.records || []
-    // total.value = res.total || 0
+    const res = await pageDisputes(params)
+    // 处理返回的数据
+    tableData.value = res.records
+    total.value = res.total
   } catch (error) {
     console.error('查询纠纷列表出错:', error)
     ElMessage.error('系统异常，请稍后重试')
@@ -248,19 +262,20 @@ const fetchData = async () => {
   }
 }
 
+
 // 计算表格高度
 const calcTableHeight = () => {
   setTimeout(() => {
     const viewHeight = window.innerHeight
     const searchCard = document.querySelector('.search-card')
     const paginationCard = document.querySelector('.pagination-card')
-    
+
     let searchHeight = 0
     let paginationHeight = 0
-    
+
     if (searchCard) searchHeight = searchCard.offsetHeight
     if (paginationCard) paginationHeight = paginationCard.offsetHeight
-    
+
     tableHeight.value = viewHeight - 50 - searchHeight - paginationHeight - 60
   }, 100)
 }
@@ -280,7 +295,7 @@ const handleCurrentChange = (val) => {
 const handleView = (row) => {
   router.push({
     path: '/admin/disputes/detail',
-    query: { id: row.id }
+    query: {id: row.id}
   })
 }
 
