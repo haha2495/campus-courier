@@ -109,6 +109,13 @@
       :taskId="currentTask?.task?.id"
       @submit="handleEvaluateSubmit"
     />
+
+    <!-- 纠纷提交弹窗 -->
+    <dispute-submit
+      v-model:show="showDisputeSubmit"
+      :taskId="currentTaskId"
+      @submit="handleDisputeSubmit"
+    />
   </view>
 </template>
 
@@ -123,6 +130,7 @@ import {
 } from '@/api/task'
 import {TASK_STATUS} from '@/constants/taskStatus'
 import TaskCard from '@/components/task-card/index.vue'
+import DisputeSubmit from '@/components/dispute-submit/index.vue'
 
 // 引入 uview-plus 组件
 import uPopup from 'uview-plus/components/u-popup/u-popup.vue'
@@ -171,6 +179,10 @@ const evaluateTags = [
   '包装完好',
   '沟通顺畅'
 ]
+
+// 纠纷相关
+const showDisputeSubmit = ref(false)
+const currentTaskId = ref(null)
 
 // 格式化时间显示 (YYYY-MM-DD HH:MM)
 const formatTime = (timeString) => {
@@ -423,32 +435,30 @@ const confirmTask = async (taskId) => {
 }
 
 // 提交纠纷
-const submitDispute = async (taskId) => {
-  uni.showModal({
-    title: '提交纠纷',
-    content: '确定要提交纠纷吗？提交后客服会介入处理',
-    async success(res) {
-      if (res.confirm) {
-        uni.showLoading({title: '处理中...'})
-        try {
-          await apiSubmitDispute(taskId)
-          await uni.showToast({
-            title: '已提交纠纷',
-            icon: 'success'
-          })
-          await refreshTasks()
-        } catch (error) {
-          console.error('提交纠纷失败：', error)
-          uni.showToast({
-            title: error.message || '操作失败',
-            icon: 'none'
-          })
-        } finally {
-          uni.hideLoading()
-        }
-      }
-    }
-  })
+const submitDispute = (taskId) => {
+  currentTaskId.value = taskId
+  showDisputeSubmit.value = true
+}
+
+// 处理纠纷提交
+const handleDisputeSubmit = async (formData) => {
+  try {
+    uni.showLoading({ title: '提交中...' })
+    await apiSubmitDispute(formData)
+    uni.showToast({
+      title: '纠纷已提交',
+      icon: 'success'
+    })
+    await refreshTasks()
+  } catch (error) {
+    console.error('提交纠纷失败：', error)
+    uni.showToast({
+      title: error.message || '提交失败',
+      icon: 'none'
+    })
+  } finally {
+    uni.hideLoading()
+  }
 }
 
 // 显示评价弹窗
