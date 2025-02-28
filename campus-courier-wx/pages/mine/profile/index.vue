@@ -2,7 +2,7 @@
   <view class="profile-container">
     <!-- 状态栏占位 -->
     <view class="status-bar" :style="{ height: statusBarHeight + 'px' }"></view>
-    
+
     <!-- 顶部导航栏 -->
     <view class="nav-bar">
       <view class="nav-left" @click="handleBack">
@@ -91,16 +91,13 @@
       </view>
     </view>
 
-    <!-- 修改密码弹窗 -->
-    <ChangePasswordPopup ref="passwordPopupRef" @success="handlePasswordSuccess" />
   </view>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { userApi } from '@/api/user'
-import { uploadApi } from '@/api/upload'
-import ChangePasswordPopup from '@/components/ChangePasswordPopup.vue'
+import {onMounted, ref} from 'vue'
+import {userApi} from '@/api/user'
+import {uploadApi} from '@/api/upload'
 
 // 状态栏高度
 const statusBarHeight = ref(20)
@@ -158,12 +155,12 @@ const handleChangeAvatar = () => {
     success: async (res) => {
       const tempFilePath = res.tempFilePaths[0]
       try {
-        uni.showLoading({ title: '上传中...' })
-        
+        uni.showLoading({title: '上传中...'})
+
         // 使用uploadApi上传文件
         const fileUrl = await uploadApi.upload(tempFilePath)
         console.log(fileUrl)
-        
+
         // 更新头像URL
         const res = await userApi.updateAvatar(fileUrl)
         if (res.code === 200) {
@@ -175,7 +172,7 @@ const handleChangeAvatar = () => {
         } else {
           throw new Error(res.message)
         }
-        
+
         uni.hideLoading()
       } catch (error) {
         uni.hideLoading()
@@ -188,21 +185,6 @@ const handleChangeAvatar = () => {
   })
 }
 
-// 密码修改弹窗引用
-const passwordPopupRef = ref(null)
-
-// 打开修改密码弹窗
-const handleChangePassword = () => {
-  passwordPopupRef.value?.open()
-}
-
-// 密码修改成功回调
-const handlePasswordSuccess = () => {
-  uni.showToast({
-    title: '密码修改成功',
-    icon: 'success'
-  })
-}
 
 onMounted(() => {
   getSystemInfo()
@@ -230,12 +212,12 @@ onMounted(() => {
   padding: 0 30rpx;
   position: relative;
   box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
-  
+
   .nav-left {
     padding: 20rpx;
     margin-left: -20rpx;
   }
-  
+
   .nav-title {
     position: absolute;
     left: 50%;
@@ -248,7 +230,7 @@ onMounted(() => {
 
 .profile-form {
   margin-top: 20rpx;
-  
+
   .section-title {
     display: flex;
     align-items: center;
@@ -261,7 +243,7 @@ onMounted(() => {
     margin-top: 20rpx;
     border-bottom: 1rpx solid #f5f5f5;
   }
-  
+
   .form-item {
     background: #ffffff;
     padding: 30rpx;
@@ -269,13 +251,13 @@ onMounted(() => {
     align-items: center;
     justify-content: space-between;
     border-bottom: 1rpx solid #f5f5f5;
-    
+
     &.avatar-item {
       padding: 40rpx 30rpx;
-      
+
       .avatar-wrapper {
         position: relative;
-        
+
         .avatar {
           width: 120rpx;
           height: 120rpx;
@@ -283,18 +265,18 @@ onMounted(() => {
           border: 4rpx solid #ff9500;
           overflow: hidden;
           box-shadow: 0 4rpx 12rpx rgba(255, 149, 0, 0.2);
-          
+
           image {
             width: 100%;
             height: 100%;
           }
-          
+
           &.text-avatar {
             background: linear-gradient(135deg, #ff9500, #ff7d00);
             display: flex;
             align-items: center;
             justify-content: center;
-            
+
             text {
               font-size: 48rpx;
               font-weight: 600;
@@ -302,7 +284,7 @@ onMounted(() => {
             }
           }
         }
-        
+
         .edit-badge {
           position: absolute;
           right: -6rpx;
@@ -318,25 +300,25 @@ onMounted(() => {
         }
       }
     }
-    
+
     &.password-item {
       .password-info {
         display: flex;
         flex-direction: column;
         gap: 6rpx;
-        
+
         .desc {
           font-size: 24rpx;
           color: #999;
         }
       }
     }
-    
+
     .label {
       font-size: 30rpx;
       color: #333;
     }
-    
+
     .value {
       font-size: 30rpx;
       color: #666;
