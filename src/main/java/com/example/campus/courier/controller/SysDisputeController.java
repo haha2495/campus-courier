@@ -1,7 +1,7 @@
 package com.example.campus.courier.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.campus.courier.model.entity.SysTask;
+import com.example.campus.courier.model.dto.TaskDTO;
 import com.example.campus.courier.model.request.dispute.DisputeCreateRequest;
 import com.example.campus.courier.model.request.dispute.DisputePageRequest;
 import com.example.campus.courier.model.response.PageResult;
@@ -41,12 +41,12 @@ public class SysDisputeController {
 
     @GetMapping("/page")
     @Operation(summary = "分页查询纠纷任务", description = "管理员分页查询纠纷任务列表")
-    public Result<PageResult<SysTask>> pageDisputes(
+    public Result<PageResult<TaskDTO>> pageDisputes(
             @Parameter(description = "分页查询参数")
             @Valid DisputePageRequest request
     ) {
         log.info("分页查询纠纷任务请求: {}", request);
-        PageResult<SysTask> page = disputeService.pageDisputeTasks(request);
+        PageResult<TaskDTO> page = disputeService.pageDisputeTasks(request);
         return Result.success(page);
     }
 } 

@@ -1,12 +1,17 @@
 package com.example.campus.courier.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.campus.courier.mapper.SysDisputeMapper;
+import com.example.campus.courier.mapper.SysTaskMapper;
+import com.example.campus.courier.mapper.SysTaskTypeMapper;
 import com.example.campus.courier.mapper.handler.SysDisputeHandler;
 import com.example.campus.courier.mapper.handler.SysTaskHandler;
 import com.example.campus.courier.mapper.handler.SysTaskLogHandler;
+import com.example.campus.courier.model.dto.TaskDTO;
 import com.example.campus.courier.model.entity.SysDispute;
 import com.example.campus.courier.model.entity.SysTask;
 import com.example.campus.courier.model.entity.SysTaskLog;
+import com.example.campus.courier.model.entity.SysTaskType;
 import com.example.campus.courier.model.enums.TaskActionEnum;
 import com.example.campus.courier.model.enums.TaskStatusEnum;
 import com.example.campus.courier.model.request.dispute.DisputeCreateRequest;
@@ -15,10 +20,13 @@ import com.example.campus.courier.model.response.PageResult;
 import com.example.campus.courier.service.SysDisputeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 纠纷服务实现类
@@ -31,6 +39,9 @@ public class SysDisputeServiceImpl implements SysDisputeService {
     private final SysDisputeHandler disputeHandler;
     private final SysTaskHandler taskHandler;
     private final SysTaskLogHandler taskLogHandler;
+    private final SysDisputeMapper disputeMapper;
+    private final SysTaskMapper taskMapper;
+    private final SysTaskTypeMapper taskTypeMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -68,12 +79,16 @@ public class SysDisputeServiceImpl implements SysDisputeService {
     }
 
     @Override
-    public PageResult<SysTask> pageDisputeTasks(DisputePageRequest request) {
+    public PageResult<TaskDTO> pageDisputeTasks(DisputePageRequest request) {
         // 1. 查询纠纷分页数据
-        Page<SysDispute> disputes = disputeHandler.pageDisputes(request);
+        Page<SysDispute> disputePage = disputeHandler.pageDisputes(request);
+
+        if (CollectionUtils.isEmpty(disputePage.getRecords())) {
+            return PageResult.empty();
+        }
 
         // 2. 获取关联的任务ID列表
-        List<Integer> taskIds = disputes.getRecords().stream()
+        List<Integer> taskIds = disputePage.getRecords().stream()
                 .map(SysDispute::getTaskId)
                 .distinct()
                 .toList();
@@ -81,8 +96,26 @@ public class SysDisputeServiceImpl implements SysDisputeService {
         // 3. 批量查询任务信息
         List<SysTask> tasks = taskHandler.listByIds(taskIds);
 
-        // 4. 构建任务分页结果
+        // 4. 获取任务类型ID列表
+        List<Integer> typeIds = tasks.stream()
+                .map(SysTask::getTaskTypeId)
+                .distinct()
+                .toList();
 
-        return PageResult.build(disputes.getTotal(), tasks);
+        // 5. 批量查询任务类型信息
+        List<SysTaskType> taskTypes = taskTypeMapper.selectBatchIds(typeIds);
+        Map<Integer, SysTaskType> typeMap = taskTypes.stream()
+                .collect(Collectors.toMap(SysTaskType::getId, type -> type));
+
+        // 6. 构建TaskDTO列表
+        List<TaskDTO> dtoList = tasks.stream().map(task -> {
+            TaskDTO dto = new TaskDTO();
+            dto.setTask(task);
+            dto.setTaskType(typeMap.get(task.getTaskTypeId()));
+            return dto;
+        }).toList();
+
+        // 7. 构建分页结果
+        return PageResult.build(disputePage.getTotal(), dtoList);
     }
 }

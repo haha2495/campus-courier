@@ -3,7 +3,7 @@ import request from '@/utils/request'
 /**
  * 分页查询纠纷列表
  * @param params 查询参数
- * @returns {Promise<any>} 分页结果
+ * @returns {Promise<{records: Array<TaskDTO>, total: number}>} 分页结果
  */
 export function pageDisputes(params) {
   return request({

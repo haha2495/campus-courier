@@ -26,133 +26,66 @@
       </div>
     </el-card>
 
-    <!-- 中间表格区域 -->
-    <el-card class="table-card" shadow="hover">
-      <el-table
-          :data="tableData"
-          v-loading="loading"
-          :header-cell-style="headerCellStyle"
-          :cell-style="cellStyle"
-          row-class-name="table-row"
-          border
-          stripe
-          :height="tableHeight"
-      >
-        <!-- 任务编号列 -->
-        <el-table-column prop="taskNo" label="任务编号" min-width="120" align="left">
-          <template v-slot:header>
-            <div class="column-header">
-              <el-icon class="header-icon">
-                <Document/>
-              </el-icon>
-              <span class="header-text">任务编号</span>
+    <!-- 卡片列表区域 -->
+    <div class="disputes-grid" v-loading="loading">
+      <el-empty v-if="tableData.length === 0" description="暂无纠纷数据" />
+      <div v-else class="disputes-list">
+        <div v-for="item in tableData" :key="item.id" class="dispute-card" @click="handleView(item)">
+          <!-- 卡片头部 - 编号和状态 -->
+          <div class="card-header">
+            <div class="task-type">
+              <img class="type-icon" :src="item.taskType.icon" alt="任务类型图标">
+              <span>{{ item.taskType.typeName }}</span>
             </div>
-          </template>
-        </el-table-column>
-
-        <!-- 任务标题列 -->
-        <el-table-column prop="title" label="任务标题" min-width="180" align="left">
-          <template v-slot:header>
-            <div class="column-header">
-              <el-icon class="header-icon">
-                <InfoFilled/>
-              </el-icon>
-              <span class="header-text">任务标题</span>
-            </div>
-          </template>
-        </el-table-column>
-
-        <!-- 纠纷状态列 -->
-        <el-table-column prop="status" label="纠纷状态" width="100" align="center">
-          <template v-slot:header>
-            <div class="column-header">
-              <el-icon class="header-icon">
-                <Warning/>
-              </el-icon>
-              <span class="header-text">纠纷状态</span>
-            </div>
-          </template>
-          <template #default="scope">
+            <div class="task-no">{{ item.task.taskNo }}</div>
             <el-tag
-                :type="getStatusType(scope.row.status)"
+                :type="getStatusType(item.task.status)"
                 effect="light"
                 class="status-tag"
             >
-              {{ getStatusText(scope.row.status) }}
+              {{ getStatusText(item.task.status) }}
             </el-tag>
-          </template>
-        </el-table-column>
+          </div>
 
-        <!-- 发布者列 -->
-        <el-table-column prop="publisherName" label="发布者" width="120" align="center">
-          <template v-slot:header>
-            <div class="column-header">
-              <el-icon class="header-icon">
-                <User/>
-              </el-icon>
-              <span class="header-text">发布者</span>
-            </div>
-          </template>
-        </el-table-column>
+          <!-- 卡片内容 -->
+          <div class="card-body">
+            <!-- 任务标题 -->
+            <div class="task-title">{{ item.task.title }}</div>
 
-        <!-- 接单者列 -->
-        <el-table-column prop="runnerName" label="接单者" width="120" align="center">
-          <template v-slot:header>
-            <div class="column-header">
-              <el-icon class="header-icon">
-                <User/>
-              </el-icon>
-              <span class="header-text">接单者</span>
-            </div>
-          </template>
-        </el-table-column>
+            <!-- 任务描述 -->
+            <div class="task-desc">{{ item.task.description }}</div>
 
-        <!-- 创建时间列 -->
-        <el-table-column prop="createTime" label="创建时间" width="180" align="center">
-          <template v-slot:header>
-            <div class="column-header">
-              <el-icon class="header-icon">
-                <Calendar/>
-              </el-icon>
-              <span class="header-text">创建时间</span>
+            <!-- 用户信息 -->
+            <div class="user-info">
+              <div class="user-item">
+                <el-icon><UserFilled /></el-icon>
+                <span class="label">发布者：</span>
+                <span class="value">{{ item.publisherName }}</span>
+              </div>
+              <div class="user-item">
+                <el-icon><User /></el-icon>
+                <span class="label">接单者：</span>
+                <span class="value">{{ item.runnerName }}</span>
+              </div>
             </div>
-          </template>
-          <template #default="scope">
-            <div class="time-cell">
-              <el-icon>
-                <Timer/>
-              </el-icon>
-              <span>{{ scope.row.createTime }}</span>
-            </div>
-          </template>
-        </el-table-column>
 
-        <!-- 操作列 -->
-        <el-table-column label="操作" width="120" align="center" fixed="right">
-          <template v-slot:header>
-            <div class="column-header">
-              <el-icon class="header-icon">
-                <SetUp/>
-              </el-icon>
-              <span class="header-text">操作</span>
+            <!-- 时间信息 -->
+            <div class="time-info">
+              <el-icon><Timer /></el-icon>
+              <span>{{ formatDateTime(item.task.createTime) }}</span>
             </div>
-          </template>
-          <template #default="scope">
-            <div class="operation-cell">
-              <el-tooltip content="查看详情" placement="top" :effect="tooltipEffect">
-                <el-button
-                    circle
-                    type="primary"
-                    :icon="View"
-                    @click="handleView(scope.row)"
-                    class="op-icon-btn"
-                />
-              </el-tooltip>
-            </div>
-          </template>
-        </el-table-column>
-      </el-table>
-    </el-card>
+          </div>
+
+          <!-- 卡片底部 - 操作按钮 -->
+          <div class="card-footer">
+            <el-button type="primary" @click.stop="handleView(item)">
+              <el-icon><View /></el-icon>
+              查看详情
+            </el-button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- 底部分页区域 -->
     <el-card class="pagination-card" shadow="hover">
@@ -160,7 +93,7 @@
         <el-pagination
             v-model:current-page="currentPage"
             v-model:page-size="pageSize"
-            :page-sizes="[10, 20, 50, 100]"
+            :page-sizes="[8, 12, 16, 20]"
             layout="total, sizes, prev, pager, next, jumper"
             :total="total"
             @size-change="handleSizeChange"
@@ -175,13 +108,14 @@
 <script setup>
 import {onMounted, onUnmounted, reactive, ref} from 'vue'
 import {useRouter} from 'vue-router'
-import {Calendar, Document, InfoFilled, SetUp, Timer, User, View, Warning} from '@element-plus/icons-vue'
+import {
+  Timer, User, UserFilled, View, Warning
+} from '@element-plus/icons-vue'
 import {ElMessage} from 'element-plus'
 import {DisputeStatusEnum} from '@/utils/enums/disputeEnums'
 import {pageDisputes} from '@/api/dispute'
 
 const router = useRouter()
-const tooltipEffect = 'dark'
 
 // 筛选选项配置
 const filterOptions = DisputeStatusEnum.getOptions()
@@ -196,32 +130,7 @@ const tableData = ref([])
 const loading = ref(false)
 const total = ref(0)
 const currentPage = ref(1)
-const pageSize = ref(10)
-const tableHeight = ref(500)
-
-// 表格样式
-const headerCellStyle = () => {
-  return {
-    backgroundColor: '#f8fafc',
-    color: '#64748b',
-    fontWeight: '400',
-    padding: '14px 8px',
-    height: '52px',
-    fontSize: '14px',
-    transition: 'all 0.3s',
-    borderBottom: '1px solid #e2e8f0',
-    overflow: 'visible'
-  }
-}
-
-const cellStyle = () => {
-  return {
-    padding: '14px 8px',
-    height: '65px',
-    transition: 'all 0.2s',
-    overflow: 'visible'
-  }
-}
+const pageSize = ref(8)  // 默认每页显示8条
 
 // 获取状态类型
 const getStatusType = (status) => {
@@ -262,24 +171,6 @@ const fetchData = async () => {
   }
 }
 
-
-// 计算表格高度
-const calcTableHeight = () => {
-  setTimeout(() => {
-    const viewHeight = window.innerHeight
-    const searchCard = document.querySelector('.search-card')
-    const paginationCard = document.querySelector('.pagination-card')
-
-    let searchHeight = 0
-    let paginationHeight = 0
-
-    if (searchCard) searchHeight = searchCard.offsetHeight
-    if (paginationCard) paginationHeight = paginationCard.offsetHeight
-
-    tableHeight.value = viewHeight - 50 - searchHeight - paginationHeight - 60
-  }, 100)
-}
-
 // 分页相关
 const handleSizeChange = (val) => {
   pageSize.value = val
@@ -299,24 +190,34 @@ const handleView = (row) => {
   })
 }
 
+// 格式化日期时间
+const formatDateTime = (dateTimeStr) => {
+  if (!dateTimeStr) return ''
+  const date = new Date(dateTimeStr)
+  return date.toLocaleString('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+  }).replace(/\//g, '-')
+}
+
 // 生命周期钩子
 onMounted(() => {
   fetchData()
-  calcTableHeight()
-  window.addEventListener('resize', calcTableHeight)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('resize', calcTableHeight)
 })
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .disputes-manage {
   padding: 16px;
-  height: calc(100vh - 50px);
+  min-height: calc(100vh - 50px);
   display: flex;
   flex-direction: column;
+  background-color: #f0f2f5;
 }
 
 /* 搜索卡片样式 */
@@ -410,112 +311,163 @@ onUnmounted(() => {
   width: 60%;
 }
 
-/* 表格卡片样式 */
-.table-card {
-  margin-bottom: 20px;
+/* 卡片网格布局 */
+.disputes-grid {
+  flex: 1;
+  margin-bottom: 16px;
+  position: relative;
+  min-height: 300px;
+}
+
+.disputes-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  padding: 8px;
+}
+
+/* 纠纷卡片样式 */
+.dispute-card {
+  background: white;
   border-radius: 12px;
-  border: none;
-  transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   overflow: hidden;
-}
-
-.table-card:hover {
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-}
-
-/* 表格样式 */
-.table-row {
+  transition: all 0.3s ease;
   cursor: pointer;
-  transition: all 0.3s;
-}
-
-.table-row:hover {
-  background-color: #f0f7ff !important;
-  transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-/* 状态标签样式 */
-.status-tag {
+  border: 1px solid #f0f0f0;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  border-radius: 20px;
-  padding: 2px 10px;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  min-width: 60px;
-}
+  flex-direction: column;
 
-.status-tag:hover {
-  transform: scale(1.05);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
 
-/* 时间单元格样式 */
-.time-cell {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: #64748b;
-  font-size: 13px;
-  transition: all 0.3s;
-}
+  .card-header {
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #f0f0f0;
+    background: linear-gradient(to right, #f8fafc, #ffffff);
 
-.time-cell .el-icon {
-  color: #94a3b8;
-  transition: all 0.3s;
-}
+    .task-type {
+      display: flex;
+      align-items: center;
+      gap: 8px;
 
-.table-row:hover .time-cell {
-  color: #334155;
-}
+      .type-icon {
+        width: 24px;
+        height: 24px;
+        border-radius: 4px;
+      }
 
-.table-row:hover .time-cell .el-icon {
-  color: #409eff;
-  transform: scale(1.2);
-}
+      span {
+        font-size: 14px;
+        color: #333;
+        font-weight: 500;
+      }
+    }
 
-/* 操作按钮样式 */
-.operation-cell {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  align-items: center;
-  overflow: visible;
-  padding: 0 6px;
-  height: 100%;
-}
+    .task-no {
+      font-size: 14px;
+      color: #666;
+      font-family: monospace;
+    }
 
-.op-icon-btn {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 1px solid #e2e8f0;
-  color: #64748b;
-  transition: all 0.3s ease;
-  overflow: visible;
-  position: relative;
-  background: transparent !important;
-  z-index: 1;
-}
+    .status-tag {
+      border-radius: 20px;
+      padding: 2px 12px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+  }
 
-.op-icon-btn:hover {
-  border-color: #5e81ac;
-  color: #5e81ac;
-  transform: scale(1.03);
-  box-shadow: 0 2px 8px rgba(94, 129, 172, 0.15);
-  z-index: 9;
+  .card-body {
+    padding: 16px;
+    flex: 1;
+
+    .task-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+
+    .task-desc {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 16px;
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .user-info {
+      margin-bottom: 16px;
+
+      .user-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+        color: #666;
+        font-size: 14px;
+
+        .el-icon {
+          font-size: 16px;
+          color: #409EFF;
+        }
+
+        .label {
+          color: #999;
+        }
+
+        .value {
+          color: #333;
+          font-weight: 500;
+        }
+      }
+    }
+
+    .time-info {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #999;
+      font-size: 13px;
+
+      .el-icon {
+        font-size: 14px;
+      }
+    }
+  }
+
+  .card-footer {
+    padding: 12px 16px;
+    border-top: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: flex-end;
+    background: #fafafa;
+
+    .el-button {
+      padding: 8px 16px;
+      border-radius: 20px;
+      
+      .el-icon {
+        margin-right: 4px;
+      }
+    }
+  }
 }
 
 /* 分页卡片样式 */
 .pagination-card {
-  margin-bottom: 16px;
   border-radius: 12px;
   border: none;
   transition: all 0.3s ease;
@@ -526,29 +478,5 @@ onUnmounted(() => {
   display: flex;
   justify-content: center;
   padding: 8px 0;
-}
-
-/* 表头样式 */
-.column-header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  white-space: nowrap;
-  line-height: 1;
-  overflow: visible;
-  padding: 2px 0;
-  position: relative;
-  z-index: 1;
-}
-
-.header-icon {
-  font-size: 16px;
-  color: #5e81ac;
-}
-
-.header-text {
-  font-weight: 400;
-  color: #64748b;
 }
 </style> 
