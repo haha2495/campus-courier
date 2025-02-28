@@ -7,9 +7,8 @@
     @close="handleClose"
     :safe-area-inset-bottom="true"
     :customStyle="{
-      maxHeight: '92vh',
-      borderRadius: '24rpx 24rpx 0 0',
-      overflow: 'hidden'
+      height: '92vh',
+      borderRadius: '24rpx 24rpx 0 0'
     }"
   >
     <view class="dispute-popup">
@@ -22,97 +21,94 @@
       </view>
 
       <!-- 内容区域 -->
-      <scroll-view 
-        class="dispute-content" 
-        scroll-y 
-        :scroll-top="scrollTop"
-        @scroll="handleScroll"
-        refresher-enabled
-        :refresher-triggered="isRefreshing"
-        @refresherrefresh="onRefresh"
-      >
-        <!-- 纠纷类型选择 -->
-        <view class="form-section type-section">
-          <text class="section-title required">选择纠纷类型</text>
-          <view class="type-grid">
-            <view
-              v-for="type in disputeTypes"
-              :key="type.code"
-              class="type-item"
-              :class="{ active: form.type === type.code }"
-              @click="selectType(type.code)"
-            >
-              <view class="type-icon">
-                <u-icon :name="type.icon" :color="form.type === type.code ? '#ff9500' : '#666'" size="32"></u-icon>
-              </view>
-              <text class="type-text">{{ type.desc }}</text>
-              <view class="type-check" v-if="form.type === type.code">
-                <u-icon name="checkmark-circle" color="#ff9500" size="32"></u-icon>
+      <view class="dispute-body">
+        <view 
+          class="dispute-content" 
+          @scroll="handleScroll"
+        >
+          <!-- 纠纷类型选择 -->
+          <view class="form-section type-section">
+            <text class="section-title required">选择纠纷类型</text>
+            <view class="type-grid">
+              <view
+                v-for="type in disputeTypes"
+                :key="type.code"
+                class="type-item"
+                :class="{ active: form.type === type.code }"
+                @click="selectType(type.code)"
+              >
+                <view class="type-icon">
+                  <u-icon :name="type.icon" :color="form.type === type.code ? '#ff9500' : '#666'" size="32"></u-icon>
+                </view>
+                <text class="type-text">{{ type.desc }}</text>
+                <view class="type-check" v-if="form.type === type.code">
+                  <u-icon name="checkmark-circle" color="#ff9500" size="32"></u-icon>
+                </view>
               </view>
             </view>
           </view>
-        </view>
 
-        <!-- 纠纷标题 -->
-        <view class="form-section">
-          <text class="section-title required">纠纷标题</text>
-          <view class="input-wrapper">
-            <u-input
-              v-model="form.title"
-              placeholder="简要描述纠纷主要问题"
-              :maxlength="50"
-              :border="false"
-              prefixIcon="edit-pen"
-              prefixIconStyle="color: #ff9500"
-            ></u-input>
+          <!-- 纠纷标题 -->
+          <view class="form-section">
+            <text class="section-title required">纠纷标题</text>
+            <view class="input-wrapper">
+              <u-input
+                v-model="form.title"
+                placeholder="简要描述纠纷主要问题"
+                :maxlength="50"
+                :border="false"
+                prefixIcon="edit-pen"
+                prefixIconStyle="color: #ff9500"
+              ></u-input>
+            </view>
+          </view>
+
+          <!-- 纠纷内容 -->
+          <view class="form-section">
+            <text class="section-title required">详细说明</text>
+            <view class="textarea-wrapper">
+              <textarea
+                v-model="form.content"
+                class="content-textarea"
+                placeholder="请详细描述纠纷发生的经过、原因和您的诉求..."
+                :maxlength="500"
+                show-confirm-bar="false"
+              ></textarea>
+              <text class="word-count" :class="{ 'word-limit': form.content.length >= 500 }">
+                {{ form.content.length }}/500
+              </text>
+            </view>
+          </view>
+
+          <!-- 图片上传 -->
+          <view class="form-section">
+            <view class="section-header">
+              <text class="section-title">上传凭证</text>
+              <text class="section-tip">（最多6张，可选）</text>
+            </view>
+            <view class="upload-wrapper">
+              <u-upload
+                :fileList="form.images"
+                @afterRead="afterRead"
+                @delete="deleteImage"
+                name="3"
+                multiple
+                :maxCount="6"
+                :imageMode="'aspectFill'"
+                uploadIcon="camera-fill"
+                uploadIconColor="#ff9500"
+              ></u-upload>
+            </view>
+            <text class="upload-tip">上传相关证据图片，如商品照片、聊天记录等</text>
+          </view>
+
+          <!-- 底部提示 -->
+          <view class="form-tips">
+            <u-icon name="info-circle" color="#ff9500" size="28"></u-icon>
+            <text class="tips-text">提交后客服会尽快处理，请保持联系方式畅通</text>
           </view>
         </view>
-
-        <!-- 纠纷内容 -->
-        <view class="form-section">
-          <text class="section-title required">详细说明</text>
-          <view class="textarea-wrapper">
-            <textarea
-              v-model="form.content"
-              class="content-textarea"
-              placeholder="请详细描述纠纷发生的经过、原因和您的诉求..."
-              :maxlength="500"
-              show-confirm-bar="false"
-            ></textarea>
-            <text class="word-count" :class="{ 'word-limit': form.content.length >= 500 }">
-              {{ form.content.length }}/500
-            </text>
-          </view>
-        </view>
-
-        <!-- 图片上传 -->
-        <view class="form-section">
-          <view class="section-header">
-            <text class="section-title">上传凭证</text>
-            <text class="section-tip">（最多6张，可选）</text>
-          </view>
-          <view class="upload-wrapper">
-            <u-upload
-              :fileList="form.images"
-              @afterRead="afterRead"
-              @delete="deleteImage"
-              name="3"
-              multiple
-              :maxCount="6"
-              :imageMode="'aspectFill'"
-              uploadIcon="camera-fill"
-              uploadIconColor="#ff9500"
-            ></u-upload>
-          </view>
-          <text class="upload-tip">上传相关证据图片，如商品照片、聊天记录等</text>
-        </view>
-
-        <!-- 底部提示 -->
-        <view class="form-tips">
-          <u-icon name="info-circle" color="#ff9500" size="28"></u-icon>
-          <text class="tips-text">提交后客服会尽快处理，请保持联系方式畅通</text>
-        </view>
-      </scroll-view>
+      </view>
 
       <!-- 底部按钮 -->
       <view class="dispute-footer">
@@ -151,16 +147,9 @@ const emit = defineEmits(['update:show', 'submit'])
 
 // 滚动相关
 const scrollTop = ref(0)
-const isRefreshing = ref(false)
 
 const handleScroll = (e) => {
   scrollTop.value = e.detail.scrollTop
-}
-
-const onRefresh = async () => {
-  isRefreshing.value = true
-  await new Promise(resolve => setTimeout(resolve, 1000))
-  isRefreshing.value = false
 }
 
 // 本地显示状态
@@ -287,18 +276,33 @@ const handleSubmit = async () => {
 .dispute-popup {
   display: flex;
   flex-direction: column;
-  height: 92vh;
-  background: linear-gradient(to bottom, #ffffff, #fafafa);
+  height: 100%;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  overflow: hidden;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 200rpx;
+    background: linear-gradient(135deg, #ff9500 0%, #ff7100 100%);
+    opacity: 0.1;
+    z-index: 0;
+  }
 }
 
 .dispute-header {
-  padding: 30rpx;
+  min-height: 100rpx;
+  padding: 0 30rpx;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 2rpx solid rgba(0, 0, 0, 0.05);
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(10px);
+  border-bottom: 2rpx solid rgba(0, 0, 0, 0.05);
   position: relative;
   z-index: 1;
   
@@ -306,7 +310,19 @@ const handleSubmit = async () => {
     font-size: 36rpx;
     font-weight: 600;
     color: #333;
-    letter-spacing: 1px;
+    text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
+    position: relative;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -6rpx;
+      left: 0;
+      width: 40%;
+      height: 4rpx;
+      background: linear-gradient(to right, #ff9500, transparent);
+      border-radius: 4rpx;
+    }
   }
   
   .close-btn {
@@ -316,47 +332,118 @@ const handleSubmit = async () => {
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background: #f5f5f5;
+    background: rgba(0, 0, 0, 0.05);
     transition: all 0.3s;
     
     &:active {
       transform: scale(0.9);
-      background: #e8e8e8;
+      background: rgba(0, 0, 0, 0.1);
     }
   }
 }
 
-.dispute-content {
+.dispute-body {
   flex: 1;
-  padding: 30rpx;
+  overflow: hidden;
+}
+
+.dispute-content {
+  height: 100%;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  padding: 30rpx 30rpx 150rpx;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+  
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.dispute-footer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  min-height: 120rpx;
+  padding: 20rpx 30rpx;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  border-top: 2rpx solid rgba(0, 0, 0, 0.05);
+  z-index: 99;
+  
+  .submit-text {
+    font-size: 32rpx;
+    font-weight: 600;
+    color: #ffffff;
+    text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
+  }
+  
+  :deep(.u-button) {
+    overflow: hidden;
+    position: relative;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 60%);
+      transform: scale(0);
+      transition: transform 0.6s;
+    }
+    
+    &:active::after {
+      transform: scale(1);
+      opacity: 0;
+    }
+  }
 }
 
 .form-section {
-  margin-bottom: 40rpx;
-  background: #ffffff;
-  border-radius: 16rpx;
-  padding: 24rpx;
-  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+  margin-bottom: 30rpx;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 24rpx;
+  padding: 30rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(20px);
+  border: 2rpx solid rgba(255, 255, 255, 0.5);
+  transition: all 0.3s;
+  
+  &:hover {
+    transform: translateY(-2rpx);
+    box-shadow: 0 12rpx 36rpx rgba(0, 0, 0, 0.08);
+  }
   
   &.type-section {
     background: transparent;
     box-shadow: none;
     padding: 0;
+    border: none;
+    
+    &:hover {
+      transform: none;
+    }
   }
   
   .section-title {
-    font-size: 30rpx;
+    font-size: 32rpx;
     font-weight: 600;
     color: #333;
     margin-bottom: 24rpx;
     display: inline-block;
+    position: relative;
     
     &.required::before {
       content: '*';
       color: #ff4d4f;
-      margin-right: 4rpx;
+      margin-right: 8rpx;
+      font-size: 36rpx;
+      position: relative;
+      top: 4rpx;
     }
   }
   
@@ -376,47 +463,57 @@ const handleSubmit = async () => {
 .type-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 20rpx;
+  gap: 24rpx;
   
   .type-item {
-    background: #ffffff;
-    border-radius: 16rpx;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 20rpx;
     padding: 24rpx;
     display: flex;
     align-items: center;
-    gap: 16rpx;
-    transition: all 0.3s;
-    box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+    gap: 20rpx;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.06);
+    border: 2rpx solid rgba(255, 255, 255, 0.5);
     position: relative;
     overflow: hidden;
+    cursor: pointer;
     
-    &::after {
+    &::before {
       content: '';
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background: linear-gradient(135deg, rgba(255, 149, 0, 0.1), rgba(255, 113, 0, 0.1));
+      background: linear-gradient(135deg, rgba(255, 149, 0, 0.1), rgba(255, 113, 0, 0.15));
       opacity: 0;
       transition: opacity 0.3s;
     }
     
     .type-icon {
-      width: 80rpx;
-      height: 80rpx;
+      width: 88rpx;
+      height: 88rpx;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #f5f7fa;
+      background: #f8f9fa;
       border-radius: 50%;
       transition: all 0.3s;
-      margin-right: 16rpx;
+      position: relative;
       
-      :deep(.u-icon) {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+      &::after {
+        content: '';
+        position: absolute;
+        top: -4rpx;
+        left: -4rpx;
+        right: -4rpx;
+        bottom: -4rpx;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ff9500, #ff7100);
+        opacity: 0;
+        transition: opacity 0.3s;
+        z-index: -1;
       }
     }
     
@@ -425,35 +522,41 @@ const handleSubmit = async () => {
       font-size: 28rpx;
       color: #333;
       transition: all 0.3s;
+      font-weight: 500;
     }
     
     .type-check {
       opacity: 0;
-      transform: scale(0);
-      transition: all 0.3s;
+      transform: scale(0) rotate(-180deg);
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
     
     &.active {
       background: #fff8f0;
       border: 2rpx solid #ff9500;
+      transform: scale(1.02);
       
-      &::after {
+      &::before {
         opacity: 1;
       }
       
       .type-icon {
         background: rgba(255, 149, 0, 0.15);
-        transform: scale(1.05);
+        transform: scale(1.1);
+        
+        &::after {
+          opacity: 0.1;
+        }
       }
       
       .type-text {
         color: #ff9500;
-        font-weight: 500;
+        transform: scale(1.02);
       }
       
       .type-check {
         opacity: 1;
-        transform: scale(1);
+        transform: scale(1) rotate(0);
       }
     }
     
@@ -464,29 +567,33 @@ const handleSubmit = async () => {
 }
 
 .input-wrapper {
-  background: #f8f9fa;
-  border-radius: 12rpx;
-  padding: 4rpx 20rpx;
+  background: rgba(248, 249, 250, 0.8);
+  border-radius: 16rpx;
+  padding: 8rpx 24rpx;
   border: 2rpx solid transparent;
   transition: all 0.3s;
+  backdrop-filter: blur(10px);
   
   &:focus-within {
     border-color: #ff9500;
-    background: #fff8f0;
+    background: rgba(255, 248, 240, 0.9);
+    box-shadow: 0 0 0 4rpx rgba(255, 149, 0, 0.1);
   }
 }
 
 .textarea-wrapper {
-  background: #f8f9fa;
-  border-radius: 12rpx;
-  padding: 20rpx;
+  background: rgba(248, 249, 250, 0.8);
+  border-radius: 16rpx;
+  padding: 24rpx;
   position: relative;
   border: 2rpx solid transparent;
   transition: all 0.3s;
+  backdrop-filter: blur(10px);
   
   &:focus-within {
     border-color: #ff9500;
-    background: #fff8f0;
+    background: rgba(255, 248, 240, 0.9);
+    box-shadow: 0 0 0 4rpx rgba(255, 149, 0, 0.1);
   }
   
   .content-textarea {
@@ -498,19 +605,34 @@ const handleSubmit = async () => {
   
   .word-count {
     position: absolute;
-    right: 20rpx;
-    bottom: 20rpx;
+    right: 24rpx;
+    bottom: 24rpx;
     font-size: 24rpx;
     color: #999;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 4rpx 12rpx;
+    border-radius: 20rpx;
+    backdrop-filter: blur(4px);
     
     &.word-limit {
       color: #ff4d4f;
+      background: rgba(255, 77, 79, 0.1);
     }
   }
 }
 
 .upload-wrapper {
-  margin: 20rpx 0;
+  margin: 24rpx 0;
+  
+  :deep(.u-upload__wrap) {
+    background: rgba(248, 249, 250, 0.8);
+    border-radius: 16rpx;
+    transition: all 0.3s;
+    
+    &:hover {
+      background: rgba(255, 248, 240, 0.9);
+    }
+  }
 }
 
 .upload-tip {
@@ -518,46 +640,26 @@ const handleSubmit = async () => {
   color: #999;
   margin-top: 16rpx;
   display: block;
+  padding: 8rpx 16rpx;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 20rpx;
+  text-align: center;
 }
 
 .form-tips {
+  margin-bottom: 30rpx;
+  background: linear-gradient(135deg, rgba(255, 149, 0, 0.1), rgba(255, 113, 0, 0.15));
+  border-radius: 16rpx;
+  padding: 24rpx;
   display: flex;
   align-items: center;
-  gap: 12rpx;
-  padding: 24rpx;
-  background: #fff8f0;
-  border-radius: 12rpx;
-  margin-bottom: 100rpx;
+  gap: 16rpx;
+  border: 2rpx solid rgba(255, 149, 0, 0.1);
   
   .tips-text {
     font-size: 26rpx;
-    color: #ff9500;
-    flex: 1;
+    color: #666;
+    line-height: 1.5;
   }
-}
-
-.dispute-footer {
-  padding: 30rpx;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-top: 2rpx solid rgba(0, 0, 0, 0.05);
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 1;
-  
-  .submit-text {
-    font-size: 32rpx;
-    font-weight: 500;
-    color: #ffffff;
-  }
-}
-
-/* 优化滚动条样式 */
-::-webkit-scrollbar {
-  width: 0;
-  height: 0;
-  background: transparent;
 }
 </style> 
