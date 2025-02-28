@@ -1,4 +1,4 @@
- <template>
+<template>
   <div class="dispute-detail">
     <!-- 顶部返回区域 -->
     <el-card class="header-card" shadow="hover">
@@ -70,32 +70,35 @@
             </div>
           </div>
 
-          <!-- 配送信息 -->
-          <div class="delivery-section">
-            <h3 class="section-title">配送信息</h3>
-            <div class="info-content">
-              <div class="info-item">
-                <span class="info-label">取件地址</span>
-                <span class="info-value">{{ detail.task?.pickupAddress || '无' }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">送达地址</span>
-                <span class="info-value">{{ detail.task?.deliveryAddress || '无' }}</span>
+          <!-- 配送信息和时间信息并排布局 -->
+          <div class="delivery-time-row">
+            <!-- 配送信息 -->
+            <div class="delivery-section">
+              <h3 class="section-title">配送信息</h3>
+              <div class="info-content">
+                <div class="info-item">
+                  <span class="info-label">取件地址</span>
+                  <span class="info-value">{{ detail.task?.pickupAddress || '无' }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">送达地址</span>
+                  <span class="info-value">{{ detail.task?.deliveryAddress || '无' }}</span>
+                </div>
               </div>
             </div>
-          </div>
 
-          <!-- 时间信息 -->
-          <div class="time-section">
-            <h3 class="section-title">时间信息</h3>
-            <div class="info-content">
-              <div class="info-item">
-                <span class="info-label">发布时间</span>
-                <span class="info-value">{{ formatTime(detail.task?.createTime) || '无' }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">期望送达</span>
-                <span class="info-value">{{ formatTime(detail.task?.expectedFinishTime) || '无' }}</span>
+            <!-- 时间信息 -->
+            <div class="time-section">
+              <h3 class="section-title">时间信息</h3>
+              <div class="info-content">
+                <div class="info-item">
+                  <span class="info-label">发布时间</span>
+                  <span class="info-value">{{ formatTime(detail.task?.createTime) || '无' }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">期望送达</span>
+                  <span class="info-value">{{ formatTime(detail.task?.expectedFinishTime) || '无' }}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -234,6 +237,7 @@
                       :key="log.id"
                       :timestamp="formatTime(log.actionTime)"
                       :type="getLogType(log.action)"
+                      placement="top"
                   >
                     <div class="log-content">
                       <div class="log-text">{{ log.remark }}</div>
@@ -436,7 +440,7 @@ onBeforeUnmount(() => {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #f0f2f5;
+  background-color: #f5f7fa;
   padding: 16px;
   box-sizing: border-box;
   overflow: hidden;
@@ -444,15 +448,14 @@ onBeforeUnmount(() => {
 
 /* 头部卡片样式 */
 .header-card {
-  border-radius: 12px;
+  border-radius: 8px;
   border: none;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   margin-bottom: 16px;
-  flex-shrink: 0;
+  background: #fff;
 
   :deep(.el-card__body) {
-    padding: 16px 20px;
+    padding: 16px;
   }
 }
 
@@ -493,11 +496,11 @@ onBeforeUnmount(() => {
 /* 内容卡片样式 */
 .content-card {
   flex: 1;
-  border-radius: 12px;
+  border-radius: 8px;
   border: none;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   overflow: hidden;
+  background: #fff;
 
   :deep(.el-card__body) {
     height: 100%;
@@ -527,20 +530,20 @@ onBeforeUnmount(() => {
 
 /* 各个区块通用样式 */
 .section-title {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
-  color: #333;
+  color: #1f2937;
   margin-bottom: 16px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e5e7eb;
   display: flex;
   align-items: center;
 
   &::before {
     content: '';
-    width: 4px;
-    height: 18px;
-    background-color: #409EFF;
+    width: 3px;
+    height: 16px;
+    background: #409EFF;
     margin-right: 8px;
     border-radius: 2px;
   }
@@ -549,6 +552,10 @@ onBeforeUnmount(() => {
 /* 任务信息区域 */
 .task-info-section {
   margin-bottom: 24px;
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  border: 1px solid #e5e7eb;
 
   .task-header {
     display: flex;
@@ -559,13 +566,7 @@ onBeforeUnmount(() => {
     .task-type {
       display: flex;
       align-items: center;
-      gap: 12px;
-
-      .urgent-tag {
-        padding: 2px 8px;
-        border-radius: 4px;
-        font-size: 12px;
-      }
+      gap: 8px;
 
       .type-icon {
         width: 24px;
@@ -574,16 +575,15 @@ onBeforeUnmount(() => {
       }
 
       span {
-        font-size: 16px;
-        font-weight: 500;
-        color: #333;
+        font-size: 15px;
+        color: #1f2937;
       }
     }
 
     .status-tag {
-      font-size: 12px;
-      padding: 2px 10px;
-      border-radius: 12px;
+      font-size: 13px;
+      padding: 4px 12px;
+      border-radius: 4px;
     }
   }
 
@@ -593,201 +593,15 @@ onBeforeUnmount(() => {
     border-radius: 8px;
 
     h4 {
-      font-size: 16px;
-      color: #333;
+      font-size: 15px;
+      color: #1f2937;
       margin-bottom: 8px;
     }
 
     p {
-      color: #666;
+      color: #4b5563;
       line-height: 1.6;
-    }
-  }
-}
-
-/* 配送信息区域 */
-.delivery-section, .contact-section {
-  margin-bottom: 24px;
-
-  .info-content {
-    background: #f9fafb;
-    border-radius: 8px;
-    overflow: hidden;
-
-    .info-item {
-      display: flex;
-      padding: 16px;
-      border-bottom: 1px solid #f0f0f0;
-
-      &:last-child {
-        border-bottom: none;
-      }
-
-      .info-label {
-        width: 100px;
-        color: #666;
-        font-size: 14px;
-      }
-
-      .info-value {
-        flex: 1;
-        color: #333;
-        font-size: 14px;
-
-        &.phone-wrapper {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-        }
-      }
-    }
-  }
-}
-
-/* 时间信息区域 */
-.time-section {
-  margin-bottom: 24px;
-
-  .info-content {
-    background: #f9fafb;
-    border-radius: 8px;
-    overflow: hidden;
-
-    .info-item {
-      display: flex;
-      padding: 16px;
-      border-bottom: 1px solid #f0f0f0;
-
-      &:last-child {
-        border-bottom: none;
-      }
-
-      .info-label {
-        width: 100px;
-        color: #666;
-        font-size: 14px;
-      }
-
-      .info-value {
-        flex: 1;
-        color: #333;
-        font-size: 14px;
-      }
-    }
-  }
-}
-
-/* 备注说明区域 */
-.remark-section {
-  margin-bottom: 24px;
-
-  .info-content {
-    background: #f9fafb;
-    border-radius: 8px;
-    overflow: hidden;
-
-    .remark-content {
-      padding: 16px;
-      color: #666;
       font-size: 14px;
-      line-height: 1.6;
-      min-height: 60px;
-    }
-  }
-}
-
-/* 物品信息和赏金信息并排布局 */
-.info-row {
-  display: flex;
-  gap: 24px;
-  margin-bottom: 24px;
-
-  .item-section,
-  .reward-section {
-    flex: 1;
-    margin-bottom: 0;
-  }
-}
-
-/* 物品信息区域 */
-.item-section {
-  .specs-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-
-    .spec-item {
-      background: #f9fafb;
-      padding: 16px;
-      border-radius: 8px;
-      text-align: center;
-
-      .info-label {
-        display: block;
-        color: #666;
-        font-size: 14px;
-        margin-bottom: 8px;
-      }
-
-      .info-value {
-        color: #333;
-        font-size: 16px;
-        font-weight: 500;
-      }
-    }
-  }
-}
-
-/* 赏金信息区域 */
-.reward-section {
-  .reward-content {
-    background: linear-gradient(135deg, #fff9f0, #fff5f5);
-    border-radius: 8px;
-    padding: 16px;
-
-    .reward-row {
-      display: flex;
-      gap: 24px;
-
-      .reward-item {
-        flex: 1;
-        background: #fff;
-        border-radius: 8px;
-        padding: 16px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-
-        .reward-label {
-          color: #666;
-          font-size: 14px;
-        }
-
-        .reward-value {
-          display: flex;
-          align-items: baseline;
-
-          .currency {
-            color: #ff9500;
-            font-size: 16px;
-            margin-right: 4px;
-          }
-
-          .amount {
-            color: #ff9500;
-            font-size: 24px;
-            font-weight: bold;
-          }
-        }
-
-        &.urgent {
-          .reward-value {
-            .currency, .amount {
-              color: #ff4d4f;
-            }
-          }
-        }
-      }
     }
   }
 }
@@ -797,37 +611,249 @@ onBeforeUnmount(() => {
   margin-bottom: 24px;
 
   .user-cards {
-    display: flex;
-    gap: 24px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
   }
 
   .user-card {
-    flex: 1;
+    background: #fff;
+    border-radius: 8px;
+    padding: 16px;
+    border: 1px solid #e5e7eb;
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 16px;
-    background: #f9fafb;
-    border-radius: 8px;
 
     .user-role {
       font-size: 12px;
-      color: #999;
-      background: #fff;
+      color: #409EFF;
+      background: #e6f4ff;
       padding: 2px 8px;
-      border-radius: 10px;
+      border-radius: 4px;
     }
 
     .user-info {
       .user-name {
         font-size: 14px;
-        font-weight: 500;
-        color: #333;
+        color: #1f2937;
+        margin-bottom: 4px;
       }
 
       .user-no {
         font-size: 12px;
-        color: #999;
+        color: #6b7280;
+      }
+    }
+  }
+}
+
+/* 配送信息和时间信息并排布局 */
+.delivery-time-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+
+  .delivery-section,
+  .time-section {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+
+    .info-content {
+      .info-item {
+        display: flex;
+        padding: 12px 0;
+        border-bottom: 1px solid #f3f4f6;
+
+        &:first-child {
+          padding-top: 0;
+        }
+
+        &:last-child {
+          padding-bottom: 0;
+          border-bottom: none;
+        }
+
+        .info-label {
+          width: 80px;
+          color: #6b7280;
+          font-size: 14px;
+        }
+
+        .info-value {
+          flex: 1;
+          color: #1f2937;
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}
+
+/* 备注说明区域 */
+.remark-section {
+  margin-bottom: 24px;
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+
+  .remark-content {
+    background: #f9fafb;
+    padding: 16px;
+    border-radius: 8px;
+    color: #4b5563;
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 60px;
+  }
+}
+
+/* 物品信息和赏金信息区域 */
+.info-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin-bottom: 24px;
+
+  .item-section,
+  .reward-section {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+    height: fit-content;
+  }
+
+  .item-section {
+    .specs-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-top: 8px;
+
+      .spec-item {
+        background: #f9fafb;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100px;
+        border: 1px solid #e5e7eb;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background: #f3f4f6;
+        }
+
+        .info-label {
+          color: #6b7280;
+          font-size: 13px;
+          margin-bottom: 12px;
+        }
+
+        .info-value {
+          color: #1f2937;
+          font-size: 18px;
+          font-weight: 500;
+        }
+      }
+    }
+  }
+
+  .reward-section {
+    .reward-content {
+      background: #fffaf0;
+      border-radius: 8px;
+      padding: 16px;
+
+      .reward-row {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+
+        .reward-item {
+          background: #fff;
+          border-radius: 8px;
+          padding: 16px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          .reward-label {
+            color: #6b7280;
+            font-size: 13px;
+          }
+
+          .reward-value {
+            display: flex;
+            align-items: baseline;
+
+            .currency {
+              color: #f59e0b;
+              font-size: 14px;
+              margin-right: 2px;
+            }
+
+            .amount {
+              color: #f59e0b;
+              font-size: 20px;
+              font-weight: 600;
+            }
+          }
+
+          &.urgent {
+            .reward-value {
+              .currency, .amount {
+                color: #ef4444;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+/* 联系方式区域 */
+.contact-section {
+  margin-bottom: 24px;
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+
+  .info-content {
+    .info-item {
+      display: flex;
+      padding: 12px 0;
+      border-bottom: 1px solid #f3f4f6;
+
+      &:first-child {
+        padding-top: 0;
+      }
+
+      &:last-child {
+        padding-bottom: 0;
+        border-bottom: none;
+      }
+
+      .info-label {
+        width: 80px;
+        color: #6b7280;
+        font-size: 14px;
+      }
+
+      .info-value {
+        flex: 1;
+        color: #1f2937;
+        font-size: 14px;
       }
     }
   }
@@ -838,44 +864,29 @@ onBeforeUnmount(() => {
   margin-bottom: 24px;
 
   .dispute-content {
-    background: #fff5f5;
+    background: #fff1f0;
     border-radius: 8px;
     padding: 20px;
+    border: 1px solid #ffa39e;
 
     .dispute-header {
-      margin-bottom: 20px;
+      margin-bottom: 16px;
 
       .dispute-tags {
         display: flex;
-        gap: 12px;
+        gap: 8px;
 
         :deep(.dispute-tag) {
           display: inline-flex;
           align-items: center;
-          height: 32px;
+          height: 28px;
           padding: 0 12px;
-          font-size: 14px;
-          border-radius: 16px;
-          border: none;
+          font-size: 13px;
+          border-radius: 4px;
 
           .tag-icon {
-            margin-right: 6px;
-            font-size: 16px;
-          }
-
-          &.el-tag--warning {
-            background-color: #fff7e6;
-            color: #d46b08;
-          }
-
-          &.el-tag--danger {
-            background-color: #fff1f0;
-            color: #cf1322;
-          }
-
-          &.el-tag--success {
-            background-color: #f6ffed;
-            color: #389e0d;
+            margin-right: 4px;
+            font-size: 14px;
           }
         }
       }
@@ -883,67 +894,29 @@ onBeforeUnmount(() => {
 
     .dispute-main {
       h4 {
-        font-size: 16px;
-        color: #333;
+        font-size: 15px;
+        color: #1f2937;
         margin-bottom: 12px;
-        font-weight: 500;
       }
 
       p {
-        color: #666;
+        color: #4b5563;
         line-height: 1.6;
-        margin-bottom: 20px;
+        margin-bottom: 16px;
         font-size: 14px;
       }
 
       .evidence-list {
         h5 {
           font-size: 14px;
-          color: #333;
+          color: #1f2937;
           margin-bottom: 12px;
-          font-weight: 500;
         }
 
         .evidence-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-          gap: 8px;
-          margin-top: 12px;
-        }
-
-        .evidence-image {
-          width: 100%;
-          height: 80px;
-          border-radius: 6px;
-          overflow: hidden;
-          cursor: pointer;
-          
-          .el-image__inner {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s ease;
-          }
-          
-          &:hover .el-image__inner {
-            transform: scale(1.05);
-          }
-          
-          .image-error {
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: #909399;
-            font-size: 12px;
-            background: #f5f7fa;
-            
-            .el-icon {
-              font-size: 20px;
-              margin-bottom: 4px;
-            }
-          }
+          grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+          gap: 12px;
         }
       }
     }
@@ -952,11 +925,10 @@ onBeforeUnmount(() => {
 
 /* 标签页样式 */
 .detail-tabs {
-  margin-top: 24px;
   background: #fff;
   border-radius: 8px;
   padding: 20px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e5e7eb;
 
   :deep(.el-tabs__header) {
     margin-bottom: 20px;
@@ -964,15 +936,15 @@ onBeforeUnmount(() => {
 
   :deep(.el-tabs__nav-wrap::after) {
     height: 1px;
-    background-color: #f0f0f0;
+    background-color: #e5e7eb;
   }
 
   :deep(.el-tabs__item) {
-    font-size: 15px;
-    color: #666;
-    padding: 0 20px;
-    height: 40px;
-    line-height: 40px;
+    font-size: 14px;
+    color: #4b5563;
+    padding: 0 16px;
+    height: 36px;
+    line-height: 36px;
 
     &.is-active {
       color: #409EFF;
@@ -983,207 +955,149 @@ onBeforeUnmount(() => {
       color: #409EFF;
     }
   }
-
-  :deep(.el-tabs__active-bar) {
-    height: 3px;
-    border-radius: 1.5px;
-  }
 }
 
-/* 任务日志区域样式优化 */
+/* 任务日志区域样式 */
 .logs-section {
-  padding: 0 10px;
+  padding: 0 12px;
+
+  :deep(.el-timeline) {
+    padding-left: 16px;
+  }
 
   :deep(.el-timeline-item__node) {
     width: 12px;
     height: 12px;
+    left: -1px;
+  }
+
+  :deep(.el-timeline-item__tail) {
+    left: 5px;
+    top: 0;
+    height: calc(100% - 10px);
+  }
+
+  :deep(.el-timeline-item__wrapper) {
+    padding-left: 28px;
+    top: -4px;
   }
 
   :deep(.el-timeline-item__timestamp) {
-    color: #999;
+    color: #6b7280;
     font-size: 13px;
+    margin-bottom: 8px;
+    display: block;
+    line-height: 1.5;
+    position: relative;
+    top: -4px;
+
+    &.is-top {
+      display: block;
+      margin-bottom: 8px;
+    }
   }
 
   .log-content {
     background: #f9fafb;
-    padding: 12px 16px;
+    padding: 16px;
     border-radius: 8px;
-    margin-bottom: 8px;
+    margin-bottom: 16px;
+    border: 1px solid #e5e7eb;
 
     .log-text {
-      color: #333;
+      color: #1f2937;
       line-height: 1.6;
       font-size: 14px;
     }
   }
 }
 
-/* 留言记录区域样式优化 */
+/* 留言记录区域样式 */
 .messages-section {
-  padding: 0 10px;
+  padding: 0 12px;
 
   .message-item {
+    display: flex;
+    gap: 12px;
     margin-bottom: 20px;
-    
-    &.self-message {
-      flex-direction: row-reverse;
-      
-      .message-content {
-        align-items: flex-end;
-        
-        .message-header {
-          flex-direction: row-reverse;
-        }
-        
-        .message-body {
-          background: #e6f3ff;
-          border-radius: 8px 2px 8px 8px;
-        }
-      }
-    }
-  }
 
-  .message-content {
-    .message-body {
-      background: #f9fafb;
-      padding: 12px;
-      border-radius: 2px 8px 8px 8px;
-      margin-top: 4px;
-    }
-  }
-}
+    .message-content {
+      flex: 1;
 
-/* 纠纷信息区域的图片样式 */
-.evidence-list {
-  .evidence-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-    gap: 8px;
-    margin-top: 12px;
-  }
-
-  :deep(.evidence-image) {
-    width: 100%;
-    height: 80px;
-    border-radius: 6px;
-    overflow: hidden;
-    cursor: pointer;
-    
-    .el-image__inner {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.3s ease;
-    }
-    
-    &:hover .el-image__inner {
-      transform: scale(1.05);
-    }
-    
-    .image-error {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: #909399;
-      font-size: 12px;
-      background: #f5f7fa;
-      
-      .el-icon {
-        font-size: 20px;
+      .message-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
         margin-bottom: 4px;
+
+        .sender-name {
+          font-size: 13px;
+          color: #4b5563;
+        }
+
+        .message-time {
+          font-size: 12px;
+          color: #9ca3af;
+        }
+      }
+
+      .message-body {
+        background: #f9fafb;
+        padding: 12px;
+        border-radius: 8px;
+        max-width: 80%;
+
+        .message-text {
+          color: #1f2937;
+          line-height: 1.6;
+          font-size: 14px;
+          word-break: break-all;
+        }
       }
     }
   }
 }
 
-/* 任务日志图片样式 */
-.log-images {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-  gap: 8px;
-  margin-top: 8px;
+/* 图片相关样式统一 */
+.evidence-image,
+.log-image,
+.message-image {
+  width: 100%;
+  height: 100px;
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
 
-  .log-image {
+  :deep(.el-image__inner) {
     width: 100%;
-    height: 80px;
-    border-radius: 6px;
-    overflow: hidden;
-    cursor: pointer;
+    height: 100%;
+    object-fit: cover;
+  }
 
-    .el-image__inner {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.3s ease;
-    }
+  .image-error {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #f3f4f6;
+    color: #9ca3af;
+    font-size: 12px;
 
-    &:hover .el-image__inner {
-      transform: scale(1.05);
+    .el-icon {
+      font-size: 20px;
+      margin-bottom: 4px;
     }
   }
 }
 
-/* 消息图片样式 */
+/* 图片网格布局统一 */
+.evidence-grid,
+.log-images,
 .message-images {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-  gap: 8px;
-  margin-top: 8px;
-
-  .message-image {
-    width: 100%;
-    height: 80px;
-    border-radius: 6px;
-    overflow: hidden;
-    cursor: pointer;
-
-    .el-image__inner {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.3s ease;
-    }
-
-    &:hover .el-image__inner {
-      transform: scale(1.05);
-    }
-  }
-}
-
-/* 图片预览样式优化 */
-:deep(.el-image-viewer__wrapper) {
-  .el-image-viewer__mask {
-    background-color: rgba(0, 0, 0, 0.9);
-  }
-  
-  .el-image-viewer__close {
-    color: #fff;
-    font-size: 24px;
-    
-    &:hover {
-      color: #409EFF;
-    }
-  }
-  
-  .el-image-viewer__prev,
-  .el-image-viewer__next {
-    background-color: rgba(255, 255, 255, 0.1);
-    color: #fff;
-    font-size: 24px;
-    
-    &:hover {
-      background-color: rgba(255, 255, 255, 0.2);
-    }
-  }
-
-  .el-image-viewer__actions {
-    opacity: 0.9;
-    
-    &:hover {
-      opacity: 1;
-    }
-  }
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
 }
 </style> 
