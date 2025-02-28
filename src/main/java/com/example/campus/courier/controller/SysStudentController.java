@@ -159,4 +159,11 @@ public class SysStudentController extends BaseController {
         sysStudentService.changePassword(getLoginUserId(), request);
         return Result.success();
     }
+
+    @Operation(summary = "学生充值")
+    @PostMapping("/recharge")
+    public Result<Void> recharge(@Valid @RequestBody StudentRechargeRequest request) {
+        sysStudentService.recharge(getLoginUserId(), request.getAmount());
+        return Result.success();
+    }
 } 

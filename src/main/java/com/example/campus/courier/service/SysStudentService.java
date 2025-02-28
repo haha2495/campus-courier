@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Tag(name = "学生信息服务")
@@ -125,4 +126,12 @@ public interface SysStudentService extends IService<SysStudent> {
      * @param request 修改密码请求
      */
     void changePassword(Integer userId, StudentChangePasswordRequest request);
+
+    /**
+     * 学生充值
+     *
+     * @param studentId 学生ID
+     * @param amount    充值金额
+     */
+    void recharge(Integer studentId, BigDecimal amount);
 }

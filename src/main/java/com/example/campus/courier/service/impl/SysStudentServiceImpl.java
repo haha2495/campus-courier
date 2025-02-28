@@ -11,9 +11,11 @@ import com.example.campus.courier.exception.BusinessException;
 import com.example.campus.courier.mapper.SysStudentMapper;
 import com.example.campus.courier.mapper.handler.SysStudentHandler;
 import com.example.campus.courier.mapper.handler.SysStudentRecordHandler;
+import com.example.campus.courier.mapper.handler.SysBalanceRecordHandler;
 import com.example.campus.courier.model.dto.DepartmentDTO;
 import com.example.campus.courier.model.dto.StudentRecordDTO;
 import com.example.campus.courier.model.entity.SysStudent;
+import com.example.campus.courier.model.enums.BalanceChangeTypeEnum;
 import com.example.campus.courier.model.enums.StudentRecordType;
 import com.example.campus.courier.model.enums.UserRoleEnum;
 import com.example.campus.courier.model.excel.StudentImportExcel;
@@ -36,6 +38,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -50,6 +53,7 @@ public class SysStudentServiceImpl extends ServiceImpl<SysStudentMapper, SysStud
 
     private final SysStudentHandler sysStudentHandler;
     private final SysStudentRecordHandler sysStudentRecordHandler;
+    private final SysBalanceRecordHandler sysBalanceRecordHandler;
     private final ObjectMapper objectMapper;
 
     @Override
@@ -363,5 +367,39 @@ public class SysStudentServiceImpl extends ServiceImpl<SysStudentMapper, SysStud
                 StudentRecordType.CHANGE_PASSWORD,
                 "修改密码成功"
         );
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void recharge(Integer studentId, BigDecimal amount) {
+        // 1. 获取学生信息
+        SysStudent student = getById(studentId);
+        if (student == null) {
+            throw new BusinessException("学生不存在");
+        }
+
+        // 2. 校验充值金额
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new BusinessException("充值金额必须大于0");
+        }
+        if (amount.compareTo(new BigDecimal("10000")) > 0) {
+            throw new BusinessException("单次充值不能超过10000元");
+        }
+
+        // 3. 更新学生余额
+        student.increaseBalance(amount);
+        if (!updateById(student)) {
+            throw new BusinessException("充值失败");
+        }
+
+        // 4. 创建充值记录
+        sysBalanceRecordHandler.createRecord(
+                student,
+                amount,
+                BalanceChangeTypeEnum.RECHARGE.getCode(),
+                String.format("充值%.2f元", amount)
+        );
+
+        log.info("学生充值成功，学生ID：{}，充值金额：{}", studentId, amount);
     }
 }
