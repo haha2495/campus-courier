@@ -1,19 +1,26 @@
 package com.example.campus.courier.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.campus.courier.mapper.handler.SysDisputeHandler;
 import com.example.campus.courier.mapper.handler.SysTaskHandler;
 import com.example.campus.courier.mapper.handler.SysTaskLogHandler;
+import com.example.campus.courier.mapper.SysDisputeMapper;
+import com.example.campus.courier.mapper.SysTaskMapper;
 import com.example.campus.courier.model.entity.SysDispute;
 import com.example.campus.courier.model.entity.SysTask;
 import com.example.campus.courier.model.entity.SysTaskLog;
 import com.example.campus.courier.model.enums.TaskActionEnum;
 import com.example.campus.courier.model.enums.TaskStatusEnum;
 import com.example.campus.courier.model.request.dispute.DisputeCreateRequest;
+import com.example.campus.courier.model.request.dispute.DisputePageRequest;
 import com.example.campus.courier.service.SysDisputeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * 纠纷服务实现类
@@ -26,6 +33,8 @@ public class SysDisputeServiceImpl implements SysDisputeService {
     private final SysDisputeHandler disputeHandler;
     private final SysTaskHandler taskHandler;
     private final SysTaskLogHandler taskLogHandler;
+    private final SysDisputeMapper disputeMapper;
+    private final SysTaskMapper taskMapper;
     
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -60,5 +69,30 @@ public class SysDisputeServiceImpl implements SysDisputeService {
         
         log.info("纠纷创建成功: {}", dispute.getId());
         return dispute.getId();
+    }
+
+    @Override
+    public Page<SysTask> pageDisputeTasks(DisputePageRequest request) {
+        // 1. 查询纠纷分页数据
+        Page<SysDispute> disputes = disputeHandler.pageDisputes(request);
+
+        // 2. 获取关联的任务ID列表
+        List<Integer> taskIds = disputes.getRecords().stream()
+                .map(SysDispute::getTaskId)
+                .distinct()
+                .toList();
+
+        // 3. 批量查询任务信息
+        List<SysTask> tasks = taskHandler.listByIds(taskIds);
+
+        // 4. 构建任务分页结果
+        Page<SysTask> taskPage = new Page<>(
+                disputes.getCurrent(),
+                disputes.getSize(),
+                disputes.getTotal()
+        );
+        taskPage.setRecords(tasks);
+
+        return taskPage;
     }
 }

@@ -1,6 +1,9 @@
 package com.example.campus.courier.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.campus.courier.model.entity.SysTask;
 import com.example.campus.courier.model.request.dispute.DisputeCreateRequest;
+import com.example.campus.courier.model.request.dispute.DisputePageRequest;
 import com.example.campus.courier.model.response.Result;
 import com.example.campus.courier.service.SysDisputeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,10 +13,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 纠纷控制器
@@ -36,5 +36,16 @@ public class SysDisputeController {
     ) {
         log.info("创建纠纷请求: {}", request);
         return Result.success(disputeService.createDispute(request), "纠纷提交成功");
+    }
+
+    @GetMapping("/page")
+    @Operation(summary = "分页查询纠纷任务", description = "管理员分页查询纠纷任务列表")
+    public Result<Page<SysTask>> pageDisputes(
+            @Parameter(description = "分页查询参数")
+            @Valid DisputePageRequest request
+    ) {
+        log.info("分页查询纠纷任务请求: {}", request);
+        Page<SysTask> page = disputeService.pageDisputeTasks(request);
+        return Result.success(page);
     }
 } 
