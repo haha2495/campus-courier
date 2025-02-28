@@ -332,37 +332,87 @@
     <el-dialog
       v-model="dialogVisible"
       title="处理纠纷"
-      width="400px"
+      width="900px"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
+      class="dispute-dialog"
     >
       <div class="handle-options">
         <el-radio-group v-model="handleResult" class="handle-radio-group">
-          <el-radio label="PUBLISHER_WIN" border>
-            <div class="radio-content">
-              <div class="radio-title">发布者胜</div>
-              <div class="radio-desc">判定发布者胜诉，退还订单金额</div>
-            </div>
-          </el-radio>
-          <el-radio label="RUNNER_WIN" border>
-            <div class="radio-content">
-              <div class="radio-title">跑腿者胜</div>
-              <div class="radio-desc">判定跑腿者胜诉，订单金额归跑腿者</div>
-            </div>
-          </el-radio>
-          <el-radio label="UNCERTAIN" border>
-            <div class="radio-content">
-              <div class="radio-title">存在疑问</div>
-              <div class="radio-desc">发布到纠纷大厅进行筛选</div>
-            </div>
-          </el-radio>
+          <div class="options-row">
+            <el-radio label="PUBLISHER_WIN" border class="option-card">
+              <div class="radio-content">
+                <div class="radio-header">
+                  <div class="radio-title">发布者胜</div>
+                  <el-icon class="option-icon"><UserFilled /></el-icon>
+                </div>
+                <div class="radio-desc">判定发布者胜诉，退还订单金额</div>
+              </div>
+            </el-radio>
+
+            <el-radio label="RUNNER_WIN" border class="option-card">
+              <div class="radio-content">
+                <div class="radio-header">
+                  <div class="radio-title">跑腿者胜</div>
+                  <el-icon class="option-icon"><Medal /></el-icon>
+                </div>
+                <div class="radio-desc">判定跑腿者胜诉，订单金额归跑腿者</div>
+              </div>
+            </el-radio>
+
+            <el-radio label="UNCERTAIN" border class="option-card">
+              <div class="radio-content">
+                <div class="radio-header">
+                  <div class="radio-title">存在疑问</div>
+                  <el-icon class="option-icon"><Warning /></el-icon>
+                </div>
+                <div class="radio-desc">发布到纠纷大厅进行筛选</div>
+              </div>
+            </el-radio>
+          </div>
         </el-radio-group>
+
+        <!-- 处理结果相关的输入区域 -->
+        <div class="handle-details" v-if="handleResult">
+          <div v-if="handleResult === 'PUBLISHER_WIN' || handleResult === 'RUNNER_WIN'" class="reason-section">
+            <h4 class="details-title">
+              <el-icon><Document /></el-icon>
+              处理原因
+            </h4>
+            <el-input
+              v-model="handleReason"
+              type="textarea"
+              :rows="4"
+              :placeholder="handleResult === 'PUBLISHER_WIN' ? '请输入判定发布者胜诉的原因（必填）' : '请输入判定跑腿者胜诉的原因（必填）'"
+              maxlength="200"
+              show-word-limit
+              resize="none"
+              class="reason-input"
+            />
+          </div>
+
+          <div v-if="handleResult === 'UNCERTAIN'" class="time-section">
+            <h4 class="details-title">
+              <el-icon><Timer /></el-icon>
+              展示时长
+            </h4>
+            <div class="time-options">
+              <el-radio-group v-model="displayHours" class="time-radio-group">
+                <el-radio-button :label="24">24小时</el-radio-button>
+                <el-radio-button :label="48">48小时</el-radio-button>
+                <el-radio-button :label="72">72小时</el-radio-button>
+              </el-radio-group>
+            </div>
+          </div>
+        </div>
       </div>
+
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="dialogVisible = false">取消</el-button>
-          <el-button type="primary" @click="handleSubmit" :loading="submitting">
-            确认
+          <el-button @click="dialogVisible = false" class="cancel-btn" plain>取消</el-button>
+          <el-button type="primary" @click="handleSubmit" :loading="submitting" class="confirm-btn">
+            <el-icon class="btn-icon"><Check /></el-icon>
+            确认处理
           </el-button>
         </span>
       </template>
@@ -371,9 +421,12 @@
 </template>
 
 <script setup>
-import {onBeforeUnmount, onMounted, ref} from 'vue'
+import {onBeforeUnmount, onMounted, ref, watch} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
-import {ArrowLeft, Phone, Picture, Tools} from '@element-plus/icons-vue'
+import {
+  ArrowLeft, Phone, Picture, Tools, UserFilled, 
+  Medal, Warning, Check, Document, Timer
+} from '@element-plus/icons-vue'
 import {ElMessage} from 'element-plus'
 import {getDisputeDetail} from '@/api/dispute'
 import {TaskStatusEnum} from '@/utils/enums/taskEnums'
@@ -388,6 +441,8 @@ const detail = ref(null)
 const dialogVisible = ref(false)
 const handleResult = ref('')
 const submitting = ref(false)
+const handleReason = ref('')
+const displayHours = ref(24)
 
 // 获取路由参数
 const taskId = route.query.taskId
@@ -502,10 +557,26 @@ const handleSubmit = async () => {
     return
   }
 
+  // 验证必填项
+  if ((handleResult.value === 'PUBLISHER_WIN' || handleResult.value === 'RUNNER_WIN') 
+      && !handleReason.value.trim()) {
+    ElMessage.warning('请输入处理原因')
+    return
+  }
+
+  if (handleResult.value === 'UNCERTAIN' && !displayHours.value) {
+    ElMessage.warning('请选择展示时长')
+    return
+  }
+
   submitting.value = true
   try {
-    // TODO: 调用后端API处理纠纷
-    await handleDispute(detail.value.dispute.id, handleResult.value)
+    // TODO: 调用后端API处理纠纷，传入原因或展示时长
+    await handleDispute(detail.value.dispute.id, {
+      result: handleResult.value,
+      reason: handleReason.value,
+      displayHours: displayHours.value
+    })
     ElMessage.success('处理成功')
     dialogVisible.value = false
     // 重新加载详情
@@ -517,6 +588,15 @@ const handleSubmit = async () => {
     submitting.value = false
   }
 }
+
+// 监听弹窗关闭，重置表单
+watch(dialogVisible, (val) => {
+  if (!val) {
+    handleResult.value = ''
+    handleReason.value = ''
+    displayHours.value = 24
+  }
+})
 </script>
 
 <style scoped lang="scss">
@@ -1237,33 +1317,54 @@ const handleSubmit = async () => {
 }
 
 .handle-options {
-  padding: 10px;
+  padding: 0;
 
   .handle-radio-group {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
     width: 100%;
+
+    .options-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
 
     :deep(.el-radio) {
       margin: 0;
-      padding: 16px;
-      width: 100%;
       height: auto;
+      width: 100%;
       display: flex;
       align-items: flex-start;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
 
-      &.is-bordered {
+      &.option-card {
+        padding: 16px;
         border-radius: 8px;
-        border-color: #e5e7eb;
+        height: 100px;
+        background: #f9fafb;
+        display: flex;
+        align-items: flex-start;
 
         &:hover {
-          border-color: #409EFF;
+          background: #f0f9ff;
+          border-color: #a3d0ff;
         }
 
         &.is-checked {
-          border-color: #409EFF;
           background: #f0f9ff;
+          border-color: #409EFF;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(64, 158, 255, 0.15);
+
+          .option-icon {
+            transform: scale(1.1);
+          }
+        }
+
+        .el-radio__input {
+          margin-top: 4px;
         }
       }
 
@@ -1276,24 +1377,201 @@ const handleSubmit = async () => {
 
 .radio-content {
   margin-left: 8px;
+  flex: 1;
 
-  .radio-title {
-    font-size: 14px;
-    font-weight: 500;
-    color: #1f2937;
-    margin-bottom: 4px;
+  .radio-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    gap: 8px;
+
+    .option-icon {
+      font-size: 20px;
+      color: #409EFF;
+      order: -1;
+    }
+
+    .radio-title {
+      font-size: 15px;
+      font-weight: 500;
+      color: #1f2937;
+    }
   }
 
   .radio-desc {
-    font-size: 12px;
-    color: #6b7280;
+    font-size: 13px;
+    color: #666;
+    line-height: 1.5;
+  }
+}
+
+.handle-details {
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 12px;
+
+  .details-title {
+    font-size: 15px;
+    margin-bottom: 12px;
+
+    .el-icon {
+      font-size: 16px;
+    }
+  }
+
+  .reason-section {
+    .reason-input {
+      :deep(.el-textarea__inner) {
+        padding: 12px;
+        font-size: 13px;
+        background: #fff;
+      }
+    }
+  }
+
+  .time-section {
+    .details-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #1f2937;
+      margin-bottom: 16px;
+
+      .el-icon {
+        font-size: 18px;
+        color: #409EFF;
+      }
+    }
+
+    .time-options {
+      display: flex;
+      justify-content: center;
+      
+      .time-radio-group {
+        display: inline-flex;
+        gap: 12px;
+
+        :deep(.el-radio-button) {
+          height: 36px;
+          
+          &:first-child .el-radio-button__inner {
+            border-radius: 8px 0 0 8px;
+          }
+          
+          &:last-child .el-radio-button__inner {
+            border-radius: 0 8px 8px 0;
+          }
+
+          .el-radio-button__inner {
+            height: 36px;
+            padding: 0 24px;
+            font-size: 14px;
+            border: 1px solid #dcdfe6;
+            background: #fff;
+            color: #606266;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            &:hover {
+              color: #409EFF;
+              border-color: #409EFF;
+              background: #f0f9ff;
+            }
+          }
+
+          &.is-active {
+            .el-radio-button__inner {
+              color: #fff;
+              background: #409EFF;
+              border-color: #409EFF;
+              box-shadow: 0 2px 6px rgba(64, 158, 255, 0.2);
+            }
+          }
+        }
+      }
+    }
   }
 }
 
 .dialog-footer {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   gap: 12px;
-  padding-top: 16px;
+
+  .cancel-btn {
+    min-width: 100px;
+    height: 36px;
+    border-color: #dcdfe6;
+    
+    &:hover {
+      border-color: #409EFF;
+      color: #409EFF;
+      background: #f0f9ff;
+    }
+  }
+
+  .confirm-btn {
+    min-width: 120px;
+    height: 36px;
+    font-size: 14px;
+    background: linear-gradient(45deg, #409EFF, #36cfc9);
+    border: none;
+    transition: all 0.3s;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(64, 158, 255, 0.3);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    .btn-icon {
+      font-size: 14px;
+      margin-right: 4px;
+    }
+  }
+}
+
+/* 处理纠纷弹窗样式优化 */
+:deep(.dispute-dialog) {
+  .el-dialog__header {
+    margin: 0;
+    padding: 20px 24px;
+    border-bottom: 1px solid #e5e7eb;
+    background: linear-gradient(135deg, #e6f4ff 0%, #f0f9ff 100%);
+    
+    .el-dialog__title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1f2937;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      &::before {
+        content: '';
+        width: 3px;
+        height: 18px;
+        background: #409EFF;
+        border-radius: 2px;
+      }
+    }
+  }
+
+  .el-dialog__body {
+    padding: 20px;
+    background: #fff;
+  }
+
+  .el-dialog__footer {
+    padding: 16px 24px;
+    border-top: 1px solid #e5e7eb;
+    background: #f9fafb;
+  }
 }
 </style> 
