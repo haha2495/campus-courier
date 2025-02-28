@@ -71,6 +71,13 @@
 				"navigationBarTitleText": "个人中心",
 				"navigationStyle": "custom"
 			}
+		},
+		{
+			"path": "pages/mine/profile/index",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "个人信息"
+			}
 		}
 	],
 	"globalStyle": {

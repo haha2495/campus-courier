@@ -5,7 +5,7 @@
     
     <!-- 个人信息卡片 -->
     <view class="user-card">
-      <view class="user-info">
+      <view class="user-info" @click="handleProfileClick">
         <view v-if="userInfo?.avatar" class="avatar">
           <image :src="userInfo.avatar" mode="aspectFill"></image>
         </view>
@@ -123,6 +123,13 @@ const handleLogout = () => {
         })
       }
     }
+  })
+}
+
+// 处理个人信息点击
+const handleProfileClick = () => {
+  uni.navigateTo({
+    url: '/pages/mine/profile/index'
   })
 }
 
