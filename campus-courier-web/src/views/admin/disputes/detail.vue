@@ -181,6 +181,7 @@
                       :key="index"
                       :src="url"
                       :preview-src-list="detail.dispute.evidence"
+                      :initial-index="index"
                       fit="cover"
                       class="evidence-image"
                       :hide-on-click-modal="false"
@@ -205,10 +206,30 @@
               <el-timeline-item
                   v-for="log in detail.taskLogs"
                   :key="log.id"
-                  :timestamp="log.actionTime"
+                  :timestamp="formatTime(log.actionTime)"
                   :type="getLogType(log.action)"
               >
-                {{ log.remark }}
+                <div class="log-content">
+                  <div class="log-text">{{ log.remark }}</div>
+                  <!-- 日志图片展示 -->
+                  <div v-if="log.images?.length" class="log-images">
+                    <el-image
+                      v-for="(url, index) in log.images"
+                      :key="index"
+                      :src="url"
+                      :preview-src-list="log.images"
+                      :initial-index="index"
+                      fit="cover"
+                      class="log-image"
+                    >
+                      <template #error>
+                        <div class="image-error">
+                          <el-icon><Picture /></el-icon>
+                        </div>
+                      </template>
+                    </el-image>
+                  </div>
+                </div>
               </el-timeline-item>
             </el-timeline>
           </div>
@@ -219,21 +240,42 @@
             <div class="message-list">
               <div
                   v-for="msg in detail.messages"
-                  :key="msg.id"
+                  :key="msg.message.id"
                   class="message-item"
+                  :class="{ 'self-message': msg.student.id === detail.publisher.id }"
               >
                 <el-avatar 
-                  :src="msg.sender?.avatar || null"
+                  :src="msg.student?.avatar || null"
                   size="small"
                 >
-                  {{ msg.sender?.name?.[0]?.toUpperCase() || '?' }}
+                  {{ msg.student?.name?.[0]?.toUpperCase() || '?' }}
                 </el-avatar>
                 <div class="message-content">
                   <div class="message-header">
-                    <span class="sender-name">{{ msg.sender?.name || '未知用户' }}</span>
-                    <span class="message-time">{{ msg.createTime || '' }}</span>
+                    <span class="sender-name">{{ msg.student?.name || '未知用户' }}</span>
+                    <span class="message-time">{{ formatTime(msg.message.createTime) }}</span>
                   </div>
-                  <div class="message-text">{{ msg.content || '无内容' }}</div>
+                  <div class="message-body">
+                    <div class="message-text">{{ msg.message.content || '无内容' }}</div>
+                    <!-- 消息图片展示 -->
+                    <div v-if="msg.message.images?.length && msg.message.images[0]" class="message-images">
+                      <el-image
+                        v-for="(url, index) in msg.message.images"
+                        :key="index"
+                        :src="url"
+                        :preview-src-list="msg.message.images"
+                        :initial-index="index"
+                        fit="cover"
+                        class="message-image"
+                      >
+                        <template #error>
+                          <div class="image-error">
+                            <el-icon><Picture /></el-icon>
+                          </div>
+                        </template>
+                      </el-image>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -784,15 +826,15 @@ onBeforeUnmount(() => {
 
         .evidence-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-          gap: 12px;
-          margin-top: 16px;
+          grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+          gap: 8px;
+          margin-top: 12px;
         }
 
         .evidence-image {
           width: 100%;
-          height: 100px;
-          border-radius: 8px;
+          height: 80px;
+          border-radius: 6px;
           overflow: hidden;
           cursor: pointer;
           
@@ -818,8 +860,8 @@ onBeforeUnmount(() => {
             background: #f5f7fa;
             
             .el-icon {
-              font-size: 24px;
-              margin-bottom: 8px;
+              font-size: 20px;
+              margin-bottom: 4px;
             }
           }
         }
@@ -882,15 +924,15 @@ onBeforeUnmount(() => {
 .evidence-list {
   .evidence-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    gap: 12px;
-    margin-top: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 8px;
+    margin-top: 12px;
   }
 
   :deep(.evidence-image) {
     width: 100%;
-    height: 100px;
-    border-radius: 8px;
+    height: 80px;
+    border-radius: 6px;
     overflow: hidden;
     cursor: pointer;
     
@@ -916,13 +958,68 @@ onBeforeUnmount(() => {
       background: #f5f7fa;
       
       .el-icon {
-        font-size: 24px;
-        margin-bottom: 8px;
+        font-size: 20px;
+        margin-bottom: 4px;
       }
     }
   }
 }
 
+/* 任务日志图片样式 */
+.log-images {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 8px;
+  margin-top: 8px;
+
+  .log-image {
+    width: 100%;
+    height: 80px;
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: pointer;
+
+    .el-image__inner {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    &:hover .el-image__inner {
+      transform: scale(1.05);
+    }
+  }
+}
+
+/* 消息图片样式 */
+.message-images {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 8px;
+  margin-top: 8px;
+
+  .message-image {
+    width: 100%;
+    height: 80px;
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: pointer;
+
+    .el-image__inner {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    &:hover .el-image__inner {
+      transform: scale(1.05);
+    }
+  }
+}
+
+/* 图片预览样式优化 */
 :deep(.el-image-viewer__wrapper) {
   .el-image-viewer__mask {
     background-color: rgba(0, 0, 0, 0.9);
@@ -930,6 +1027,7 @@ onBeforeUnmount(() => {
   
   .el-image-viewer__close {
     color: #fff;
+    font-size: 24px;
     
     &:hover {
       color: #409EFF;
@@ -940,9 +1038,18 @@ onBeforeUnmount(() => {
   .el-image-viewer__next {
     background-color: rgba(255, 255, 255, 0.1);
     color: #fff;
+    font-size: 24px;
     
     &:hover {
       background-color: rgba(255, 255, 255, 0.2);
+    }
+  }
+
+  .el-image-viewer__actions {
+    opacity: 0.9;
+    
+    &:hover {
+      opacity: 1;
     }
   }
 }
