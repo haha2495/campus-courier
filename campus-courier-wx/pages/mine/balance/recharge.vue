@@ -139,26 +139,42 @@ const handleRechargeSubmit = () => {
     content: `确认充值 ¥${amount} 吗？`,
     success: async (res) => {
       if (res.confirm) {
+        uni.showLoading({
+          title: '充值中...',
+          mask: true
+        })
+        
         try {
-          // 调用充值接口
-          const response = await userApi.recharge(amount)
-          if (response.code === 200) {
-            uni.showToast({
-              title: '充值成功',
-              icon: 'success'
+          await userApi.recharge(amount)
+          uni.showToast({
+            title: '充值成功',
+            icon: 'success'
+          })
+          
+          // 延迟返回上一页
+          setTimeout(() => {
+            // 获取页面栈
+            const pages = getCurrentPages()
+            const prevPage = pages[pages.length - 2]
+            
+            // 先调用刷新方法，再返回
+            if (prevPage && prevPage.$vm && typeof prevPage.$vm.refreshBalance === 'function') {
+              prevPage.$vm.refreshBalance()
+            }
+            
+            // 返回上一页
+            uni.navigateBack({
+              delta: 1
             })
-            // 延迟返回上一页
-            setTimeout(() => {
-              uni.navigateBack()
-            }, 1500)
-          } else {
-            throw new Error(response.message)
-          }
+          }, 1500)
         } catch (error) {
           uni.showToast({
-            title: error.message || '充值失败',
-            icon: 'none'
+            title: error.message || '充值失败，请重试',
+            icon: 'none',
+            duration: 2000
           })
+        } finally {
+          uni.hideLoading()
         }
       }
     }

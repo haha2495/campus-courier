@@ -57,6 +57,11 @@ const getUserInfo = async () => {
   }
 }
 
+// 刷新余额
+const refreshBalance = async () => {
+  await getUserInfo()
+}
+
 // 处理充值按钮点击
 const handleRecharge = () => {
   uni.navigateTo({
@@ -76,11 +81,12 @@ onMounted(() => {
   getUserInfo()
 })
 
-// 页面显示时刷新数据
+// 暴露页面方法
 defineExpose({
   onShow() {
     getUserInfo()
-  }
+  },
+  refreshBalance
 })
 </script>
 

@@ -42,5 +42,15 @@ export const userApi = {
             url: '/api/student/logout',
             method: 'POST'
         })
+    },
+    // 余额充值
+    recharge(amount) {
+        return http({
+            url: '/api/student/recharge',
+            method: 'POST',
+            data: {
+                amount
+            }
+        })
     }
 } 
