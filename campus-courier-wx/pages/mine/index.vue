@@ -6,10 +6,15 @@
     <!-- 个人信息卡片 -->
     <view class="user-card">
       <view class="user-info">
-        <image class="avatar" :src="userInfo?.avatar || '/static/images/default-avatar.png'" mode="aspectFill"></image>
+        <view v-if="userInfo?.avatar" class="avatar">
+          <image :src="userInfo.avatar" mode="aspectFill"></image>
+        </view>
+        <view v-else class="avatar text-avatar">
+          <text>{{ getFirstChar(userInfo?.name) }}</text>
+        </view>
         <view class="info-content">
-          <text class="nickname">{{ userInfo?.nickname || '--' }}</text>
-          <text class="subtitle">{{ userInfo?.studentId || '--' }}</text>
+          <text class="nickname">{{ userInfo?.name }}{{ userInfo?.studentNo ? '' : '--' }}</text>
+          <text class="subtitle">{{ userInfo?.studentNo || '--' }}</text>
         </view>
       </view>
       
@@ -66,6 +71,12 @@ const getSystemInfo = () => {
   } catch (e) {
     console.error('获取系统信息失败', e)
   }
+}
+
+// 获取用户名第一个字
+const getFirstChar = (name) => {
+  if (!name) return ''
+  return name.charAt(0)
 }
 
 // 获取用户信息
@@ -156,21 +167,43 @@ defineExpose({
       border-radius: 60rpx;
       border: 4rpx solid rgba(255, 255, 255, 0.3);
       box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      
+      image {
+        width: 100%;
+        height: 100%;
+      }
+      
+      &.text-avatar {
+        background: rgba(255, 255, 255, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        text {
+          font-size: 48rpx;
+          font-weight: 600;
+          color: #ffffff;
+        }
+      }
     }
     
     .info-content {
       margin-left: 24rpx;
+      flex: 1;
       
       .nickname {
         font-size: 36rpx;
         font-weight: 600;
-        margin-bottom: 8rpx;
+        margin-bottom: 12rpx;
         text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
+        display: block;
       }
       
       .subtitle {
         font-size: 26rpx;
-        opacity: 0.9;
+        opacity: 0.8;
+        display: block;
       }
     }
   }
