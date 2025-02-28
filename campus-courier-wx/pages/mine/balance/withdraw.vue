@@ -163,27 +163,28 @@ const handleWithdrawSubmit = () => {
         
         try {
           await userApi.withdraw(withdrawAmount)
+          
+          // 获取页面栈
+          const pages = getCurrentPages()
+          const prevPage = pages[pages.length - 2]
+          
+          // 先调用刷新方法
+          if (prevPage && prevPage.$vm && typeof prevPage.$vm.refreshBalance === 'function') {
+            await prevPage.$vm.refreshBalance()
+          }
+          
+          // 显示成功提示
           uni.showToast({
             title: '提现成功',
-            icon: 'success'
+            icon: 'success',
+            duration: 2000
           })
           
           // 延迟返回上一页
           setTimeout(() => {
-            // 获取页面栈
-            const pages = getCurrentPages()
-            const prevPage = pages[pages.length - 2]
-            
-            // 先调用刷新方法，再返回
-            if (prevPage && prevPage.$vm && typeof prevPage.$vm.refreshBalance === 'function') {
-              prevPage.$vm.refreshBalance()
-            }
-            
-            // 返回上一页
-            uni.navigateBack({
-              delta: 1
-            })
-          }, 1500)
+            uni.navigateBack({ delta: 1 })
+          }, 2000)
+          
         } catch (error) {
           uni.showToast({
             title: error.message || '提现失败，请重试',

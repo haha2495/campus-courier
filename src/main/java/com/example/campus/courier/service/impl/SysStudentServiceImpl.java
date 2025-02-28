@@ -422,14 +422,18 @@ public class SysStudentServiceImpl extends ServiceImpl<SysStudentMapper, SysStud
 
         // 扣减余额
         student.decreaseBalance(amount);
-        updateById(student);
+        if (!updateById(student)) {
+            throw new BusinessException("提现失败");
+        }
 
         // 创建提现记录
         sysBalanceRecordHandler.createRecord(
             student,
             amount,
             BalanceChangeTypeEnum.WITHDRAW.getCode(),
-            "余额提现"
+            String.format("提现%.2f元", amount)
         );
+
+        log.info("学生提现成功，学生ID：{}，提现金额：{}", studentId, amount);
     }
 }
