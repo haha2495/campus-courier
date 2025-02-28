@@ -11,7 +11,7 @@
  Target Server Version : 80031
  File Encoding         : 65001
 
- Date: 28/02/2025 09:41:41
+ Date: 28/02/2025 23:27:58
 */
 
 SET NAMES utf8mb4;
@@ -52,6 +52,68 @@ INSERT INTO `sys_admin` VALUES (15, 'yangsi', 'e10adc3949ba59abbe56e057f20f883e'
 INSERT INTO `sys_admin` VALUES (16, 'liuwu', 'e10adc3949ba59abbe56e057f20f883e', '刘五A3', 'http://127.0.0.1:9001/static/images/33f439b8-36b1-4651-b254-1fb24589e310.png', 1, '2024-01-15 15:30:00');
 
 -- ----------------------------
+-- Table structure for sys_balance_record
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_balance_record`;
+CREATE TABLE `sys_balance_record`  (
+  `id` int(0) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `student_id` int(0) NOT NULL COMMENT '学生ID',
+  `amount` decimal(10, 2) NOT NULL COMMENT '变动金额',
+  `type` tinyint(0) NOT NULL COMMENT '变动类型：1-充值，2-提现，3-收入，4-支出',
+  `before_balance` decimal(10, 2) NOT NULL COMMENT '变动前余额',
+  `after_balance` decimal(10, 2) NOT NULL COMMENT '变动后余额',
+  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '变动说明',
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '余额变动记录表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_balance_record
+-- ----------------------------
+INSERT INTO `sys_balance_record` VALUES (6, 28, 10.00, 1, 0.00, 10.00, '充值10.00元', '2025-02-28 15:24:29');
+INSERT INTO `sys_balance_record` VALUES (7, 28, 10.00, 1, 10.00, 20.00, '充值10.00元', '2025-02-28 15:27:00');
+
+-- ----------------------------
+-- Table structure for sys_dispute
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_dispute`;
+CREATE TABLE `sys_dispute`  (
+  `id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `task_id` bigint(0) NOT NULL COMMENT '关联的任务ID',
+  `initiator_id` bigint(0) NOT NULL COMMENT '发起人ID(学生ID)',
+  `respondent_id` bigint(0) NOT NULL COMMENT '被投诉人ID(学生ID)',
+  `type` tinyint(0) NOT NULL COMMENT '纠纷类型:1-送达与实际不符,2-态度恶劣,3-商品损坏,4-其他',
+  `status` tinyint(0) NOT NULL DEFAULT 0 COMMENT '纠纷状态:0-待处理,1-处理中,2-已结束,3-已发布纠纷大厅',
+  `title` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '纠纷标题',
+  `content` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '纠纷内容描述',
+  `evidence` json NULL COMMENT '证据图片列表,JSON数组存储图片URL',
+  `admin_remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '管理员处理备注',
+  `result` tinyint(0) NULL DEFAULT NULL COMMENT '处理结果:1-支持发起人,2-支持被投诉人',
+  `compensation_amount` decimal(10, 2) NULL DEFAULT 0.00 COMMENT '赔偿金额',
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单纠纷表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_dispute
+-- ----------------------------
+INSERT INTO `sys_dispute` VALUES (1, 14, 27, 28, 5, 0, '送错了', '我要吃的，不要喝的', '[\"http://127.0.0.1:9001/static/images/357a04ec-015a-42f4-9369-04a86e0b3e4e.png\", \"http://127.0.0.1:9001/static/images/0a2d1a0d-f37a-44f8-9cd3-bfd475b2c147.png\"]', NULL, NULL, 0.00, '2025-02-28 15:00:15');
+
+-- ----------------------------
+-- Table structure for sys_dispute_support
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_dispute_support`;
+CREATE TABLE `sys_dispute_support`  (
+  `id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `dispute_id` bigint(0) NOT NULL COMMENT '关联的纠纷ID',
+  `student_id` bigint(0) NOT NULL COMMENT '支持者ID(学生ID)',
+  `support_type` tinyint(0) NOT NULL COMMENT '支持类型:1-支持发起人,2-支持被投诉人',
+  `reason` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '支持原因',
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '纠纷支持表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
 -- Table structure for sys_student
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_student`;
@@ -71,25 +133,26 @@ CREATE TABLE `sys_student`  (
   `identity_type` tinyint(0) NOT NULL COMMENT '身份类型',
   `status` tinyint(1) NOT NULL DEFAULT 1 COMMENT '状态：1-正常，0-禁用',
   `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `balance` decimal(19, 2) NOT NULL DEFAULT 0.00 COMMENT '账户余额',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 29 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '学生信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_student
 -- ----------------------------
-INSERT INTO `sys_student` VALUES (15, '202413422342', 'a198b5dce46e01d65288e9ac0035a7a0', '王溜溜', 1, 'http://127.0.0.1:9001/static/images/33f439b8-36b1-4651-b254-1fb24589e310.png', 'qweasd@qq.com', '理学院', '化学', '2024级', '化学2401班', 2024, 4, 1, '2025-02-15 17:55:10');
-INSERT INTO `sys_student` VALUES (17, '20200102', '20200102L', '李四', 2, NULL, 'lisi@example.com', '信息科学与工程学院', '计算机科学与技术', '2023级', '计科2301班', 2023, 4, 1, '2025-02-15 17:55:48');
-INSERT INTO `sys_student` VALUES (18, '20200103', '8ad203790042a5d5eb3b682e0c188c9b', '王五', 1, 'http://127.0.0.1:9001/static/images/33f439b8-36b1-4651-b254-1fb24589e310.png', '1wangwu@example.com', '信息科学与工程学院', '计算机科学与技术', '2023级', '计科2301班', 2023, 4, 1, '2025-02-15 17:55:48');
-INSERT INTO `sys_student` VALUES (19, '20200201', '072bc5a7fb648b0fe67a4d57e2ce09e3', '赵六', 2, NULL, 'zhaoliu@example.com', '信息科学与工程学院', '计算机科学与技术', '2023级', '计科2301班', 2023, 4, 1, '2025-02-15 17:55:48');
-INSERT INTO `sys_student` VALUES (20, '20200202', '1dcd326eb25842fe087eca055ec599f2', '钱七', 1, NULL, 'qianqi@example.com', '信息科学与工程学院', '计算机科学与技术', '2023级', '计科2301班', 2023, 4, 1, '2025-02-15 17:55:48');
-INSERT INTO `sys_student` VALUES (21, '20210101', '06fb8c6aacc8c25e6eef07703894ccc3', '孙八', 2, NULL, 'sunba@example.com', '信息科学与工程学院', '计算机科学与技术', '2023级', '计科2302班', 2023, 4, 1, '2025-02-15 17:55:48');
-INSERT INTO `sys_student` VALUES (22, '20210102', '2281532db98eb10945563ca5b4be0e59', '周九', 1, NULL, 'zhoujiu@example.com', '信息科学与工程学院', '计算机科学与技术', '2023级', '计科2302班', 2023, 4, 1, '2025-02-15 17:55:48');
-INSERT INTO `sys_student` VALUES (23, '20210201', 'd2e51e667322337b41ee97984d6c76f7', '吴十', 2, NULL, 'wushi@example.com', '信息科学与工程学院', '计算机科学与技术', '2023级', '计科2302班', 2023, 4, 1, '2025-02-15 17:55:48');
-INSERT INTO `sys_student` VALUES (24, '20210202', '1c47fbacb378e46ed3db1c9fa17894cc', '郑十一', 1, NULL, 'zheng11@example.com', '信息科学与工程学院', '计算机科学与技术', '2023级', '计科2302班', 2023, 4, 1, '2025-02-15 17:55:48');
-INSERT INTO `sys_student` VALUES (25, '20220101', '9893b72c6c4243c0f88979cfe8682f1e', '王十二', 2, NULL, 'wang12@example.com', '信息科学与工程学院', '计算机科学与技术', '2023级', '计科2302班', 2023, 4, 1, '2025-02-15 17:55:48');
-INSERT INTO `sys_student` VALUES (26, '20220102', '5aeb0ff370c065fa5b2f92132514d6fb', '李十三', 1, NULL, 'li13@example.com', '信息科学与工程学院', '计算机科学与技术', '2024级', '计科2403班', 2024, 4, 0, '2025-02-15 17:55:48');
-INSERT INTO `sys_student` VALUES (27, '20220201', '2e2ef9057a96e8b26677985672aa5c76', '张十四', 2, NULL, 'zhang14@example.com', '信息科学与工程学院', '计算机科学与技术', '2024级', '计科2403班', 2024, 4, 1, '2025-02-15 17:55:48');
-INSERT INTO `sys_student` VALUES (28, '20220202', '7186dde092fae447be6a242809b3a7a7', '刘十五', 1, NULL, 'liu15@example.com', '信息科学与工程学院', '计算机科学与技术', '2024级', '计科2403班', 2024, 4, 1, '2025-02-15 17:55:48');
+INSERT INTO `sys_student` VALUES (15, '202413422342', 'a198b5dce46e01d65288e9ac0035a7a0', '王溜溜', 1, 'http://127.0.0.1:9001/static/images/33f439b8-36b1-4651-b254-1fb24589e310.png', 'qweasd@qq.com', '理学院', '化学', '2024级', '化学2401班', 2024, 4, 1, '2025-02-15 17:55:10', 0.00);
+INSERT INTO `sys_student` VALUES (17, '20200102', '573fbcaea229c2302cd7dac43ee95bcf', '李四', 2, NULL, 'lisi@example.com', '信息科学与工程学院', '计算机科学与技术', '2023级', '计科2301班', 2023, 4, 1, '2025-02-15 17:55:48', 0.00);
+INSERT INTO `sys_student` VALUES (18, '20200103', '8ad203790042a5d5eb3b682e0c188c9b', '王五', 1, 'http://127.0.0.1:9001/static/images/33f439b8-36b1-4651-b254-1fb24589e310.png', '1wangwu@example.com', '信息科学与工程学院', '计算机科学与技术', '2023级', '计科2301班', 2023, 4, 1, '2025-02-15 17:55:48', 0.00);
+INSERT INTO `sys_student` VALUES (19, '20200201', '072bc5a7fb648b0fe67a4d57e2ce09e3', '赵六', 2, NULL, 'zhaoliu@example.com', '信息科学与工程学院', '计算机科学与技术', '2023级', '计科2301班', 2023, 4, 1, '2025-02-15 17:55:48', 0.00);
+INSERT INTO `sys_student` VALUES (20, '20200202', '1dcd326eb25842fe087eca055ec599f2', '钱七', 1, NULL, 'qianqi@example.com', '信息科学与工程学院', '计算机科学与技术', '2023级', '计科2301班', 2023, 4, 1, '2025-02-15 17:55:48', 0.00);
+INSERT INTO `sys_student` VALUES (21, '20210101', '06fb8c6aacc8c25e6eef07703894ccc3', '孙八', 2, NULL, 'sunba@example.com', '信息科学与工程学院', '计算机科学与技术', '2023级', '计科2302班', 2023, 4, 1, '2025-02-15 17:55:48', 0.00);
+INSERT INTO `sys_student` VALUES (22, '20210102', '2281532db98eb10945563ca5b4be0e59', '周九', 1, NULL, 'zhoujiu@example.com', '信息科学与工程学院', '计算机科学与技术', '2023级', '计科2302班', 2023, 4, 1, '2025-02-15 17:55:48', 0.00);
+INSERT INTO `sys_student` VALUES (23, '20210201', 'd2e51e667322337b41ee97984d6c76f7', '吴十', 2, NULL, 'wushi@example.com', '信息科学与工程学院', '计算机科学与技术', '2023级', '计科2302班', 2023, 4, 1, '2025-02-15 17:55:48', 0.00);
+INSERT INTO `sys_student` VALUES (24, '20210202', '20210202Z', '郑十一', 1, NULL, 'zheng11@example.com', '信息科学与工程学院', '计算机科学与技术', '2023级', '计科2302班', 2023, 4, 1, '2025-02-15 17:55:48', 0.00);
+INSERT INTO `sys_student` VALUES (25, '20220101', '9893b72c6c4243c0f88979cfe8682f1e', '王十二', 2, NULL, 'wang12@example.com', '信息科学与工程学院', '计算机科学与技术', '2023级', '计科2302班', 2023, 4, 1, '2025-02-15 17:55:48', 0.00);
+INSERT INTO `sys_student` VALUES (26, '20220102', '5aeb0ff370c065fa5b2f92132514d6fb', '李十三', 1, NULL, 'li13@example.com', '信息科学与工程学院', '计算机科学与技术', '2024级', '计科2403班', 2024, 4, 0, '2025-02-15 17:55:48', 0.00);
+INSERT INTO `sys_student` VALUES (27, '20220201', '2e2ef9057a96e8b26677985672aa5c76', '张十四', 2, NULL, 'zhang14@example.com', '信息科学与工程学院', '计算机科学与技术', '2024级', '计科2403班', 2024, 4, 1, '2025-02-15 17:55:48', 0.00);
+INSERT INTO `sys_student` VALUES (28, '20220202', '7186dde092fae447be6a242809b3a7a7', '刘十五', 1, 'http://127.0.0.1:9001/static/images/7a1c4c45-f252-4708-93ab-16ca0cbdd79e.png', 'liu15@example.com', '信息科学与工程学院', '计算机科学与技术', '2024级', '计科2403班', 2024, 4, 1, '2025-02-15 17:55:48', 20.00);
 
 -- ----------------------------
 -- Table structure for sys_student_record
@@ -130,6 +193,9 @@ INSERT INTO `sys_student_record` VALUES (20, 17, 4, '账号被禁用', '2025-02-
 INSERT INTO `sys_student_record` VALUES (21, 17, 2, '重置密码为：20200102L', '2025-02-15 10:29:08');
 INSERT INTO `sys_student_record` VALUES (22, 17, 3, '账号被启用', '2025-02-16 04:00:29');
 INSERT INTO `sys_student_record` VALUES (55, 17, 2, '重置密码为：20200102L', '2025-02-23 06:30:59');
+INSERT INTO `sys_student_record` VALUES (56, 17, 2, '重置密码为：20200102L', '2025-02-28 12:39:00');
+INSERT INTO `sys_student_record` VALUES (57, 24, 2, '重置密码为：20210202Z', '2025-02-28 12:39:08');
+INSERT INTO `sys_student_record` VALUES (58, 17, 2, '重置密码为：20200102L', '2025-02-28 12:41:52');
 
 -- ----------------------------
 -- Table structure for sys_task
@@ -175,7 +241,7 @@ INSERT INTO `sys_task` VALUES (10, 'TASK2025022613123425', '帮带午餐盖饭',
 INSERT INTO `sys_task` VALUES (11, 'TASK2025022613154267', '购买创新实验材料', '需要去文具店购买一些创新实验材料，清单已经列好', 27, NULL, 23, 0, 25.00, 1, 222.00, '校外新华文具店', '工程学院实验楼204', 1.20, '中件', '2025-02-26 16:30:00', '杨教授', '13698765432', '[\"http://127.0.0.1:9001/static/images/33f439b8-36b1-4651-b254-1fb24589e310.png\"]', '采购清单已上传，如有缺货请电话联系确认是否替换', '2025-02-26 13:15:42');
 INSERT INTO `sys_task` VALUES (12, 'TASK2025022613182039', '中午奶茶配送', '帮忙买5杯奶茶，给实验室小伙伴们解暑', 27, NULL, 1, 5, 15.00, 0, NULL, '东门蜜雪冰城', '理工楼B区502实验室', 1.50, '中件', '2025-02-26 13:45:00', '周组长', '13876543210', '[]', '5杯不同口味：2杯多肉葡萄，1杯芋泥波波，2杯椰椰奶冻，糖度冰度常规', '2025-02-26 13:18:20');
 INSERT INTO `sys_task` VALUES (13, 'TASK2025022613202354', '打印课程PPT和资料', '老师课件和复习资料打印，大约80页，黑白双面打印', 27, NULL, 7, 0, 20.00, 0, NULL, '教学楼下打印店', '宿舍9栋328', 0.50, '小件', '2025-02-26 19:00:00', '郑同学', '13912345678', '[\"http://127.0.0.1:9001/static/images/33f439b8-36b1-4651-b254-1fb24589e310.png\"]', '文件已压缩上传，请全部打印出来并装订成册', '2025-02-26 13:20:23');
-INSERT INTO `sys_task` VALUES (14, 'TASK2025022613224183', '食堂窗口排队', '中午食堂特价窗口人太多，帮忙排队买份红烧排骨套餐', 27, 28, 3, 2, 15.00, 1, 5.00, '第二食堂一楼特价窗口', '学生活动中心排练室', 0.80, '小件', '2025-02-26 12:00:00', '冯社长', '13887654321', '[]', '今天中午有特价活动，可能需要排队15-20分钟，辛苦了', '2025-02-26 13:22:41');
+INSERT INTO `sys_task` VALUES (14, 'TASK2025022613224183', '食堂窗口排队', '中午食堂特价窗口人太多，帮忙排队买份红烧排骨套餐', 27, 28, 3, 7, 15.00, 1, 5.00, '第二食堂一楼特价窗口', '学生活动中心排练室', 0.80, '小件', '2025-02-26 12:00:00', '冯社长', '13887654321', '[]', '今天中午有特价活动，可能需要排队15-20分钟，辛苦了', '2025-02-26 13:22:41');
 INSERT INTO `sys_task` VALUES (15, 'TASK2025022613252697', '借篮球场地并买水', '帮忙去体育馆借一个篮球并预约半场地，顺便带两瓶水', 27, 28, 29, 8, 20.00, 0, NULL, '大学生活动中心', '篮球场', 1.50, '中件', '2025-02-26 15:00:00', '潘队长', '13698765432', '[]', '需要用学生证借篮球，我的学生证会给你，请帮忙预约16:00-18:00的场地', '2025-02-26 13:25:26');
 INSERT INTO `sys_task` VALUES (16, 'TASK2025022613281504', '取三个京东快递', '帮忙取三个京东快递，都是衣服和书籍', 28, NULL, 2, 5, 18.00, 0, NULL, '西区京东派送点', '文科楼教师办公室302', 4.00, '中件', '2025-02-26 16:30:00', '何老师', '13566778899', '[]', '取件码将通过短信发送，请送到办公室，如果我不在请放前台', '2025-02-26 13:28:15');
 
@@ -194,7 +260,7 @@ CREATE TABLE `sys_task_evaluation`  (
   `anonymous` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否匿名评价（0-否，1-是）',
   `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '任务评价表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '任务评价表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_task_evaluation
@@ -214,27 +280,11 @@ CREATE TABLE `sys_task_log`  (
   `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注说明',
   `action_time` datetime(0) NOT NULL COMMENT '操作时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 25 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '任务日志表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 31 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '任务日志表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_task_log
 -- ----------------------------
-INSERT INTO `sys_task_log` VALUES (2, 1, NULL, 1, NULL, '发布任务-外卖配送', '2025-02-26 12:52:03');
-INSERT INTO `sys_task_log` VALUES (3, 2, NULL, 1, NULL, '发布任务-快递代取', '2025-02-26 12:54:09');
-INSERT INTO `sys_task_log` VALUES (4, 3, NULL, 1, NULL, '发布任务-代替排队', '2025-02-26 12:56:21');
-INSERT INTO `sys_task_log` VALUES (5, 4, NULL, 1, NULL, '发布任务-大件物流', '2025-02-26 13:01:45');
-INSERT INTO `sys_task_log` VALUES (6, 5, NULL, 1, NULL, '发布任务-快递代取', '2025-02-26 13:04:32');
-INSERT INTO `sys_task_log` VALUES (7, 6, NULL, 1, NULL, '发布任务-文档打印', '2025-02-26 13:06:19');
-INSERT INTO `sys_task_log` VALUES (8, 7, NULL, 1, NULL, '发布任务-夜宵配送', '2025-02-26 13:08:27');
-INSERT INTO `sys_task_log` VALUES (9, 8, NULL, 1, NULL, '发布任务-自习代占', '2025-02-26 13:10:15');
-INSERT INTO `sys_task_log` VALUES (10, 9, NULL, 1, NULL, '发布任务-餐饮外卖', '2025-02-26 13:12:34');
-INSERT INTO `sys_task_log` VALUES (11, 10, NULL, 1, NULL, '发布任务-代跑腿', '2025-02-26 13:15:42');
-INSERT INTO `sys_task_log` VALUES (12, 11, NULL, 1, NULL, '发布任务-外卖配送', '2025-02-26 13:18:20');
-INSERT INTO `sys_task_log` VALUES (13, 12, NULL, 1, NULL, '发布任务-文档打印', '2025-02-26 13:20:23');
-INSERT INTO `sys_task_log` VALUES (14, 13, NULL, 1, NULL, '发布任务-代替排队', '2025-02-26 13:22:41');
-INSERT INTO `sys_task_log` VALUES (15, 14, NULL, 1, NULL, '发布任务-体育用品', '2025-02-26 13:25:26');
-INSERT INTO `sys_task_log` VALUES (16, 15, NULL, 1, NULL, '发布任务-快递代取', '2025-02-26 13:28:15');
-INSERT INTO `sys_task_log` VALUES (17, 16, NULL, 6, NULL, '取消任务:取三个京东快递', '2025-02-26 17:26:49');
 INSERT INTO `sys_task_log` VALUES (21, 15, 28, 2, NULL, '接受任务:借篮球场地并买水', '2025-02-27 08:47:10');
 INSERT INTO `sys_task_log` VALUES (22, 15, 28, 2, NULL, '接受任务:借篮球场地并买水', '2025-02-27 09:08:46');
 INSERT INTO `sys_task_log` VALUES (23, 15, 28, 4, NULL, '开始执行任务:借篮球场地并买水', '2025-02-27 09:20:10');
@@ -243,6 +293,8 @@ INSERT INTO `sys_task_log` VALUES (25, 14, 28, 4, '[]', '开始执行任务:食�
 INSERT INTO `sys_task_log` VALUES (26, 15, 28, 5, '[]', '送达任务:借篮球场地并买水', '2025-02-27 19:54:29');
 INSERT INTO `sys_task_log` VALUES (27, 12, 27, 3, '[]', '取消任务:中午奶茶配送', '2025-02-27 20:10:36');
 INSERT INTO `sys_task_log` VALUES (28, 15, 27, 6, '[]', '确认完成任务:借篮球场地并买水', '2025-02-27 20:17:06');
+INSERT INTO `sys_task_log` VALUES (29, 14, 28, 5, '[]', '送达任务:食堂窗口排队', '2025-02-28 12:30:51');
+INSERT INTO `sys_task_log` VALUES (30, 14, 27, 7, '[\"http://127.0.0.1:9001/static/images/357a04ec-015a-42f4-9369-04a86e0b3e4e.png\", \"http://127.0.0.1:9001/static/images/0a2d1a0d-f37a-44f8-9cd3-bfd475b2c147.png\"]', '提交纠纷：送错了', '2025-02-28 15:00:15');
 
 -- ----------------------------
 -- Table structure for sys_task_message
@@ -262,7 +314,7 @@ CREATE TABLE `sys_task_message`  (
 -- Records of sys_task_message
 -- ----------------------------
 INSERT INTO `sys_task_message` VALUES (1, 14, 28, 'asdasd', '[]', '2025-02-27 18:11:13');
-INSERT INTO `sys_task_message` VALUES (2, 14, 28, '123123', '[\"http://127.0.0.1:9001/static/images/5408fdf6-c5ba-44a3-a417-da031fe0562d.png\", \"http://127.0.0.1:9001/static/images/761f814d-0965-42c8-9200-a1e0958217db.png\"]', '2025-02-27 18:19:01');
+INSERT INTO `sys_task_message` VALUES (2, 14, 28, '123123', '[\"http://127.0.0.1:9001/static/images/357a04ec-015a-42f4-9369-04a86e0b3e4e.png\", \"http://127.0.0.1:9001/static/images/0a2d1a0d-f37a-44f8-9cd3-bfd475b2c147.png\"]', '2025-02-27 18:19:01');
 INSERT INTO `sys_task_message` VALUES (3, 14, 28, '123123', '[]', '2025-02-27 18:19:04');
 INSERT INTO `sys_task_message` VALUES (4, 14, 28, '123123', '[]', '2025-02-27 18:19:07');
 INSERT INTO `sys_task_message` VALUES (5, 14, 28, '123123', '[]', '2025-02-27 19:19:40');
@@ -273,13 +325,13 @@ INSERT INTO `sys_task_message` VALUES (9, 14, 28, '3333', '[]', '2025-02-27 19:2
 INSERT INTO `sys_task_message` VALUES (10, 14, 28, '1323123', '[]', '2025-02-27 19:26:29');
 INSERT INTO `sys_task_message` VALUES (11, 15, 28, '我已经购买完毕', '[null]', '2025-02-27 19:27:04');
 INSERT INTO `sys_task_message` VALUES (12, 15, 28, '好的 我已经购买完毕', '[]', '2025-02-27 19:29:54');
-INSERT INTO `sys_task_message` VALUES (13, 15, 28, '请你查看', '[\"http://127.0.0.1:9001/static/images/5f8c13fa-693c-47aa-b6d0-f721523080ce.png\"]', '2025-02-27 19:30:01');
-INSERT INTO `sys_task_message` VALUES (14, 14, 28, '123123', '[\"http://127.0.0.1:9001/static/images/8f2e4614-1d5f-4331-86c6-c71202e33575.png\"]', '2025-02-27 19:32:20');
-INSERT INTO `sys_task_message` VALUES (15, 15, 28, '你看', '[\"http://127.0.0.1:9001/static/images/dcf53cdf-3320-4e82-a931-9642a8724c81.png\"]', '2025-02-27 19:34:44');
-INSERT INTO `sys_task_message` VALUES (16, 15, 28, '123123', '[\"http://127.0.0.1:9001/static/images/b34fa082-f35d-4291-9def-359b31c5db1f.png\"]', '2025-02-27 19:35:47');
+INSERT INTO `sys_task_message` VALUES (13, 15, 28, '请你查看', '[\"http://127.0.0.1:9001/static/images/357a04ec-015a-42f4-9369-04a86e0b3e4e.png\", \"http://127.0.0.1:9001/static/images/0a2d1a0d-f37a-44f8-9cd3-bfd475b2c147.png\"]', '2025-02-27 19:30:01');
+INSERT INTO `sys_task_message` VALUES (14, 14, 28, '123123', '[\"http://127.0.0.1:9001/static/images/357a04ec-015a-42f4-9369-04a86e0b3e4e.png\", \"http://127.0.0.1:9001/static/images/0a2d1a0d-f37a-44f8-9cd3-bfd475b2c147.png\"]', '2025-02-27 19:32:20');
+INSERT INTO `sys_task_message` VALUES (15, 15, 28, '你看', '[\"http://127.0.0.1:9001/static/images/357a04ec-015a-42f4-9369-04a86e0b3e4e.png\", \"http://127.0.0.1:9001/static/images/0a2d1a0d-f37a-44f8-9cd3-bfd475b2c147.png\"]', '2025-02-27 19:34:44');
+INSERT INTO `sys_task_message` VALUES (16, 15, 28, '123123', '[\"http://127.0.0.1:9001/static/images/357a04ec-015a-42f4-9369-04a86e0b3e4e.png\", \"http://127.0.0.1:9001/static/images/0a2d1a0d-f37a-44f8-9cd3-bfd475b2c147.png\"]', '2025-02-27 19:35:47');
 INSERT INTO `sys_task_message` VALUES (17, 15, 28, '123', '[]', '2025-02-27 19:36:21');
 INSERT INTO `sys_task_message` VALUES (18, 15, 27, '好的 看到了', '[]', '2025-02-27 21:34:02');
-INSERT INTO `sys_task_message` VALUES (19, 14, 27, '是这个', '[]', '2025-02-27 22:30:40');
+INSERT INTO `sys_task_message` VALUES (19, 14, 27, '是这个', '[\"http://127.0.0.1:9001/static/images/357a04ec-015a-42f4-9369-04a86e0b3e4e.png\", \"http://127.0.0.1:9001/static/images/0a2d1a0d-f37a-44f8-9cd3-bfd475b2c147.png\"]', '2025-02-27 22:30:40');
 INSERT INTO `sys_task_message` VALUES (20, 15, 27, '123123', '[]', '2025-02-27 22:56:31');
 INSERT INTO `sys_task_message` VALUES (21, 15, 27, '12313', '[\"http://127.0.0.1:9001/static/images/f7284408-d2a8-4a1c-a0d4-704c876df5ce.png\"]', '2025-02-27 22:56:35');
 
