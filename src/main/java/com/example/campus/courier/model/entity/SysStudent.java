@@ -11,6 +11,7 @@ import lombok.Data;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.StringUtils;
 
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
@@ -66,6 +67,9 @@ public class SysStudent {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;
 
+    @Schema(description = "账户余额")
+    private BigDecimal balance;
+
     /**
      * 初始化学生信息
      */
@@ -87,6 +91,7 @@ public class SysStudent {
         this.createTime = LocalDateTime.now();
         this.avatar = avatar;
         this.email = email;
+        this.balance = BigDecimal.ZERO;
         return this;
     }
 
@@ -109,4 +114,8 @@ public class SysStudent {
             this.password = DigestUtils.md5DigestAsHex(request.getPassword().getBytes(StandardCharsets.UTF_8));
         }
     }
-} 
+
+    public void updatePassword(String newPassword) {
+        this.password = DigestUtils.md5DigestAsHex(newPassword.getBytes(StandardCharsets.UTF_8));
+    }
+}

@@ -17,11 +17,7 @@ import com.example.campus.courier.model.entity.SysStudent;
 import com.example.campus.courier.model.enums.StudentRecordType;
 import com.example.campus.courier.model.enums.UserRoleEnum;
 import com.example.campus.courier.model.excel.StudentImportExcel;
-import com.example.campus.courier.model.request.student.StudentAddRequest;
-import com.example.campus.courier.model.request.student.StudentPageRequest;
-import com.example.campus.courier.model.request.student.StudentProfileUpdateRequest;
-import com.example.campus.courier.model.request.student.StudentUpdateRequest;
-import com.example.campus.courier.model.request.student.StudentChangePasswordRequest;
+import com.example.campus.courier.model.request.student.*;
 import com.example.campus.courier.model.response.ImportResult;
 import com.example.campus.courier.model.response.PageResult;
 import com.example.campus.courier.service.SysStudentService;
@@ -238,7 +234,7 @@ public class SysStudentServiceImpl extends ServiceImpl<SysStudentMapper, SysStud
         String newPassword = student.getStudentNo() + firstLetter;
 
         // 3. 更新密码
-        student.setPassword(newPassword);
+        student.updatePassword(newPassword);
         updateById(student);
 
         // 4. 添加重置密码记录
@@ -358,15 +354,14 @@ public class SysStudentServiceImpl extends ServiceImpl<SysStudentMapper, SysStud
         }
 
         // 更新密码
-        String newPasswordEncrypted = DigestUtils.md5DigestAsHex(request.getNewPassword().getBytes(StandardCharsets.UTF_8));
-        student.setPassword(newPasswordEncrypted);
+        student.updatePassword(request.getNewPassword());
         updateById(student);
-        
+
         // 添加修改密码记录
         sysStudentRecordHandler.createRecord(
-            userId,
-            StudentRecordType.CHANGE_PASSWORD,
-            "修改密码成功"
+                userId,
+                StudentRecordType.CHANGE_PASSWORD,
+                "修改密码成功"
         );
     }
 }
