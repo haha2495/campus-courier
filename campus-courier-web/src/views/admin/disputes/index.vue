@@ -213,7 +213,9 @@ const handleCurrentChange = (val) => {
 const handleView = (row) => {
   router.push({
     path: '/admin/disputes/detail',
-    query: {id: row.id}
+    query: {
+      taskId: row.task.id
+    }
   })
 }
 

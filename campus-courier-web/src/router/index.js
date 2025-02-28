@@ -71,6 +71,15 @@ const routes = [
                     requiresAuth: true,
                 },
             },
+            {
+                path: "disputes/detail",
+                name: "DisputeDetail",
+                component: () => import("../views/admin/disputes/detail.vue"),
+                meta: {
+                    title: "纠纷详情",
+                    requiresAuth: true,
+                },
+            },
         ],
     },
     // 根路径重定向到登录页
