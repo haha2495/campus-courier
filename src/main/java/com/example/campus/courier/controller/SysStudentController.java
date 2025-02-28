@@ -149,4 +149,14 @@ public class SysStudentController extends BaseController {
         sysStudentService.updateProfile(getLoginUserId(), request);
         return Result.success();
     }
+
+    @Operation(summary = "修改当前学生密码")
+    @PutMapping("/password")
+    public Result<Void> changePassword(
+            @Parameter(description = "修改密码请求", required = true)
+            @Valid @RequestBody StudentChangePasswordRequest request
+    ) {
+        sysStudentService.changePassword(getLoginUserId(), request);
+        return Result.success();
+    }
 } 

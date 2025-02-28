@@ -1,5 +1,6 @@
 package com.example.campus.courier.model.enums;
 
+import com.baomidou.mybatisplus.annotation.EnumValue;
 import lombok.Getter;
 
 @Getter
@@ -8,14 +9,15 @@ public enum StudentRecordType {
     RESET_PASSWORD(2, "重置密码"),
     ENABLE_ACCOUNT(3, "启用账号"),
     DISABLE_ACCOUNT(4, "禁用账号"),
-    ;
+    CHANGE_PASSWORD(5, "修改密码");
 
+    @EnumValue
     private final Integer code;
-    private final String desc;
+    private final String description;
 
-    StudentRecordType(Integer code, String desc) {
+    StudentRecordType(Integer code, String description) {
         this.code = code;
-        this.desc = desc;
+        this.description = description;
     }
 
     /**

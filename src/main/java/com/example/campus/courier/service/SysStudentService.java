@@ -8,6 +8,7 @@ import com.example.campus.courier.model.request.student.StudentAddRequest;
 import com.example.campus.courier.model.request.student.StudentPageRequest;
 import com.example.campus.courier.model.request.student.StudentProfileUpdateRequest;
 import com.example.campus.courier.model.request.student.StudentUpdateRequest;
+import com.example.campus.courier.model.request.student.StudentChangePasswordRequest;
 import com.example.campus.courier.model.response.ImportResult;
 import com.example.campus.courier.model.response.PageResult;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -116,4 +117,12 @@ public interface SysStudentService extends IService<SysStudent> {
      * @param request   更新请求
      */
     void updateProfile(Integer studentId, StudentProfileUpdateRequest request);
+
+    /**
+     * 修改密码
+     *
+     * @param userId 用户ID
+     * @param request 修改密码请求
+     */
+    void changePassword(Integer userId, StudentChangePasswordRequest request);
 }

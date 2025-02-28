@@ -21,6 +21,7 @@ import com.example.campus.courier.model.request.student.StudentAddRequest;
 import com.example.campus.courier.model.request.student.StudentPageRequest;
 import com.example.campus.courier.model.request.student.StudentProfileUpdateRequest;
 import com.example.campus.courier.model.request.student.StudentUpdateRequest;
+import com.example.campus.courier.model.request.student.StudentChangePasswordRequest;
 import com.example.campus.courier.model.response.ImportResult;
 import com.example.campus.courier.model.response.PageResult;
 import com.example.campus.courier.service.SysStudentService;
@@ -335,5 +336,37 @@ public class SysStudentServiceImpl extends ServiceImpl<SysStudentMapper, SysStud
         }
 
         log.info("更新学生个人信息成功，ID：{}", studentId);
+    }
+
+    @Override
+    public void changePassword(Integer userId, StudentChangePasswordRequest request) {
+        // 验证新密码和确认密码是否一致
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+            throw new BusinessException("新密码和确认密码不一致");
+        }
+
+        // 获取当前学生信息
+        SysStudent student = getById(userId);
+        if (student == null) {
+            throw new BusinessException("学生不存在");
+        }
+
+        // 验证原密码是否正确
+        String oldPasswordEncrypted = DigestUtils.md5DigestAsHex(request.getOldPassword().getBytes(StandardCharsets.UTF_8));
+        if (!oldPasswordEncrypted.equals(student.getPassword())) {
+            throw new BusinessException("原密码错误");
+        }
+
+        // 更新密码
+        String newPasswordEncrypted = DigestUtils.md5DigestAsHex(request.getNewPassword().getBytes(StandardCharsets.UTF_8));
+        student.setPassword(newPasswordEncrypted);
+        updateById(student);
+        
+        // 添加修改密码记录
+        sysStudentRecordHandler.createRecord(
+            userId,
+            StudentRecordType.CHANGE_PASSWORD,
+            "修改密码成功"
+        );
     }
 }
