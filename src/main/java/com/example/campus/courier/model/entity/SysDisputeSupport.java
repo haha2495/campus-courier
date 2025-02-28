@@ -15,13 +15,13 @@ public class SysDisputeSupport {
     
     @TableId(type = IdType.AUTO)
     @Schema(description = "主键ID")
-    private Long id;
+    private Integer id;
     
     @Schema(description = "关联的纠纷ID")
-    private Long disputeId;
+    private Integer disputeId;
     
     @Schema(description = "支持者ID(学生ID)")
-    private Long studentId;
+    private Integer studentId;
     
     @Schema(description = "支持类型:1-支持发起人,2-支持被投诉人")
     private Integer supportType;
