@@ -248,10 +248,6 @@
       </view>
     </view>
 
-    <!-- 添加一个固定位置的按钮导航到"我的任务"页面 -->
-    <view class="float-button" @click="goToMyTasks">
-      <text class="button-text">我的任务</text>
-    </view>
   </view>
 </template>
 
@@ -656,12 +652,6 @@ const loadIconCache = () => {
   iconCache.value = cache
 }
 
-// 添加直接导航到"我的任务"页面的方法
-const goToMyTasks = () => {
-  uni.navigateTo({
-    url: '/pages/my-tasks/index'
-  })
-}
 </script>
 
 <style lang="scss" scoped>

@@ -5,7 +5,7 @@
     
     <!-- 个人信息卡片 -->
     <view class="user-card">
-      <view class="user-info" @click="handleProfileClick">
+      <view class="user-info" @click="handleProfileClick" hover-class="user-info-hover">
         <view v-if="userInfo?.avatar" class="avatar">
           <image :src="userInfo.avatar" mode="aspectFill"></image>
         </view>
@@ -15,6 +15,10 @@
         <view class="info-content">
           <text class="nickname">{{ userInfo?.name }}{{ userInfo?.studentNo ? '' : '--' }}</text>
           <text class="subtitle">{{ userInfo?.studentNo || '--' }}</text>
+          <text class="edit-hint">点击编辑个人资料</text>
+        </view>
+        <view class="arrow-right">
+          <u-icon name="arrow-right" color="#ffffff" size="32"></u-icon>
         </view>
       </view>
       
@@ -191,6 +195,15 @@ defineExpose({
     display: flex;
     align-items: center;
     margin-bottom: 40rpx;
+    position: relative;
+    padding: 20rpx;
+    border-radius: 16rpx;
+    transition: all 0.3s ease;
+    
+    &-hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: scale(0.98);
+    }
     
     .avatar {
       width: 120rpx;
@@ -226,7 +239,7 @@ defineExpose({
       .nickname {
         font-size: 36rpx;
         font-weight: 600;
-        margin-bottom: 12rpx;
+        margin-bottom: 8rpx;
         text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
         display: block;
       }
@@ -235,7 +248,21 @@ defineExpose({
         font-size: 26rpx;
         opacity: 0.8;
         display: block;
+        margin-bottom: 8rpx;
       }
+      
+      .edit-hint {
+        font-size: 24rpx;
+        color: rgba(255, 255, 255, 0.9);
+        display: flex;
+        align-items: center;
+        gap: 4rpx;
+      }
+    }
+    
+    .arrow-right {
+      margin-left: 16rpx;
+      opacity: 0.8;
     }
   }
   
