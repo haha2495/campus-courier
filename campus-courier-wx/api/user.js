@@ -29,7 +29,11 @@ export const userApi = {
         return http({
             url: '/api/student/password',
             method: 'PUT',
-            data: data
+            data: {
+                oldPassword: data.oldPassword,
+                newPassword: data.newPassword,
+                confirmPassword: data.confirmPassword
+            }
         })
     }
 } 

@@ -91,6 +91,12 @@
       </view>
     </view>
 
+    <!-- 修改密码弹窗 -->
+    <change-password
+      v-model:show="showPasswordModal"
+      @success="handlePasswordSuccess"
+    />
+
   </view>
 </template>
 
@@ -98,12 +104,16 @@
 import {onMounted, ref} from 'vue'
 import {userApi} from '@/api/user'
 import {uploadApi} from '@/api/upload'
+import ChangePassword from '@/components/ChangePassword/index.vue'
 
 // 状态栏高度
 const statusBarHeight = ref(20)
 
 // 用户信息
 const userInfo = ref(null)
+
+// 修改密码弹窗显示状态
+const showPasswordModal = ref(false)
 
 // 获取系统信息
 const getSystemInfo = () => {
@@ -185,6 +195,19 @@ const handleChangeAvatar = () => {
   })
 }
 
+// 点击修改密码
+const handleChangePassword = () => {
+  showPasswordModal.value = true
+}
+
+// 修改密码成功回调
+const handlePasswordSuccess = () => {
+  // 可以在这里添加一些额外的处理逻辑
+  uni.showToast({
+    title: '密码修改成功',
+    icon: 'success'
+  })
+}
 
 onMounted(() => {
   getSystemInfo()
