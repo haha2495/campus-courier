@@ -1,4 +1,4 @@
-<template>
+ <template>
   <div class="dispute-detail">
     <!-- 顶部返回区域 -->
     <el-card class="header-card" shadow="hover">
@@ -81,6 +81,31 @@
               <div class="info-item">
                 <span class="info-label">送达地址</span>
                 <span class="info-value">{{ detail.task?.deliveryAddress || '无' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 时间信息 -->
+          <div class="time-section">
+            <h3 class="section-title">时间信息</h3>
+            <div class="info-content">
+              <div class="info-item">
+                <span class="info-label">发布时间</span>
+                <span class="info-value">{{ formatTime(detail.task?.createTime) || '无' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">期望送达</span>
+                <span class="info-value">{{ formatTime(detail.task?.expectedFinishTime) || '无' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 备注说明 -->
+          <div class="remark-section">
+            <h3 class="section-title">备注说明</h3>
+            <div class="info-content">
+              <div class="remark-content">
+                {{ detail.task?.notes || '暂无备注' }}
               </div>
             </div>
           </div>
@@ -615,6 +640,58 @@ onBeforeUnmount(() => {
           justify-content: space-between;
         }
       }
+    }
+  }
+}
+
+/* 时间信息区域 */
+.time-section {
+  margin-bottom: 24px;
+
+  .info-content {
+    background: #f9fafb;
+    border-radius: 8px;
+    overflow: hidden;
+
+    .info-item {
+      display: flex;
+      padding: 16px;
+      border-bottom: 1px solid #f0f0f0;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .info-label {
+        width: 100px;
+        color: #666;
+        font-size: 14px;
+      }
+
+      .info-value {
+        flex: 1;
+        color: #333;
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+/* 备注说明区域 */
+.remark-section {
+  margin-bottom: 24px;
+
+  .info-content {
+    background: #f9fafb;
+    border-radius: 8px;
+    overflow: hidden;
+
+    .remark-content {
+      padding: 16px;
+      color: #666;
+      font-size: 14px;
+      line-height: 1.6;
+      min-height: 60px;
     }
   }
 }
