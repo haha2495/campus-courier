@@ -107,6 +107,7 @@ import {
 import {ElMessage} from 'element-plus'
 import {DisputeStatusEnum} from '@/utils/enums/disputeEnums'
 import {pageDisputes} from '@/api/dispute'
+import { TaskStatusEnum } from '@/utils/enums/taskEnums'
 
 const router = useRouter()
 
@@ -127,12 +128,12 @@ const pageSize = ref(8)  // 默认每页显示8条
 
 // 获取状态类型
 const getStatusType = (status) => {
-  return DisputeStatusEnum.getType(status)
+  return TaskStatusEnum.getType(status)
 }
 
 // 获取状态文本
 const getStatusText = (status) => {
-  return DisputeStatusEnum.getDesc(status)
+  return TaskStatusEnum.getDesc(status)
 }
 
 // 选择状态
@@ -378,6 +379,37 @@ onMounted(() => {
       display: flex;
       align-items: center;
       gap: 4px;
+      
+      // 使用状态颜色
+      &.el-tag--info {
+        color: #1989fa;
+        background-color: #ecf5ff;
+        border-color: #d9ecff;
+      }
+      
+      &.el-tag--warning {
+        color: #ff9500;
+        background-color: #fff7e6;
+        border-color: #ffd591;
+      }
+      
+      &.el-tag--danger {
+        color: #ee0a24;
+        background-color: #feecef;
+        border-color: #fde2e5;
+      }
+      
+      &.el-tag--success {
+        color: #10B981;
+        background-color: #ECFDF5;
+        border-color: #D1FAE5;
+      }
+      
+      &.el-tag--primary {
+        color: #07c160;
+        background-color: #e8f8f1;
+        border-color: #d1f2e4;
+      }
     }
   }
 
