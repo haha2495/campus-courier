@@ -14,6 +14,7 @@ import com.example.campus.courier.mapper.handler.SysStudentRecordHandler;
 import com.example.campus.courier.mapper.handler.SysBalanceRecordHandler;
 import com.example.campus.courier.model.dto.DepartmentDTO;
 import com.example.campus.courier.model.dto.StudentRecordDTO;
+import com.example.campus.courier.model.entity.SysBalanceRecord;
 import com.example.campus.courier.model.entity.SysStudent;
 import com.example.campus.courier.model.enums.BalanceChangeTypeEnum;
 import com.example.campus.courier.model.enums.StudentRecordType;
@@ -435,5 +436,17 @@ public class SysStudentServiceImpl extends ServiceImpl<SysStudentMapper, SysStud
         );
 
         log.info("学生提现成功，学生ID：{}，提现金额：{}", studentId, amount);
+    }
+
+    @Override
+    public List<SysBalanceRecord> getBalanceRecords(Integer studentId) {
+        // 获取学生信息
+        SysStudent student = getById(studentId);
+        if (student == null) {
+            throw new BusinessException("学生不存在");
+        }
+
+        // 获取余额变动记录
+        return sysBalanceRecordHandler.getStudentBalanceRecords(studentId);
     }
 }

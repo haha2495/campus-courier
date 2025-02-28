@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.campus.courier.model.dto.DepartmentDTO;
 import com.example.campus.courier.model.dto.StudentRecordDTO;
 import com.example.campus.courier.model.entity.SysStudent;
+import com.example.campus.courier.model.entity.SysBalanceRecord;
 import com.example.campus.courier.model.request.student.StudentAddRequest;
 import com.example.campus.courier.model.request.student.StudentPageRequest;
 import com.example.campus.courier.model.request.student.StudentProfileUpdateRequest;
@@ -142,4 +143,12 @@ public interface SysStudentService extends IService<SysStudent> {
      * @param amount    提现金额
      */
     void withdraw(Integer studentId, BigDecimal amount);
+
+    /**
+     * 获取学生余额变动记录
+     *
+     * @param studentId 学生ID
+     * @return 余额变动记录列表
+     */
+    List<SysBalanceRecord> getBalanceRecords(Integer studentId);
 }

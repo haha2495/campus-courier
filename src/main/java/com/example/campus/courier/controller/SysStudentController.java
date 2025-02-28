@@ -7,6 +7,7 @@ import com.example.campus.courier.model.request.student.*;
 import com.example.campus.courier.model.response.ImportResult;
 import com.example.campus.courier.model.response.PageResult;
 import com.example.campus.courier.model.response.Result;
+import com.example.campus.courier.model.entity.SysBalanceRecord;
 import com.example.campus.courier.service.SysStudentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -172,5 +173,11 @@ public class SysStudentController extends BaseController {
     public Result<Void> withdraw(@Valid @RequestBody StudentWithdrawRequest request) {
         sysStudentService.withdraw(getLoginUserId(), request.getAmount());
         return Result.success();
+    }
+
+    @Operation(summary = "获取余额变动记录")
+    @GetMapping("/balance/records")
+    public Result<List<SysBalanceRecord>> getBalanceRecords() {
+        return Result.success(sysStudentService.getBalanceRecords(getLoginUserId()));
     }
 } 
