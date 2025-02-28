@@ -288,12 +288,12 @@
       </div>
 
       <template #footer>
-        <span class="dialog-footer">
-          <el-button @click="iconDialogVisible = false" class="cancel-button">取消</el-button>
-          <el-button type="primary" @click="confirmIconSelection" class="submit-button">
+        <div class="dialog-footer">
+          <el-button @click="iconDialogVisible = false" class="dialog-btn cancel-button">取消</el-button>
+          <el-button type="primary" @click="confirmIconSelection" class="dialog-btn submit-button">
             确认选择
           </el-button>
-        </span>
+        </div>
       </template>
     </el-dialog>
   </div>
@@ -1359,17 +1359,54 @@ onMounted(async () => {
   font-size: 16px;
 }
 
-.category-button {
-  margin-right: 10px;
-  margin-bottom: 10px;
-  border-radius: 20px;
-  transition: all 0.3s;
-  overflow: hidden;
+/* 优化图标分类选择器样式 */
+.icon-categories :deep(.el-radio-group) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
-.category-button:hover {
+.icon-categories :deep(.el-radio-button__inner) {
+  border-radius: 8px;
+  padding: 10px 16px;
+  height: auto;
+  line-height: 1.5;
+  font-size: 14px;
+  border: 1px solid #e4e7ed;
+  background-color: #ffffff;
+  color: #606266;
+  transition: all 0.3s ease;
+}
+
+.icon-categories :deep(.el-radio-button:first-child .el-radio-button__inner) {
+  border-radius: 8px;
+}
+
+.icon-categories :deep(.el-radio-button:last-child .el-radio-button__inner) {
+  border-radius: 8px;
+}
+
+.icon-categories :deep(.el-radio-button__orig-radio:checked + .el-radio-button__inner) {
+  background: linear-gradient(135deg, #6b8cce, #8662c7);
+  border-color: transparent;
+  color: #ffffff;
+  box-shadow: 0 5px 15px rgba(107, 140, 206, 0.3);
+}
+
+.icon-categories :deep(.el-radio-button:not(:first-child) .el-radio-button__inner) {
+  border-left: 1px solid #e4e7ed;
+}
+
+.icon-categories :deep(.el-radio-button__inner:hover) {
+  background-color: #f5f7fa;
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.icon-categories :deep(.el-radio-button__orig-radio:checked + .el-radio-button__inner:hover) {
+  background: linear-gradient(135deg, #6b8cce, #8662c7);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(107, 140, 206, 0.4);
 }
 
 .icon-grid {
@@ -1558,5 +1595,48 @@ onMounted(async () => {
     margin-right: 0;
     margin-bottom: 15px;
   }
+}
+
+/* 弹窗底部按钮样式优化 */
+.dialog-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  padding: 10px 0;
+  width: 100%;
+}
+
+.dialog-footer .dialog-btn {
+  min-width: 120px;
+  height: 40px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 20px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dialog-footer .cancel-button {
+  background-color: #f5f7fa;
+  border-color: #e4e7ed;
+  color: #606266;
+}
+
+.dialog-footer .cancel-button:hover {
+  background-color: #e9ecf2;
+  color: #333;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.dialog-footer .submit-button {
+  background: linear-gradient(135deg, #6b8cce, #8662c7);
+  border: none;
+  color: white;
+}
+
+.dialog-footer .submit-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(107, 140, 206, 0.4);
 }
 </style>
