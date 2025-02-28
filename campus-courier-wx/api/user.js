@@ -62,5 +62,12 @@ export const userApi = {
                 amount
             }
         })
+    },
+    // 获取余额变动记录
+    getBalanceRecords() {
+        return http({
+            url: '/api/student/balance/records',
+            method: 'GET'
+        })
     }
 } 

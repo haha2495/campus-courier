@@ -26,7 +26,28 @@
       
       <!-- 交易记录列表 -->
       <view v-else class="list-content">
-        <!-- 后续添加交易记录列表 -->
+        <view 
+          v-for="(record, index) in transactions" 
+          :key="record.id" 
+          class="transaction-item"
+          :class="{ 'no-border': index === transactions.length - 1 }"
+        >
+          <view class="left-content">
+            <view class="main-info">
+              <text class="transaction-type">{{ getTransactionType(record.type) }}</text>
+              <text 
+                class="transaction-amount"
+                :class="{ 'income': isIncome(record.type) }"
+              >{{ isIncome(record.type) ? '+' : '-' }}{{ record.amount }}</text>
+            </view>
+            <view class="sub-info">
+              <text class="transaction-time">{{ formatTime(record.createTime) }}</text>
+              <text class="balance-text">余额: {{ isIncome(record.type) ? 
+                `${record.beforeBalance} → ${record.afterBalance}` : 
+                `${record.afterBalance} → ${record.beforeBalance}` }}</text>
+            </view>
+          </view>
+        </view>
       </view>
     </view>
   </view>
@@ -57,9 +78,26 @@ const getUserInfo = async () => {
   }
 }
 
-// 刷新余额
+// 获取交易记录
+const getBalanceRecords = async () => {
+  try {
+    const res = await userApi.getBalanceRecords()
+    if (res.code === 200) {
+      transactions.value = res.data
+    }
+  } catch (error) {
+    console.error('获取交易记录失败:', error)
+    uni.showToast({
+      title: '获取交易记录失败',
+      icon: 'none'
+    })
+  }
+}
+
+// 刷新余额和记录
 const refreshBalance = async () => {
   await getUserInfo()
+  await getBalanceRecords()
 }
 
 // 处理充值按钮点击
@@ -76,8 +114,30 @@ const handleWithdraw = () => {
   })
 }
 
+// 获取交易类型文本
+const getTransactionType = (type) => {
+  const typeMap = {
+    1: '充值',
+    2: '提现',
+    3: '收入',
+    4: '支出'
+  }
+  return typeMap[type] || '未知类型'
+}
+
+// 判断是否为收入类型
+const isIncome = (type) => {
+  return [1, 3].includes(type)
+}
+
+// 格式化时间
+const formatTime = (time) => {
+  if (!time) return ''
+  return time.replace('T', ' ').substring(0, 19)
+}
+
 onMounted(() => {
-  getUserInfo()
+  refreshBalance()
 })
 
 // 暴露页面方法
@@ -165,6 +225,58 @@ defineExpose({
 
   .empty-state {
     padding: 60rpx 0;
+  }
+
+  .list-content {
+    .transaction-item {
+      padding: 24rpx 0;
+      border-bottom: 2rpx solid #f5f5f5;
+
+      &.no-border {
+        border-bottom: none;
+      }
+
+      .left-content {
+        .main-info {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 8rpx;
+
+          .transaction-type {
+            font-size: 32rpx;
+            color: #333333;
+            font-weight: 500;
+          }
+
+          .transaction-amount {
+            font-size: 32rpx;
+            font-weight: 500;
+            color: #ff4d4f;
+
+            &.income {
+              color: #52c41a;
+            }
+          }
+        }
+
+        .sub-info {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          .transaction-time {
+            font-size: 24rpx;
+            color: #999999;
+          }
+
+          .balance-text {
+            font-size: 24rpx;
+            color: #999999;
+          }
+        }
+      }
+    }
   }
 }
 </style> 
