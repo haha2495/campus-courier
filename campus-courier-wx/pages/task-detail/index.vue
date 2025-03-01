@@ -137,6 +137,45 @@
           <view class="section-title">备注说明</view>
           <view class="notes-content">{{ taskDetail.task.notes }}</view>
         </view>
+
+        <!-- 纠纷信息 -->
+        <view v-if="taskDetail.dispute" class="info-section dispute-section">
+          <view class="section-title">纠纷信息</view>
+          <view class="dispute-content">
+            <!-- 纠纷标题 -->
+            <view class="dispute-title">{{ taskDetail.dispute.title }}</view>
+            
+            <!-- 纠纷内容 -->
+            <view class="dispute-desc">{{ taskDetail.dispute.content }}</view>
+            
+            <!-- 纠纷图片 -->
+            <view v-if="taskDetail.dispute.images && taskDetail.dispute.images.length > 0" class="dispute-images">
+              <image
+                v-for="(image, index) in taskDetail.dispute.images"
+                :key="index"
+                :src="image"
+                mode="aspectFill"
+                @click="previewImage(image, taskDetail.dispute.images)"
+                class="dispute-image"
+              ></image>
+            </view>
+
+            <!-- 证据图片 -->
+            <view v-if="taskDetail.dispute.evidence && taskDetail.dispute.evidence.length > 0" class="evidence-section">
+              <view class="evidence-title">证据图片</view>
+              <view class="evidence-images">
+                <image
+                  v-for="(image, index) in taskDetail.dispute.evidence"
+                  :key="index"
+                  :src="image"
+                  mode="aspectFill"
+                  @click="previewImage(image, taskDetail.dispute.evidence)"
+                  class="evidence-image"
+                ></image>
+              </view>
+            </view>
+          </view>
+        </view>
       </view>
 
       <!-- 标签页切换 -->
@@ -1052,6 +1091,80 @@ onMounted(() => {
     justify-content: center;
     align-items: center;
     min-height: 300rpx;
+  }
+}
+
+.dispute-section {
+  .dispute-content {
+    background: #FFF7ED;
+    border-radius: 16rpx;
+    padding: 24rpx;
+    border: 2rpx solid #FDBA74;
+
+    .dispute-title {
+      font-size: 32rpx;
+      font-weight: 600;
+      color: #1F2937;
+      margin-bottom: 16rpx;
+    }
+
+    .dispute-desc {
+      font-size: 28rpx;
+      color: #4B5563;
+      line-height: 1.6;
+      margin-bottom: 20rpx;
+    }
+
+    .dispute-images {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16rpx;
+      margin-bottom: 24rpx;
+      
+      .dispute-image {
+        width: 100%;
+        height: 180rpx;
+        border-radius: 12rpx;
+        box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+      }
+    }
+
+    .evidence-section {
+      margin-top: 24rpx;
+      padding-top: 24rpx;
+      border-top: 2rpx dashed #FDBA74;
+
+      .evidence-title {
+        font-size: 28rpx;
+        font-weight: 500;
+        color: #F97316;
+        margin-bottom: 16rpx;
+        display: flex;
+        align-items: center;
+        
+        &::before {
+          content: '';
+          width: 6rpx;
+          height: 24rpx;
+          background: #F97316;
+          margin-right: 12rpx;
+          border-radius: 3rpx;
+        }
+      }
+
+      .evidence-images {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16rpx;
+        
+        .evidence-image {
+          width: 100%;
+          height: 180rpx;
+          border-radius: 12rpx;
+          box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+        }
+      }
+    }
   }
 }
 </style> 
