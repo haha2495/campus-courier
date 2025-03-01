@@ -9,10 +9,12 @@ import com.example.campus.courier.mapper.handler.SysTaskMessageHandler;
 import com.example.campus.courier.mapper.handler.SysStudentHandler;
 import com.example.campus.courier.mapper.handler.SysTaskEvaluationHandler;
 import com.example.campus.courier.mapper.handler.SysDisputeHandler;
+import com.example.campus.courier.mapper.handler.SysBalanceRecordHandler;
 import com.example.campus.courier.model.dto.TaskDTO;
 import com.example.campus.courier.model.dto.TaskDetailDTO;
 import com.example.campus.courier.model.dto.TaskMessageDTO;
 import com.example.campus.courier.model.entity.*;
+import com.example.campus.courier.model.enums.BalanceChangeTypeEnum;
 import com.example.campus.courier.model.enums.TaskActionEnum;
 import com.example.campus.courier.model.enums.TaskStatusEnum;
 import com.example.campus.courier.model.request.task.TaskAddRequest;
@@ -28,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -45,6 +48,7 @@ public class SysTaskServiceImpl implements SysTaskService {
     private final SysStudentHandler sysStudentHandler;
     private final SysTaskEvaluationHandler sysTaskEvaluationHandler;
     private final SysDisputeHandler sysDisputeHandler;
+    private final SysBalanceRecordHandler sysBalanceRecordHandler;
 
     /**
      * 保存任务
@@ -77,7 +81,15 @@ public class SysTaskServiceImpl implements SysTaskService {
         publisher.decreaseBalance(totalPrice);
         sysStudentHandler.updateById(publisher);
 
-        // 5. 初始化并保存任务日志
+        // 5. 记录余额变动
+        sysBalanceRecordHandler.createRecord(
+            publisher,
+            totalPrice,
+            BalanceChangeTypeEnum.EXPENSE.getCode(),
+            String.format("发布任务[%s],支付金额%.2f元", task.getTitle(), totalPrice)
+        );
+
+        // 6. 初始化并保存任务日志
         SysTaskLog taskLog = new SysTaskLog().init(task.getId(), TaskActionEnum.PUBLISH, "发布任务:" + task.getTitle(), publisherId);
         sysTaskLogHandler.save(taskLog);
 
@@ -147,15 +159,41 @@ public class SysTaskServiceImpl implements SysTaskService {
             throw new IllegalArgumentException("只有任务发布者才能取消任务");
         }
 
-        // 3. 更新任务状态为已取消
-        task.updateStatus(TaskStatusEnum.CANCELED);
-        boolean success = sysTaskHandler.updateById(task);
+        // 3. 验证任务状态是否可取消（只有待接单的任务可以取消）
+        if (!Objects.equals(TaskStatusEnum.PENDING.getCode(), task.getStatus())) {
+            throw new IllegalArgumentException("只有待接单的任务才能取消");
+        }
 
-        // 4. 记录任务日志
+        // 4. 计算需要退还的金额
+        BigDecimal refundAmount = task.getReward();
+        if (task.getUrgent() && task.getUrgentReward() != null) {
+            refundAmount = refundAmount.add(task.getUrgentReward());
+        }
+
+        // 5. 获取发布者信息
+        SysStudent publisher = sysStudentHandler.getById(userId);
+
+        // 6. 退还余额
+        publisher.increaseBalance(refundAmount);
+        sysStudentHandler.updateById(publisher);
+
+        // 7. 记录余额变动
+        sysBalanceRecordHandler.createRecord(
+            publisher,
+            refundAmount,
+            BalanceChangeTypeEnum.INCOME.getCode(),
+            String.format("取消任务[%s],退还金额%.2f元", task.getTitle(), refundAmount)
+        );
+
+        // 8. 更新任务状态为已取消
+        task.updateStatus(TaskStatusEnum.CANCELED);
+        sysTaskHandler.updateById(task);
+
+        // 9. 记录任务日志
         SysTaskLog taskLog = new SysTaskLog().init(task.getId(), TaskActionEnum.CANCEL, "取消任务:" + task.getTitle(), userId);
         sysTaskLogHandler.save(taskLog);
 
-        return success;
+        return true;
     }
 
     /**
