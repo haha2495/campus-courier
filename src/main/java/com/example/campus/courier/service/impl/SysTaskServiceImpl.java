@@ -1,6 +1,7 @@
 package com.example.campus.courier.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.campus.courier.exception.BusinessException;
 import com.example.campus.courier.mapper.handler.SysTaskHandler;
 import com.example.campus.courier.mapper.handler.SysTaskLogHandler;
 import com.example.campus.courier.mapper.handler.SysTaskTypeHandler;
@@ -24,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -54,13 +56,28 @@ public class SysTaskServiceImpl implements SysTaskService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean saveTask(TaskAddRequest request, Integer publisherId) {
-        // 1. 使用贫血模型初始化任务实体
+        // 1. 获取发布者信息并校验余额
+        SysStudent publisher = sysStudentHandler.getById(publisherId);
+        BigDecimal totalPrice = request.getReward();
+        if (request.getUrgent() && request.getUrgentReward() != null) {
+            totalPrice = totalPrice.add(request.getUrgentReward());
+        }
+        
+        if (!publisher.hasEnoughBalance(totalPrice)) {
+            throw new BusinessException("账户余额不足,请先充值");
+        }
+
+        // 2. 使用贫血模型初始化任务实体
         SysTask task = new SysTask().init(request, publisherId);
 
-        // 2. 保存任务
+        // 3. 保存任务
         sysTaskHandler.save(task);
 
-        // 3. 初始化并保存任务日志
+        // 4. 扣减发布者余额
+        publisher.decreaseBalance(totalPrice);
+        sysStudentHandler.updateById(publisher);
+
+        // 5. 初始化并保存任务日志
         SysTaskLog taskLog = new SysTaskLog().init(task.getId(), TaskActionEnum.PUBLISH, "发布任务:" + task.getTitle(), publisherId);
         sysTaskLogHandler.save(taskLog);
 
