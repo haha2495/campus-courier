@@ -60,28 +60,26 @@ public class SysTaskServiceImpl implements SysTaskService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean saveTask(TaskAddRequest request, Integer publisherId) {
-        // 1. 获取发布者信息并校验余额
+        // 1. 获取发布者信息
         SysStudent publisher = sysStudentHandler.getById(publisherId);
-        BigDecimal totalPrice = request.getReward();
-        if (request.getUrgent() && request.getUrgentReward() != null) {
-            totalPrice = totalPrice.add(request.getUrgentReward());
-        }
+
+        // 2. 使用贫血模型初始化任务实体
+        SysTask task = new SysTask().init(request, publisherId);
         
+        // 3. 计算总价并校验余额
+        BigDecimal totalPrice = task.calculateTotalPrice();
         if (!publisher.hasEnoughBalance(totalPrice)) {
             throw new BusinessException("账户余额不足,请先充值");
         }
 
-        // 2. 使用贫血模型初始化任务实体
-        SysTask task = new SysTask().init(request, publisherId);
-
-        // 3. 保存任务
+        // 4. 保存任务
         sysTaskHandler.save(task);
 
-        // 4. 扣减发布者余额
+        // 5. 扣减发布者余额
         publisher.decreaseBalance(totalPrice);
         sysStudentHandler.updateById(publisher);
 
-        // 5. 记录余额变动
+        // 6. 记录余额变动
         sysBalanceRecordHandler.createRecord(
             publisher,
             totalPrice,
@@ -89,7 +87,7 @@ public class SysTaskServiceImpl implements SysTaskService {
             String.format("发布任务[%s],支付金额%.2f元", task.getTitle(), totalPrice)
         );
 
-        // 6. 初始化并保存任务日志
+        // 7. 初始化并保存任务日志
         SysTaskLog taskLog = new SysTaskLog().init(task.getId(), TaskActionEnum.PUBLISH, "发布任务:" + task.getTitle(), publisherId);
         sysTaskLogHandler.save(taskLog);
 
@@ -165,10 +163,7 @@ public class SysTaskServiceImpl implements SysTaskService {
         }
 
         // 4. 计算需要退还的金额
-        BigDecimal refundAmount = task.getReward();
-        if (task.getUrgent() && task.getUrgentReward() != null) {
-            refundAmount = refundAmount.add(task.getUrgentReward());
-        }
+        BigDecimal refundAmount = task.calculateTotalPrice();
 
         // 5. 获取发布者信息
         SysStudent publisher = sysStudentHandler.getById(userId);

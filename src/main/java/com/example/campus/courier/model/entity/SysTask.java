@@ -155,4 +155,17 @@ public class SysTask implements Serializable {
         this.status = TaskStatusEnum.ACCEPTED.getCode();
         this.runnerId = userId;
     }
+
+    /**
+     * 计算任务总价(包含加急费)
+     *
+     * @return 任务总价
+     */
+    public BigDecimal calculateTotalPrice() {
+        BigDecimal totalPrice = this.reward;
+        if (Boolean.TRUE.equals(this.urgent) && this.urgentReward != null) {
+            totalPrice = totalPrice.add(this.urgentReward);
+        }
+        return totalPrice;
+    }
 }
