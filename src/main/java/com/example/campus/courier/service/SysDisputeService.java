@@ -5,7 +5,9 @@ import com.example.campus.courier.model.entity.SysDispute;
 import com.example.campus.courier.model.request.dispute.DisputeCreateRequest;
 import com.example.campus.courier.model.request.dispute.DisputeHandleRequest;
 import com.example.campus.courier.model.request.dispute.DisputePageRequest;
+import com.example.campus.courier.model.request.dispute.DisputeSupportRequest;
 import com.example.campus.courier.model.response.PageResult;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -44,4 +46,6 @@ public interface SysDisputeService {
      * @return 纠纷任务列表
      */
     List<TaskDTO> listHallDisputes();
+
+    void createSupport(@Valid DisputeSupportRequest request, Integer loginUserId);
 }

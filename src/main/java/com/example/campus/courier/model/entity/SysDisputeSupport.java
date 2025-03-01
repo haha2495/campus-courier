@@ -3,6 +3,7 @@ package com.example.campus.courier.model.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.example.campus.courier.model.request.dispute.DisputeSupportRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -31,4 +32,21 @@ public class SysDisputeSupport {
     
     @Schema(description = "创建时间")
     private LocalDateTime createTime;
+
+    /**
+     * 初始化纠纷支持记录
+     *
+     * @param request 支持请求
+     * @param studentId 学生ID
+     * @return 纠纷支持记录
+     */
+    public static SysDisputeSupport init(DisputeSupportRequest request, Integer studentId) {
+        SysDisputeSupport support = new SysDisputeSupport();
+        support.setDisputeId(request.getDisputeId());
+        support.setStudentId(studentId);
+        support.setSupportType(request.getSupportType());
+        support.setReason(request.getReason());
+        support.setCreateTime(LocalDateTime.now());
+        return support;
+    }
 } 

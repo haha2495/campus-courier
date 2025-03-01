@@ -4,6 +4,7 @@ import com.example.campus.courier.model.dto.TaskDTO;
 import com.example.campus.courier.model.request.dispute.DisputeCreateRequest;
 import com.example.campus.courier.model.request.dispute.DisputeHandleRequest;
 import com.example.campus.courier.model.request.dispute.DisputePageRequest;
+import com.example.campus.courier.model.request.dispute.DisputeSupportRequest;
 import com.example.campus.courier.model.response.PageResult;
 import com.example.campus.courier.model.response.Result;
 import com.example.campus.courier.service.SysDisputeService;
@@ -27,7 +28,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/dispute")
 @Tag(name = "纠纷管理接口")
-public class SysDisputeController {
+public class SysDisputeController extends BaseController {
 
     private final SysDisputeService disputeService;
 
@@ -69,5 +70,16 @@ public class SysDisputeController {
         log.info("查询纠纷大厅数据");
         List<TaskDTO> disputes = disputeService.listHallDisputes();
         return Result.success(disputes);
+    }
+
+    @PostMapping("/support")
+    @Operation(summary = "支持纠纷", description = "用户对纠纷进行支持")
+    public Result<Void> supportDispute(
+            @Parameter(description = "纠纷支持请求", required = true)
+            @Valid @RequestBody DisputeSupportRequest request
+    ) {
+        log.info("纠纷支持请求: {}", request);
+        disputeService.createSupport(request, getLoginUserId());
+        return Result.success(null, "支持成功");
     }
 } 

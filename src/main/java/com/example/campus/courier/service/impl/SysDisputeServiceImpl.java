@@ -9,6 +9,7 @@ import com.example.campus.courier.model.enums.*;
 import com.example.campus.courier.model.request.dispute.DisputeCreateRequest;
 import com.example.campus.courier.model.request.dispute.DisputeHandleRequest;
 import com.example.campus.courier.model.request.dispute.DisputePageRequest;
+import com.example.campus.courier.model.request.dispute.DisputeSupportRequest;
 import com.example.campus.courier.model.response.PageResult;
 import com.example.campus.courier.service.SysDisputeService;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,7 @@ public class SysDisputeServiceImpl implements SysDisputeService {
     private final SysStudentHandler sysStudentHandler;
     private final SysBalanceRecordHandler sysBalanceRecordHandler;
     private final SysTaskTypeHandler sysTaskTypeHandler;
+    private final SysDisputeSupportHandler sysDisputeSupportHandler;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -254,5 +256,17 @@ public class SysDisputeServiceImpl implements SysDisputeService {
             dto.setTaskType(typeMap.get(task.getTaskTypeId()));
             return dto;
         }).toList();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void createSupport(DisputeSupportRequest request, Integer studentId) {
+        log.info("创建纠纷支持, request: {}, studentId: {}", request, studentId);
+        
+        // 使用贫血模型创建支持记录
+        SysDisputeSupport support = SysDisputeSupport.init(request, studentId);
+        
+        // 保存支持记录
+        sysDisputeSupportHandler.save(support);
     }
 }
