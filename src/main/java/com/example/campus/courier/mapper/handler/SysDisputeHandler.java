@@ -5,8 +5,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.campus.courier.mapper.SysDisputeMapper;
 import com.example.campus.courier.model.entity.SysDispute;
+import com.example.campus.courier.model.enums.DisputeStatusEnum;
 import com.example.campus.courier.model.request.dispute.DisputePageRequest;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 纠纷数据处理器
@@ -45,6 +49,21 @@ public class SysDisputeHandler extends ServiceImpl<SysDisputeMapper, SysDispute>
         return this.getOne(
             new LambdaQueryWrapper<SysDispute>()
                 .eq(SysDispute::getTaskId, taskId)
+        );
+    }
+
+    /**
+     * 查询纠纷大厅数据
+     * 获取当前在纠纷大厅展示的纠纷列表
+     *
+     * @return 纠纷列表
+     */
+    public List<SysDispute> listHallDisputes() {
+        return this.list(
+            new LambdaQueryWrapper<SysDispute>()
+                .eq(SysDispute::getStatus, DisputeStatusEnum.PUBLISHED.getCode())
+                .le(SysDispute::getDeadline, LocalDateTime.now())
+                .orderByDesc(SysDispute::getCreateTime)
         );
     }
 } 

@@ -7,6 +7,8 @@ import com.example.campus.courier.model.request.dispute.DisputeHandleRequest;
 import com.example.campus.courier.model.request.dispute.DisputePageRequest;
 import com.example.campus.courier.model.response.PageResult;
 
+import java.util.List;
+
 /**
  * 纠纷服务接口
  */
@@ -34,4 +36,12 @@ public interface SysDisputeService {
      * @param request 处理请求
      */
     void handleDispute(DisputeHandleRequest request);
+
+    /**
+     * 查询纠纷大厅数据
+     * 获取当前在纠纷大厅展示的任务列表
+     *
+     * @return 纠纷任务列表
+     */
+    List<TaskDTO> listHallDisputes();
 }

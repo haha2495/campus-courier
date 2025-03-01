@@ -217,4 +217,42 @@ public class SysDisputeServiceImpl implements SysDisputeService {
         );
         sysTaskLogHandler.save(taskLog);
     }
+
+    @Override
+    public List<TaskDTO> listHallDisputes() {
+        // 1. 查询当前在纠纷大厅展示的纠纷列表
+        List<SysDispute> disputes = sysDisputeHandler.listHallDisputes();
+
+        if (CollectionUtils.isEmpty(disputes)) {
+            return List.of();
+        }
+
+        // 2. 获取关联的任务ID列表
+        List<Integer> taskIds = disputes.stream()
+                .map(SysDispute::getTaskId)
+                .distinct()
+                .toList();
+
+        // 3. 批量查询任务信息
+        List<SysTask> tasks = sysTaskHandler.listByIds(taskIds);
+
+        // 4. 获取任务类型ID列表
+        List<Integer> typeIds = tasks.stream()
+                .map(SysTask::getTaskTypeId)
+                .distinct()
+                .toList();
+
+        // 5. 批量查询任务类型信息
+        List<SysTaskType> taskTypes = sysTaskTypeHandler.selectBatchIds(typeIds);
+        Map<Integer, SysTaskType> typeMap = taskTypes.stream()
+                .collect(Collectors.toMap(SysTaskType::getId, type -> type));
+
+        // 6. 构建TaskDTO列表
+        return tasks.stream().map(task -> {
+            TaskDTO dto = new TaskDTO();
+            dto.setTask(task);
+            dto.setTaskType(typeMap.get(task.getTaskTypeId()));
+            return dto;
+        }).toList();
+    }
 }

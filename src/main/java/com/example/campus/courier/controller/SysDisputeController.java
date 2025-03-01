@@ -16,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * 纠纷控制器
  */
@@ -59,5 +61,13 @@ public class SysDisputeController {
         log.info("处理纠纷请求: {}", request);
         disputeService.handleDispute(request);
         return Result.success();
+    }
+
+    @GetMapping("/hall/list")
+    @Operation(summary = "查询纠纷大厅数据", description = "获取当前在纠纷大厅展示的任务列表")
+    public Result<List<TaskDTO>> listHallDisputes() {
+        log.info("查询纠纷大厅数据");
+        List<TaskDTO> disputes = disputeService.listHallDisputes();
+        return Result.success(disputes);
     }
 } 
