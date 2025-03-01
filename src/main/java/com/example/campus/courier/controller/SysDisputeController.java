@@ -1,8 +1,8 @@
 package com.example.campus.courier.controller;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.campus.courier.model.dto.TaskDTO;
 import com.example.campus.courier.model.request.dispute.DisputeCreateRequest;
+import com.example.campus.courier.model.request.dispute.DisputeHandleRequest;
 import com.example.campus.courier.model.request.dispute.DisputePageRequest;
 import com.example.campus.courier.model.response.PageResult;
 import com.example.campus.courier.model.response.Result;
@@ -48,5 +48,16 @@ public class SysDisputeController {
         log.info("分页查询纠纷任务请求: {}", request);
         PageResult<TaskDTO> page = disputeService.pageDisputeTasks(request);
         return Result.success(page);
+    }
+
+    @PostMapping("/handle")
+    @Operation(summary = "处理纠纷", description = "管理员处理纠纷，根据结果进行相应处理")
+    public Result<Void> handleDispute(
+            @Parameter(description = "纠纷处理请求", required = true)
+            @Valid @RequestBody DisputeHandleRequest request
+    ) {
+        log.info("处理纠纷请求: {}", request);
+        disputeService.handleDispute(request);
+        return Result.success();
     }
 } 

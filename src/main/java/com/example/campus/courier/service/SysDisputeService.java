@@ -3,6 +3,7 @@ package com.example.campus.courier.service;
 import com.example.campus.courier.model.dto.TaskDTO;
 import com.example.campus.courier.model.entity.SysDispute;
 import com.example.campus.courier.model.request.dispute.DisputeCreateRequest;
+import com.example.campus.courier.model.request.dispute.DisputeHandleRequest;
 import com.example.campus.courier.model.request.dispute.DisputePageRequest;
 import com.example.campus.courier.model.response.PageResult;
 
@@ -26,4 +27,11 @@ public interface SysDisputeService {
      * @return 分页结果
      */
     PageResult<TaskDTO> pageDisputeTasks(DisputePageRequest request);
+
+    /**
+     * 处理纠纷
+     *
+     * @param request 处理请求
+     */
+    void handleDispute(DisputeHandleRequest request);
 }

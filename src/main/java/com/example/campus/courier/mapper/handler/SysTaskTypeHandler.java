@@ -172,4 +172,8 @@ public class SysTaskTypeHandler extends ServiceImpl<SysTaskTypeMapper, SysTaskTy
     public List<SysTaskType> getTaskTypesByIds(Collection<Integer> typeIds) {
         return listByIds(typeIds);
     }
+
+    public List<SysTaskType> selectBatchIds(List<Integer> typeIds) {
+        return baseMapper.selectBatchIds(typeIds);
+    }
 }

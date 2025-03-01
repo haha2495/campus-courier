@@ -59,6 +59,9 @@ public class SysDispute {
     @Schema(description = "创建时间")
     private LocalDateTime createTime;
 
+    @Schema(description = "截止时间")
+    private LocalDateTime deadline;
+
     /**
      * 初始化纠纷实体
      *

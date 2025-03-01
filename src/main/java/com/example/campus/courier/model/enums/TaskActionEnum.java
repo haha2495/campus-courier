@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 任务操作枚举
+ * 任务操作类型枚举
  */
 @Getter
 @AllArgsConstructor
@@ -21,4 +21,16 @@ public enum TaskActionEnum {
 
     private final Integer code;
     private final String desc;
+
+    public static TaskActionEnum getByCode(Integer code) {
+        if (code == null) {
+            return null;
+        }
+        for (TaskActionEnum action : values()) {
+            if (action.getCode().equals(code)) {
+                return action;
+            }
+        }
+        return null;
+    }
 } 
