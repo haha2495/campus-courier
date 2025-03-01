@@ -433,6 +433,7 @@ import {TaskStatusEnum} from '@/utils/enums/taskEnums'
 import {DisputeStatusEnum} from '@/utils/enums/disputeEnums'
 import {DisputeTypeEnum} from "@/utils/enums/disputeTypeEnums.js";
 import {getTaskDetail} from "@/api/task.js";
+import { handleDispute } from '@/api/dispute'
 
 const router = useRouter()
 const route = useRoute()
@@ -571,19 +572,27 @@ const handleSubmit = async () => {
 
   submitting.value = true
   try {
-    // TODO: 调用后端API处理纠纷，传入原因或展示时长
-    await handleDispute(detail.value.dispute.id, {
-      result: handleResult.value,
-      reason: handleReason.value,
-      displayHours: displayHours.value
+    // 将前端的枚举值转换为后端需要的数字
+    const handleResultMap = {
+      'PUBLISHER_WIN': 1,
+      'RUNNER_WIN': 2,
+      'UNCERTAIN': 3
+    }
+
+    await handleDispute({
+      disputeId: detail.value.dispute.id,
+      handleResult: handleResultMap[handleResult.value],
+      handleRemark: handleReason.value,
+      displayHours: handleResult.value === 'UNCERTAIN' ? displayHours.value : null
     })
+
     ElMessage.success('处理成功')
     dialogVisible.value = false
     // 重新加载详情
     await fetchDetail()
   } catch (error) {
     console.error('处理纠纷失败:', error)
-    ElMessage.error('处理失败，请重试')
+    ElMessage.error(error.message || '处理失败，请重试')
   } finally {
     submitting.value = false
   }
