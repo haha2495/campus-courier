@@ -89,14 +89,14 @@ const onRefresh = () => {
 // 点击纠纷项
 const handleDisputeClick = (dispute) => {
   uni.navigateTo({
-    url: `/pages/dispute/detail?taskId=${dispute.task.id}`
+    url: `/pages/task-detail/index?id=${dispute.task.id}`
   })
 }
 
 // 点击前去审判
 const handleJudge = (dispute) => {
   uni.navigateTo({
-    url: `/pages/dispute/detail?taskId=${dispute.task.id}&mode=judge`
+    url: `/pages/task-detail/index?id=${dispute.task.id}`
   })
 }
 
