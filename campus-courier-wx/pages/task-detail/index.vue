@@ -335,9 +335,9 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { getTaskDetail } from '../../api/task'
-import { handleDispute } from '../../api/dispute'
-import { TASK_STATUS } from '../../constants/taskStatus'
+import { getTaskDetail } from '@/api/task'
+import { supportDispute } from '@/api/dispute'
+import { TASK_STATUS } from '@/constants/taskStatus'
 import TaskTimeline from './components/TaskTimeline.vue'
 import TaskMessages from './components/TaskMessages.vue'
 
@@ -486,13 +486,16 @@ const handleJudge = async () => {
     // 构造请求参数
     const params = {
       disputeId: taskDetail.value.dispute.id,
-      taskId: taskDetail.value.task.id,
-      winner: selectedParty.value === 'publisher' ? taskDetail.value.publisher.id : taskDetail.value.runner.id,
-      remark: judgeRemark.value || '管理员判定'
+      supportType: selectedParty.value === 'publisher' ? taskDetail.value.publisher.id : taskDetail.value.runner.id,
+      remark: judgeRemark.value || '用户支持'
     }
     
-    // 调用审判API
-    await handleDispute(params)
+    // 调用支持纠纷API
+    await supportDispute(params)
+    
+    // 清空表单数据
+    selectedParty.value = ''
+    judgeRemark.value = ''
     
     // 关闭弹窗
     showPopup.value = false
@@ -502,13 +505,13 @@ const handleJudge = async () => {
     
     // 显示成功提示
     uni.showToast({
-      title: '审判成功',
+      title: '支持成功',
       icon: 'success'
     })
   } catch (error) {
-    console.error('审判失败：', error)
+    console.error('支持失败：', error)
     uni.showToast({
-      title: error.message || '审判失败，请重试',
+      title: error.message || '支持失败，请重试',
       icon: 'none'
     })
   } finally {

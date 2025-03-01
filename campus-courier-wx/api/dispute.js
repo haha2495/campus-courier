@@ -61,4 +61,21 @@ export function getDisputeDetail(disputeId) {
     url: `/api/dispute/${disputeId}`,
     method: 'get'
   })
+}
+
+/**
+ * 支持纠纷
+ * @param {Object} data - 纠纷支持数据
+ * @param {string} data.disputeId - 纠纷ID
+ * @param {string} data.taskId - 任务ID
+ * @param {string} data.supportedUserId - 支持的用户ID
+ * @param {string} data.remark - 支持理由
+ * @returns {Promise} 返回支持结果
+ */
+export function supportDispute(data) {
+  return request({
+    url: '/api/dispute/support',
+    method: 'post',
+    data
+  })
 } 

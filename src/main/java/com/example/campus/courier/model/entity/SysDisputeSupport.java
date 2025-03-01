@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.example.campus.courier.model.request.dispute.DisputeSupportRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
 
@@ -45,7 +46,7 @@ public class SysDisputeSupport {
         support.setDisputeId(request.getDisputeId());
         support.setStudentId(studentId);
         support.setSupportType(request.getSupportType());
-        support.setReason(request.getReason());
+        support.setReason(StringUtils.defaultString(request.getReason()));
         support.setCreateTime(LocalDateTime.now());
         return support;
     }
