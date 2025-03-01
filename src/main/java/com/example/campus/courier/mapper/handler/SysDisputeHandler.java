@@ -66,4 +66,18 @@ public class SysDisputeHandler extends ServiceImpl<SysDisputeMapper, SysDispute>
                 .orderByDesc(SysDispute::getCreateTime)
         );
     }
+
+    /**
+     * 更新已过期纠纷状态为待处理
+     *
+     * @param disputeId 纠纷ID
+     * @return 是否更新成功
+     */
+    public boolean updateExpiredDisputeStatus(Integer disputeId) {
+        return this.lambdaUpdate()
+            .eq(SysDispute::getId, disputeId)
+            .eq(SysDispute::getStatus, DisputeStatusEnum.PUBLISHED.getCode())
+            .set(SysDispute::getStatus, DisputeStatusEnum.PENDING.getCode())
+            .update();
+    }
 } 
