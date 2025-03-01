@@ -228,7 +228,7 @@
                     <el-icon class="tag-icon">
                       <component :is="DisputeStatusEnum.getIcon(detail.dispute.status)"/>
                     </el-icon>
-                    <span>{{ getDisputeStatus(detail.dispute.status) }}</span>
+                    <span>{{ DisputeStatusEnum.getDesc(detail.dispute.status) }}</span>
                   </el-tag>
                 </div>
               </div>
@@ -1348,20 +1348,6 @@ const formatRemainingTime = (endTimeString) => {
       }
     }
   }
-
-  :deep(.el-tabs__content) {
-    background: #fff;
-    border-radius: 0 0 16px 16px;
-    padding: 32px;
-    border: 1px solid #e5e7eb;
-    border-top: none;
-    min-height: 400px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  }
-
-  :deep(.el-tabs__active-bar) {
-    display: none;
-  }
 }
 
 /* 任务日志区域样式 */
@@ -1827,5 +1813,19 @@ const formatRemainingTime = (endTimeString) => {
       border-radius: 2px;
     }
   }
+}
+
+:deep(.el-tabs__content) {
+  background: #fff;
+  border-radius: 0 0 16px 16px;
+  padding: 32px;
+  border: 1px solid #e5e7eb;
+  border-top: none;
+  min-height: 400px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+:deep(.el-tabs__active-bar) {
+  display: none;
 }
 </style> 
