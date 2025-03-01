@@ -175,8 +175,14 @@
               </view>
             </view>
 
+            <!-- 任务相关者提示 -->
+            <view v-if="isTaskParticipant" class="notice-section">
+              <u-icon name="info-circle-fill" size="32" color="#FFA940"></u-icon>
+              <text class="notice-text">您是任务相关者，无法对此纠纷进行审判</text>
+            </view>
+
             <!-- 审判按钮 -->
-            <view v-if="!taskDetail.evaluation" class="judge-section">
+            <view v-if="!taskDetail.currentUserSupport && !isTaskParticipant" class="judge-section">
               <button class="judge-btn" @click="showJudgePopup">
                 <u-icon name="error-circle-fill" size="32" color="#FFFFFF"></u-icon>
                 <text>进行审判</text>
@@ -338,6 +344,7 @@ import { ref, computed, onMounted } from 'vue'
 import { getTaskDetail } from '@/api/task'
 import { supportDispute } from '@/api/dispute'
 import { TASK_STATUS } from '@/constants/taskStatus'
+import { userApi } from '@/api/user'
 import TaskTimeline from './components/TaskTimeline.vue'
 import TaskMessages from './components/TaskMessages.vue'
 
@@ -348,6 +355,7 @@ const taskId = ref(null)
 const showPopup = ref(false)
 const selectedParty = ref(null)
 const judgeRemark = ref('')
+const currentUser = ref(null)
 
 // 标签页配置
 const tabs = computed(() => {
@@ -519,7 +527,26 @@ const handleJudge = async () => {
   }
 }
 
-onMounted(() => {
+// 判断当前用户是否是任务相关者（发布者或跑腿者）
+const isTaskParticipant = computed(() => {
+  if (!taskDetail.value || !currentUser.value) return false
+  return currentUser.value.id === taskDetail.value.publisher?.id || currentUser.value.id === taskDetail.value.runner?.id
+})
+
+// 获取当前用户信息
+const fetchCurrentUser = async () => {
+  try {
+    const res = await userApi.getCurrentUser()
+    if (res.data) {
+      currentUser.value = res.data
+    }
+  } catch (error) {
+    console.error('获取当前用户信息失败：', error)
+  }
+}
+
+onMounted(async () => {
+  await fetchCurrentUser()
   fetchTaskDetail()
 })
 </script>
@@ -1447,6 +1474,23 @@ onMounted(() => {
         }
       }
     }
+  }
+}
+
+.notice-section {
+  margin-top: 32rpx;
+  padding: 24rpx;
+  background: #FFF7E6;
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  border: 2rpx solid #FFD591;
+  
+  .notice-text {
+    font-size: 28rpx;
+    color: #D46B08;
+    flex: 1;
   }
 }
 </style> 
