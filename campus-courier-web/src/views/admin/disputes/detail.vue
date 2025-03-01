@@ -23,6 +23,29 @@
       </div>
     </el-card>
 
+    <!-- 纠纷大厅提示 -->
+    <el-alert
+      v-if="detail?.dispute?.status === 3"
+      type="warning"
+      :closable="false"
+      class="dispute-hall-alert"
+    >
+      <template #title>
+        <div class="alert-content">
+          <el-icon class="alert-icon"><Warning /></el-icon>
+          <span>当前纠纷正在大厅公示中，请等待公示结束后进行处理</span>
+          <el-tag 
+            size="small" 
+            effect="dark"
+            type="warning"
+            class="time-tag"
+          >
+            剩余时间：{{ formatRemainingTime(detail.dispute.deadline) }}
+          </el-tag>
+        </div>
+      </template>
+    </el-alert>
+
     <!-- 内容区域 -->
     <el-card class="content-card" shadow="hover">
       <div class="content-wrapper" v-loading="loading">
@@ -606,6 +629,28 @@ watch(dialogVisible, (val) => {
     displayHours.value = 24
   }
 })
+
+// 格式化剩余时间
+const formatRemainingTime = (endTimeString) => {
+  if (!endTimeString) return '未知'
+  
+  const endTime = new Date(endTimeString).getTime()
+  const now = new Date().getTime()
+  const diff = endTime - now
+
+  if (diff <= 0) return '已结束'
+
+  const hours = Math.floor(diff / (1000 * 60 * 60))
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
+  
+  if (hours > 24) {
+    const days = Math.floor(hours / 24)
+    const remainingHours = hours % 24
+    return `${days}天${remainingHours}小时`
+  }
+  
+  return `${hours}小时${minutes}分钟`
+}
 </script>
 
 <style scoped lang="scss">
@@ -1581,6 +1626,45 @@ watch(dialogVisible, (val) => {
     padding: 16px 24px;
     border-top: 1px solid #e5e7eb;
     background: #f9fafb;
+  }
+}
+
+/* 纠纷大厅提示样式 */
+.dispute-hall-alert {
+  margin: 16px;
+  border-radius: 8px;
+  border: none;
+
+  :deep(.el-alert__title) {
+    font-size: 14px;
+  }
+
+  .alert-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    
+    .alert-icon {
+      font-size: 16px;
+      animation: pulse 2s infinite;
+    }
+
+    .time-tag {
+      margin-left: auto;
+      font-family: 'DIN Condensed', sans-serif;
+    }
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
   }
 }
 </style> 

@@ -20,7 +20,7 @@ export function createDispute(data) {
  */
 export function pageDisputes(params) {
   return request({
-    url: '/api/dispute/page',
+    url: '/dispute/page',
     method: 'get',
     params
   })
