@@ -1,34 +1,42 @@
 package com.example.campus.courier.mapper.handler;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.campus.courier.mapper.SysTaskEvaluationMapper;
 import com.example.campus.courier.model.entity.SysTaskEvaluation;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
- * 任务评价处理类
+ * 任务评价数据处理层
  */
-@Service
-@RequiredArgsConstructor
+@Slf4j
+@Component
 public class SysTaskEvaluationHandler extends ServiceImpl<SysTaskEvaluationMapper, SysTaskEvaluation> {
-
-    private final SysTaskEvaluationMapper sysTaskEvaluationMapper;
 
     /**
      * 检查任务是否已评价
      *
      * @param taskId 任务ID
-     * @return true: 已评价, false: 未评价
+     * @return 是否已评价
      */
     public boolean existsByTaskId(Integer taskId) {
-        return count(new LambdaQueryWrapper<SysTaskEvaluation>()
-                .eq(SysTaskEvaluation::getTaskId, taskId)) > 0;
+        return lambdaQuery()
+                .eq(SysTaskEvaluation::getTaskId, taskId)
+                .exists();
     }
 
-    public SysTaskEvaluation getByTaskId(Integer taskId) {
-        return baseMapper.selectOne(new LambdaQueryWrapper<SysTaskEvaluation>()
-                .eq(SysTaskEvaluation::getTaskId, taskId));
+    /**
+     * 查询学生收到的评价列表
+     *
+     * @param studentId 学生ID
+     * @return 评价列表
+     */
+    public List<SysTaskEvaluation> getReceivedEvaluations(Integer studentId) {
+        return lambdaQuery()
+                .eq(SysTaskEvaluation::getRunnerId, studentId)
+                .orderByDesc(SysTaskEvaluation::getCreateTime)
+                .list();
     }
 }

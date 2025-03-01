@@ -1,12 +1,9 @@
 package com.example.campus.courier.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.example.campus.courier.mapper.handler.SysStudentHandler;
 import com.example.campus.courier.mapper.handler.SysTaskEvaluationHandler;
 import com.example.campus.courier.mapper.handler.SysTaskHandler;
 import com.example.campus.courier.model.dto.evaluation.EvaluationListDTO;
 import com.example.campus.courier.model.dto.evaluation.EvaluationStatisticsDTO;
-import com.example.campus.courier.model.entity.SysStudent;
 import com.example.campus.courier.model.entity.SysTask;
 import com.example.campus.courier.model.entity.SysTaskEvaluation;
 import com.example.campus.courier.model.enums.TaskStatusEnum;
@@ -19,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -72,7 +68,7 @@ public class SysTaskEvaluationServiceImpl implements SysTaskEvaluationService {
 
         // 6. 保存评价
         boolean saved = sysTaskEvaluationHandler.save(evaluation);
-        
+
         if (saved) {
             // 7. 更新任务状态为已评价
             task.setStatus(TaskStatusEnum.EVALUATED.getCode());
@@ -85,25 +81,38 @@ public class SysTaskEvaluationServiceImpl implements SysTaskEvaluationService {
     @Override
     public EvaluationListDTO getReceivedEvaluations(Integer studentId) {
         // 1. 查询评价列表
-        List<SysTaskEvaluation> evaluations = sysTaskEvaluationHandler.lambdaQuery()
-                .eq(SysTaskEvaluation::getRunnerId, studentId)
-                .orderByDesc(SysTaskEvaluation::getCreateTime)
-                .list();
+        List<SysTaskEvaluation> evaluations = sysTaskEvaluationHandler.getReceivedEvaluations(studentId);
 
         // 2. 计算统计数据
+        EvaluationStatisticsDTO statistics = calculateStatistics(evaluations);
+
+        // 3. 组装返回数据
+        return new EvaluationListDTO()
+                .setStatistics(statistics)
+                .setEvaluations(evaluations);
+    }
+
+    /**
+     * 计算评价统计数据
+     *
+     * @param evaluations 评价列表
+     * @return 统计数据
+     */
+    private EvaluationStatisticsDTO calculateStatistics(List<SysTaskEvaluation> evaluations) {
         EvaluationStatisticsDTO statistics = new EvaluationStatisticsDTO();
+
         if (!evaluations.isEmpty()) {
-            // 2.1 计算总数
+            // 1. 计算总数
             statistics.setTotalCount((long) evaluations.size());
 
-            // 2.2 计算平均分
+            // 2. 计算平均分
             double averageScore = evaluations.stream()
                     .mapToDouble(e -> e.getScore().doubleValue())
                     .average()
                     .orElse(0.0);
             statistics.setAverageScore(BigDecimal.valueOf(averageScore).setScale(1, RoundingMode.HALF_UP));
 
-            // 2.3 计算好评率 (4分以上算好评)
+            // 3. 计算好评率 (4分以上算好评)
             long positiveCount = evaluations.stream()
                     .filter(e -> e.getScore().compareTo(BigDecimal.valueOf(4.0)) >= 0)
                     .count();
@@ -116,9 +125,6 @@ public class SysTaskEvaluationServiceImpl implements SysTaskEvaluationService {
                     .setPositiveRate(BigDecimal.ZERO);
         }
 
-        // 3. 组装返回数据
-        return new EvaluationListDTO()
-                .setStatistics(statistics)
-                .setEvaluations(evaluations);
+        return statistics;
     }
 } 
