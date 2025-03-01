@@ -1078,10 +1078,10 @@ const submitTask = () => {
           duration: 2000
         })
         
-        // 1.5秒后跳转到首页
+        // 1.5秒后返回上一页
         setTimeout(() => {
-          uni.switchTab({
-            url: '/pages/index/index'
+          uni.navigateBack({
+            delta: 1
           })
         }, 1500)
       } else {
