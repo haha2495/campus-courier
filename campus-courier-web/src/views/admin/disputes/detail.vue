@@ -263,8 +263,14 @@
           </div>
 
           <!-- 任务日志和留言记录 -->
-          <el-tabs class="detail-tabs">
-            <el-tab-pane label="任务日志">
+          <el-tabs class="detail-tabs" type="card">
+            <el-tab-pane>
+              <template #label>
+                <div class="custom-tab">
+                  <el-icon><Document /></el-icon>
+                  <span>任务日志</span>
+                </div>
+              </template>
               <div class="logs-section">
                 <el-timeline>
                   <el-timeline-item
@@ -300,7 +306,13 @@
               </div>
             </el-tab-pane>
 
-            <el-tab-pane label="留言记录">
+            <el-tab-pane>
+              <template #label>
+                <div class="custom-tab">
+                  <el-icon><ChatDotRound /></el-icon>
+                  <span>留言记录</span>
+                </div>
+              </template>
               <div class="messages-section">
                 <div class="message-list">
                   <div
@@ -347,7 +359,14 @@
               </div>
             </el-tab-pane>
 
-            <el-tab-pane label="支持信息" v-if="detail.disputeSupports">
+            <el-tab-pane v-if="detail.dispute?.status === 3">
+              <template #label>
+                <div class="custom-tab">
+                  <el-icon><ChatLineSquare /></el-icon>
+                  <span>支持信息</span>
+                  <el-badge :value="detail.disputeSupports?.length || 0" class="support-badge" />
+                </div>
+              </template>
               <div class="supports-section">
                 <DisputeSupports :dispute-supports="detail.disputeSupports" />
               </div>
@@ -454,7 +473,8 @@ import {onBeforeUnmount, onMounted, ref, watch} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import {
   ArrowLeft, Phone, Picture, Tools, UserFilled, 
-  Medal, Warning, Check, Document, Timer
+  Medal, Warning, Check, Document, Timer,
+  ChatDotRound, ChatLineSquare
 } from '@element-plus/icons-vue'
 import {ElMessage} from 'element-plus'
 import {getDisputeDetail} from '@/api/dispute'
@@ -787,16 +807,21 @@ const formatRemainingTime = (endTimeString) => {
   box-sizing: border-box;
 
   &::-webkit-scrollbar {
-    width: 6px;
+    width: 8px;
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: #dcdfe6;
-    border-radius: 3px;
+    background: linear-gradient(to bottom, #409EFF, #36cfc9);
+    border-radius: 4px;
+    
+    &:hover {
+      background: linear-gradient(to bottom, #66b1ff, #5cdbd3);
+    }
   }
 
   &::-webkit-scrollbar-track {
-    background-color: #f5f7fa;
+    background: #f1f5f9;
+    border-radius: 4px;
   }
 }
 
@@ -1199,37 +1224,143 @@ const formatRemainingTime = (endTimeString) => {
   }
 }
 
-/* 标签页样式 */
+/* 标签页样式优化 */
 .detail-tabs {
-  background: #fff;
-  border-radius: 8px;
-  padding: 20px;
-  border: 1px solid #e5e7eb;
-
   :deep(.el-tabs__header) {
-    margin-bottom: 20px;
+    margin-bottom: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e6f4ff 100%);
+    border-radius: 16px 16px 0 0;
+    border-bottom: none;
+    height: 64px;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M1 1h2v2H1V1zm4 0h2v2H5V1zm4 0h2v2H9V1zm4 0h2v2h-2V1zm4 0h2v2h-2V1z" fill="rgba(147,197,253,0.1)"/></svg>') repeat;
+      opacity: 0.5;
+    }
   }
 
-  :deep(.el-tabs__nav-wrap::after) {
-    height: 1px;
-    background-color: #e5e7eb;
+  :deep(.el-tabs__nav-wrap) {
+    padding: 0 24px;
+  }
+
+  :deep(.el-tabs__nav) {
+    border: none !important;
+    height: 64px;
   }
 
   :deep(.el-tabs__item) {
-    font-size: 14px;
-    color: #4b5563;
-    padding: 0 16px;
-    height: 36px;
-    line-height: 36px;
+    height: 64px;
+    line-height: 64px;
+    font-size: 15px;
+    border: none !important;
+    background: transparent !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    padding: 0 32px;
+    margin: 0 4px;
+
+    &::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: #409EFF;
+      transform: scaleX(0);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 3px 3px 0 0;
+    }
 
     &.is-active {
       color: #409EFF;
-      font-weight: 500;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.8) !important;
+      box-shadow: 0 0 20px rgba(64, 158, 255, 0.1);
+
+      &::before {
+        transform: scaleX(1);
+      }
+
+      .custom-tab {
+        transform: translateY(-2px);
+        
+        .el-icon {
+          transform: scale(1.2) rotate(360deg);
+          color: #409EFF;
+        }
+      }
     }
 
-    &:hover {
+    &:hover:not(.is-active) {
       color: #409EFF;
+      background: rgba(255, 255, 255, 0.5) !important;
+      
+      .custom-tab {
+        transform: translateY(-2px);
+        
+        .el-icon {
+          transform: scale(1.1) rotate(15deg);
+          color: #409EFF;
+        }
+      }
     }
+  }
+
+  .custom-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    .el-icon {
+      font-size: 20px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .support-badge {
+      margin-left: 4px;
+      transform: translateY(-8px);
+      
+      :deep(.el-badge__content) {
+        background: linear-gradient(135deg, #10b981, #34d399);
+        border: 2px solid #fff;
+        box-shadow: 0 2px 6px rgba(16, 185, 129, 0.2);
+        font-weight: 600;
+        padding: 0 8px;
+        min-width: 20px;
+        height: 20px;
+        border-radius: 10px;
+        
+        &.is-fixed {
+          top: 0;
+          right: 0;
+        }
+      }
+    }
+  }
+
+  :deep(.el-tabs__content) {
+    background: #fff;
+    border-radius: 0 0 16px 16px;
+    padding: 32px;
+    border: 1px solid #e5e7eb;
+    border-top: none;
+    min-height: 400px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+
+  :deep(.el-tabs__active-bar) {
+    display: none;
   }
 }
 
