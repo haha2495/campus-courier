@@ -359,7 +359,7 @@
               </div>
             </el-tab-pane>
 
-            <el-tab-pane v-if="detail.dispute?.status === 3">
+            <el-tab-pane v-if="detail.dispute">
               <template #label>
                 <div class="custom-tab">
                   <el-icon><ChatLineSquare /></el-icon>

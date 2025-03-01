@@ -62,7 +62,6 @@ public class SysDisputeHandler extends ServiceImpl<SysDisputeMapper, SysDispute>
         return this.list(
             new LambdaQueryWrapper<SysDispute>()
                 .eq(SysDispute::getStatus, DisputeStatusEnum.PUBLISHED.getCode())
-                .ge(SysDispute::getDeadline, LocalDateTime.now())
                 .orderByDesc(SysDispute::getCreateTime)
         );
     }
@@ -77,7 +76,7 @@ public class SysDisputeHandler extends ServiceImpl<SysDisputeMapper, SysDispute>
         return this.lambdaUpdate()
             .eq(SysDispute::getId, disputeId)
             .eq(SysDispute::getStatus, DisputeStatusEnum.PUBLISHED.getCode())
-            .set(SysDispute::getStatus, DisputeStatusEnum.PENDING.getCode())
+            .set(SysDispute::getStatus, DisputeStatusEnum.PROCESSING.getCode())
             .update();
     }
 } 
