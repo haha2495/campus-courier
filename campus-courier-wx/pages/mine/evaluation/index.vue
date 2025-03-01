@@ -1,70 +1,126 @@
 <template>
   <view class="evaluation-container">
+    
     <!-- 评价统计 -->
     <view class="stats-card">
       <view class="stats-item">
-        <text class="stats-value">4.9</text>
+        <text class="stats-value">{{ statistics.averageScore || '0.0' }}</text>
         <text class="stats-label">综合评分</text>
       </view>
       <view class="stats-divider"></view>
       <view class="stats-item">
-        <text class="stats-value">98%</text>
+        <text class="stats-value">{{ formatRate(statistics.positiveRate) }}</text>
         <text class="stats-label">好评率</text>
       </view>
       <view class="stats-divider"></view>
       <view class="stats-item">
-        <text class="stats-value">128</text>
+        <text class="stats-value">{{ statistics.totalCount || 0 }}</text>
         <text class="stats-label">评价总数</text>
       </view>
     </view>
 
     <!-- 评价列表 -->
     <view class="evaluation-list">
-      <!-- 暂无数据展示 -->
-      <view class="empty-state">
+      <template v-if="evaluations.length > 0">
+        <view 
+          class="evaluation-item" 
+          v-for="item in evaluations" 
+          :key="item.id"
+        >
+          <view class="evaluation-header">
+            <view class="score">
+              <u-rate 
+                :value="parseFloat(item.score)"
+                :count="5"
+                allowHalf
+                readonly 
+                activeColor="#ff9500"
+                size="32"
+                inactiveColor="#eee"
+              />
+              <text class="score-text">{{ item.score }}分</text>
+            </view>
+            <text class="time">{{ formatTime(item.createTime) }}</text>
+          </view>
+          <view class="evaluation-content" v-if="item.content">
+            {{ item.content }}
+          </view>
+          <view class="evaluation-tags" v-if="item.tags && item.tags.length > 0">
+            <u-tag
+              v-for="(tag, index) in item.tags"
+              :key="index"
+              :text="tag"
+              plain
+              size="mini"
+              type="warning"
+            />
+          </view>
+        </view>
+      </template>
+      <template v-else>
         <u-empty mode="data" text="暂无评价记录"></u-empty>
-      </view>
+      </template>
     </view>
   </view>
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
+import { getReceivedEvaluations } from '@/api/evaluation'
+import dayjs from 'dayjs'
+
+// 评价数据
+const statistics = ref({})
+const evaluations = ref([])
+
+// 获取评价列表
+const getEvaluationList = async () => {
+  try {
+    const res = await getReceivedEvaluations()
+    if (res.code === 200) {
+      statistics.value = res.data.statistics
+      evaluations.value = res.data.evaluations
+    } else {
+      uni.showToast({
+        title: res.message || '获取评价列表失败',
+        icon: 'none'
+      })
+    }
+  } catch (error) {
+    console.error('获取评价列表失败:', error)
+    uni.showToast({
+      title: '获取评价列表失败',
+      icon: 'none'
+    })
+  }
+}
+
+// 格式化好评率
+const formatRate = (rate) => {
+  if (!rate && rate !== 0) return '0%'
+  return `${(rate * 100).toFixed(0)}%`
+}
+
+// 格式化时间
+const formatTime = (time) => {
+  if (!time) return ''
+  return dayjs(time).format('YYYY-MM-DD HH:mm')
+}
+
 // 返回上一页
 const navigateBack = () => {
   uni.navigateBack()
 }
+
+onMounted(() => {
+  getEvaluationList()
+})
 </script>
 
 <style lang="scss" scoped>
 .evaluation-container {
   min-height: 100vh;
   background-color: #f7f8fa;
-}
-
-.nav-bar {
-  background-color: #ffffff;
-  padding: 20rpx 30rpx;
-  display: flex;
-  align-items: center;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  
-  .back-btn {
-    width: 60rpx;
-    height: 60rpx;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .nav-title {
-    flex: 1;
-    text-align: center;
-    font-size: 32rpx;
-    font-weight: 500;
-    margin-right: 60rpx; // 为了保持标题居中
-  }
 }
 
 .stats-card {
@@ -105,12 +161,49 @@ const navigateBack = () => {
 
 .evaluation-list {
   margin: 30rpx;
-  background-color: #ffffff;
-  border-radius: 20rpx;
-  min-height: 400rpx;
 
-  .empty-state {
-    padding: 100rpx 0;
+  .evaluation-item {
+    background-color: #ffffff;
+    border-radius: 20rpx;
+    padding: 30rpx;
+    margin-bottom: 20rpx;
+
+    .evaluation-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16rpx;
+
+      .score {
+        display: flex;
+        align-items: center;
+        gap: 12rpx;
+
+        .score-text {
+          font-size: 28rpx;
+          color: #ff9500;
+          font-weight: 500;
+        }
+      }
+
+      .time {
+        font-size: 24rpx;
+        color: #999999;
+      }
+    }
+
+    .evaluation-content {
+      font-size: 28rpx;
+      color: #333333;
+      line-height: 1.5;
+      margin-bottom: 16rpx;
+    }
+
+    .evaluation-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12rpx;
+    }
   }
 }
 </style> 
