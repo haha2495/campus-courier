@@ -1,5 +1,6 @@
 package com.example.campus.courier.mapper.handler;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.campus.courier.mapper.SysTaskEvaluationMapper;
 import com.example.campus.courier.model.entity.SysTaskEvaluation;
@@ -25,6 +26,11 @@ public class SysTaskEvaluationHandler extends ServiceImpl<SysTaskEvaluationMappe
         return lambdaQuery()
                 .eq(SysTaskEvaluation::getTaskId, taskId)
                 .exists();
+    }
+
+    public SysTaskEvaluation getByTaskId(Integer taskId) {
+        return baseMapper.selectOne(new LambdaQueryWrapper<SysTaskEvaluation>()
+                .eq(SysTaskEvaluation::getTaskId, taskId));
     }
 
     /**
