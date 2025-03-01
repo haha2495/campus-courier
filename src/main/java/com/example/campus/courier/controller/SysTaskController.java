@@ -132,7 +132,7 @@ public class SysTaskController extends BaseController {
     public Result<TaskDetailDTO> getTaskDetail(
             @Parameter(description = "任务ID")
             @PathVariable("taskId") Integer taskId) {
-        return Result.success(sysTaskService.getTaskDetail(taskId));
+        return Result.success(sysTaskService.getTaskDetail(taskId, getLoginUserId()));
     }
 
     /**

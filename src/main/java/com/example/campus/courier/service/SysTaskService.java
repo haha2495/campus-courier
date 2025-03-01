@@ -82,9 +82,10 @@ public interface SysTaskService {
      * 包含任务信息、任务类型信息和留言列表
      *
      * @param taskId 任务ID
+     * @param loginUserId 当前登录用户ID
      * @return 任务详情DTO
      */
-    TaskDetailDTO getTaskDetail(Integer taskId);
+    TaskDetailDTO getTaskDetail(Integer taskId, Integer loginUserId);
 
     /**
      * 添加任务留言

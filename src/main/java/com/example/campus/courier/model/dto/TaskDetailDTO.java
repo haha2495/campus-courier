@@ -6,6 +6,7 @@ import com.example.campus.courier.model.entity.SysTask;
 import com.example.campus.courier.model.entity.SysTaskType;
 import com.example.campus.courier.model.entity.SysTaskLog;
 import com.example.campus.courier.model.entity.SysTaskEvaluation;
+import com.example.campus.courier.model.entity.SysDisputeSupport;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -42,6 +43,12 @@ public class TaskDetailDTO {
     @Schema(description = "任务评价信息")
     private SysTaskEvaluation evaluation;
 
+    @Schema(description = "当前用户的纠纷支持信息")
+    private SysDisputeSupport currentUserSupport;
+
+    @Schema(description = "所有纠纷支持信息列表")
+    private List<SysDisputeSupport> disputeSupports;
+
     /**
      * 构建任务详情DTO
      *
@@ -53,6 +60,8 @@ public class TaskDetailDTO {
      * @param messages 任务留言列表
      * @param taskLogs 任务日志列表
      * @param evaluation 任务评价信息
+     * @param currentUserSupport 当前用户的纠纷支持信息
+     * @param disputeSupports 所有纠纷支持信息列表
      * @return 任务详情DTO
      */
     public static TaskDetailDTO build(
@@ -63,7 +72,9 @@ public class TaskDetailDTO {
             SysDispute dispute,
             List<TaskMessageDTO> messages, 
             List<SysTaskLog> taskLogs, 
-            SysTaskEvaluation evaluation) {
+            SysTaskEvaluation evaluation,
+            SysDisputeSupport currentUserSupport,
+            List<SysDisputeSupport> disputeSupports) {
         TaskDetailDTO dto = new TaskDetailDTO();
         dto.task = task;
         dto.taskType = taskType;
@@ -73,6 +84,8 @@ public class TaskDetailDTO {
         dto.messages = messages;
         dto.taskLogs = taskLogs;
         dto.evaluation = evaluation;
+        dto.currentUserSupport = currentUserSupport;
+        dto.disputeSupports = disputeSupports;
         return dto;
     }
 } 

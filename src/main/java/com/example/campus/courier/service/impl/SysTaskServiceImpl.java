@@ -1,6 +1,7 @@
 package com.example.campus.courier.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.campus.courier.exception.BusinessException;
 import com.example.campus.courier.mapper.handler.SysTaskHandler;
 import com.example.campus.courier.mapper.handler.SysTaskLogHandler;
@@ -10,6 +11,7 @@ import com.example.campus.courier.mapper.handler.SysStudentHandler;
 import com.example.campus.courier.mapper.handler.SysTaskEvaluationHandler;
 import com.example.campus.courier.mapper.handler.SysDisputeHandler;
 import com.example.campus.courier.mapper.handler.SysBalanceRecordHandler;
+import com.example.campus.courier.mapper.handler.SysDisputeSupportHandler;
 import com.example.campus.courier.model.dto.TaskDTO;
 import com.example.campus.courier.model.dto.TaskDetailDTO;
 import com.example.campus.courier.model.dto.TaskMessageDTO;
@@ -49,6 +51,7 @@ public class SysTaskServiceImpl implements SysTaskService {
     private final SysTaskEvaluationHandler sysTaskEvaluationHandler;
     private final SysDisputeHandler sysDisputeHandler;
     private final SysBalanceRecordHandler sysBalanceRecordHandler;
+    private final SysDisputeSupportHandler sysDisputeSupportHandler;
 
     /**
      * 保存任务
@@ -300,10 +303,11 @@ public class SysTaskServiceImpl implements SysTaskService {
      * 包含任务信息、任务类型信息、发布者信息、跑腿者信息、纠纷信息、留言列表和任务日志列表
      *
      * @param taskId 任务ID
+     * @param loginUserId 当前登录用户ID
      * @return 任务详情DTO
      */
     @Override
-    public TaskDetailDTO getTaskDetail(Integer taskId) {
+    public TaskDetailDTO getTaskDetail(Integer taskId, Integer loginUserId) {
         // 1. 获取任务基本信息
         SysTask task = sysTaskHandler.getById(taskId);
         if (task == null) {
@@ -346,16 +350,28 @@ public class SysTaskServiceImpl implements SysTaskService {
         // 10. 获取任务评价信息
         SysTaskEvaluation evaluation = sysTaskEvaluationHandler.getByTaskId(taskId);
 
-        // 11. 构建并返回DTO
+        // 11. 获取纠纷支持信息
+        SysDisputeSupport currentUserSupport = null;
+        List<SysDisputeSupport> disputeSupports = List.of();
+        if (dispute != null) {
+            // 获取当前用户的支持信息
+            currentUserSupport = sysDisputeSupportHandler.getUserSupport(dispute.getId(), loginUserId);
+            // 获取所有支持信息
+            disputeSupports = sysDisputeSupportHandler.getDisputeSupports(dispute.getId());
+        }
+
+        // 12. 构建并返回DTO
         return TaskDetailDTO.build(
-                task,
-                taskType,
-                publisher,
-                runner,
-                dispute,
-                messageDTOs,
-                taskLogs,
-                evaluation
+            task, 
+            taskType,
+            publisher,
+            runner,
+            dispute,
+            messageDTOs, 
+            taskLogs, 
+            evaluation,
+            currentUserSupport,
+            disputeSupports
         );
     }
 
