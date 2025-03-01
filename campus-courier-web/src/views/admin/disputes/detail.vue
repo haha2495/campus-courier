@@ -347,7 +347,7 @@
               </div>
             </el-tab-pane>
 
-            <el-tab-pane label="支持信息" v-if="detail.dispute?.status === 3">
+            <el-tab-pane label="支持信息" v-if="detail.disputeSupports">
               <div class="supports-section">
                 <DisputeSupports :dispute-supports="detail.disputeSupports" />
               </div>
