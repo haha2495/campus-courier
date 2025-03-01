@@ -21,4 +21,27 @@ export const disputeApi = {
       data
     })
   }
+}
+
+/**
+ * 获取纠纷大厅列表
+ * @returns {Promise} 纠纷列表
+ */
+export function getHallDisputes() {
+  return request({
+    url: '/api/dispute/hall/list',
+    method: 'get'
+  })
+}
+
+/**
+ * 获取纠纷详情
+ * @param {number} disputeId 纠纷ID
+ * @returns {Promise} 纠纷详情
+ */
+export function getDisputeDetail(disputeId) {
+  return request({
+    url: `/api/dispute/${disputeId}`,
+    method: 'get'
+  })
 } 

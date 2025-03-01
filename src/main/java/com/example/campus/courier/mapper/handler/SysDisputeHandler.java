@@ -62,7 +62,7 @@ public class SysDisputeHandler extends ServiceImpl<SysDisputeMapper, SysDispute>
         return this.list(
             new LambdaQueryWrapper<SysDispute>()
                 .eq(SysDispute::getStatus, DisputeStatusEnum.PUBLISHED.getCode())
-                .le(SysDispute::getDeadline, LocalDateTime.now())
+                .ge(SysDispute::getDeadline, LocalDateTime.now())
                 .orderByDesc(SysDispute::getCreateTime)
         );
     }
