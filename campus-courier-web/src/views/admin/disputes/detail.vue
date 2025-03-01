@@ -346,6 +346,12 @@
                 </div>
               </div>
             </el-tab-pane>
+
+            <el-tab-pane label="支持信息" v-if="detail.dispute?.status === 3">
+              <div class="supports-section">
+                <DisputeSupports :dispute-supports="detail.disputeSupports" />
+              </div>
+            </el-tab-pane>
           </el-tabs>
         </template>
       </div>
@@ -457,6 +463,7 @@ import {DisputeStatusEnum} from '@/utils/enums/disputeEnums'
 import {DisputeTypeEnum} from "@/utils/enums/disputeTypeEnums.js";
 import {getTaskDetail} from "@/api/task.js";
 import { handleDispute } from '@/api/dispute'
+import DisputeSupports from '@/components/DisputeSupports.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -1665,6 +1672,29 @@ const formatRemainingTime = (endTimeString) => {
   }
   100% {
     transform: scale(1);
+  }
+}
+
+/* 支持信息区域样式 */
+.supports-section {
+  margin-top: 24px;
+  
+  .section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    &::before {
+      content: '';
+      width: 3px;
+      height: 16px;
+      background: #409EFF;
+      border-radius: 2px;
+    }
   }
 }
 </style> 
