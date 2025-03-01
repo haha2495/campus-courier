@@ -40,6 +40,9 @@
                 :class="{ 'income': isIncome(record.type) }"
               >{{ isIncome(record.type) ? '+' : '-' }}{{ record.amount }}</text>
             </view>
+            <view class="description" v-if="record.description">
+              <text class="description-text">{{ record.description }}</text>
+            </view>
             <view class="sub-info">
               <text class="transaction-time">{{ formatTime(record.createTime) }}</text>
               <text class="balance-text">余额: {{ isIncome(record.type) ? 
@@ -292,10 +295,26 @@ defineExpose({
           }
         }
 
+        .description {
+          margin: 8rpx 0;
+          
+          .description-text {
+            font-size: 26rpx;
+            color: #666666;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+        }
+
         .sub-info {
           display: flex;
           justify-content: space-between;
           align-items: center;
+          margin-top: 8rpx;
 
           .transaction-time {
             font-size: 24rpx;
