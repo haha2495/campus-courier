@@ -414,7 +414,10 @@ const handleTabNavigation = (tab) => {
         })
         break
       case TabPageName.DISPUTES:
-        showMessage('纠纷大厅功能待实现')
+        // 跳转到纠纷大厅页面
+        uni.navigateTo({
+          url: '/pages/dispute/index'
+        })
         break
       case TabPageName.MINE:
         // 跳转到个人中心页面
