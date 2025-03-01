@@ -24,8 +24,25 @@ export const disputeApi = {
 }
 
 /**
+ * 处理纠纷
+ * @param {Object} data - 纠纷处理数据
+ * @param {string} data.disputeId - 纠纷ID
+ * @param {string} data.taskId - 任务ID
+ * @param {string} data.winner - 胜诉方ID
+ * @param {string} data.remark - 处理备注
+ * @returns {Promise} 返回处理结果
+ */
+export function handleDispute(data) {
+  return request({
+    url: '/api/dispute/handle',
+    method: 'post',
+    data
+  })
+}
+
+/**
  * 获取纠纷大厅列表
- * @returns {Promise} 纠纷列表
+ * @returns {Promise} 返回纠纷列表
  */
 export function getHallDisputes() {
   return request({
@@ -36,8 +53,8 @@ export function getHallDisputes() {
 
 /**
  * 获取纠纷详情
- * @param {number} disputeId 纠纷ID
- * @returns {Promise} 纠纷详情
+ * @param {string} disputeId - 纠纷ID
+ * @returns {Promise} 返回纠纷详情
  */
 export function getDisputeDetail(disputeId) {
   return request({

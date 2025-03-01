@@ -174,6 +174,14 @@
                 ></image>
               </view>
             </view>
+
+            <!-- 审判按钮 -->
+            <view v-if="!taskDetail.evaluation" class="judge-section">
+              <button class="judge-btn" @click="showJudgePopup">
+                <u-icon name="error-circle-fill" size="32" color="#FFFFFF"></u-icon>
+                <text>进行审判</text>
+              </button>
+            </view>
           </view>
         </view>
       </view>
@@ -273,13 +281,63 @@
         </view>
       </view>
     </template>
+
+    <!-- 审判弹窗 -->
+    <u-popup :show="showPopup" mode="center" round="12" @close="showPopup = false">
+      <view class="judge-popup">
+        <view class="popup-title">
+          <text>选择支持方</text>
+          <u-icon name="close" size="32" color="#999" @click="showPopup = false"></u-icon>
+        </view>
+        
+        <view class="popup-content">
+          <view class="judge-options">
+            <view 
+              class="judge-option publisher"
+              :class="{ active: selectedParty === 'publisher' }"
+              @click="selectedParty = 'publisher'"
+            >
+              <u-icon name="account" size="48" color="#3B82F6"></u-icon>
+              <text>支持发布者</text>
+              <text class="sub-text">{{ taskDetail?.publisher?.name }}</text>
+            </view>
+            
+            <view 
+              class="judge-option runner"
+              :class="{ active: selectedParty === 'runner' }"
+              @click="selectedParty = 'runner'"
+            >
+              <u-icon name="car" size="48" color="#10B981"></u-icon>
+              <text>支持跑腿者</text>
+              <text class="sub-text">{{ taskDetail?.runner?.name }}</text>
+            </view>
+          </view>
+          
+          <view class="judge-remark">
+            <u-input
+              v-model="judgeRemark"
+              type="textarea"
+              placeholder="请输入审判理由（选填）"
+              height="160"
+              :border="true"
+            ></u-input>
+          </view>
+        </view>
+        
+        <view class="popup-footer">
+          <button class="cancel-btn" @click="showPopup = false">取消</button>
+          <button class="confirm-btn" @click="handleJudge" :disabled="!selectedParty">确认</button>
+        </view>
+      </view>
+    </u-popup>
   </view>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { getTaskDetail } from '@/api/task'
-import { TASK_STATUS } from '@/constants/taskStatus'
+import { getTaskDetail } from '../../api/task'
+import { handleDispute } from '../../api/dispute'
+import { TASK_STATUS } from '../../constants/taskStatus'
 import TaskTimeline from './components/TaskTimeline.vue'
 import TaskMessages from './components/TaskMessages.vue'
 
@@ -287,6 +345,9 @@ const loading = ref(true)
 const taskDetail = ref(null)
 const activeTab = ref(0)
 const taskId = ref(null)
+const showPopup = ref(false)
+const selectedParty = ref(null)
+const judgeRemark = ref('')
 
 // 标签页配置
 const tabs = computed(() => {
@@ -397,6 +458,62 @@ const previewImage = (current, urls) => {
     current,
     urls
   })
+}
+
+// 显示审判弹窗
+const showJudgePopup = () => {
+  selectedParty.value = ''
+  judgeRemark.value = ''
+  showPopup.value = true
+}
+
+// 处理审判提交
+const handleJudge = async () => {
+  if (!selectedParty.value) {
+    uni.showToast({
+      title: '请选择支持方',
+      icon: 'none'
+    })
+    return
+  }
+
+  try {
+    // 显示加载提示
+    uni.showLoading({
+      title: '提交中...'
+    })
+
+    // 构造请求参数
+    const params = {
+      disputeId: taskDetail.value.dispute.id,
+      taskId: taskDetail.value.task.id,
+      winner: selectedParty.value === 'publisher' ? taskDetail.value.publisher.id : taskDetail.value.runner.id,
+      remark: judgeRemark.value || '管理员判定'
+    }
+    
+    // 调用审判API
+    await handleDispute(params)
+    
+    // 关闭弹窗
+    showPopup.value = false
+    
+    // 刷新页面数据
+    await fetchTaskDetail()
+    
+    // 显示成功提示
+    uni.showToast({
+      title: '审判成功',
+      icon: 'success'
+    })
+  } catch (error) {
+    console.error('审判失败：', error)
+    uni.showToast({
+      title: error.message || '审判失败，请重试',
+      icon: 'none'
+    })
+  } finally {
+    uni.hideLoading()
+  }
 }
 
 onMounted(() => {
@@ -1162,6 +1279,168 @@ onMounted(() => {
           height: 180rpx;
           border-radius: 12rpx;
           box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+        }
+      }
+    }
+
+    .judge-section {
+      margin-top: 32rpx;
+      padding-top: 24rpx;
+      border-top: 2rpx dashed #FDBA74;
+      display: flex;
+      justify-content: center;
+
+      .judge-btn {
+        background: linear-gradient(135deg, #ff4d4f 0%, #ff7875 100%);
+        color: #FFFFFF;
+        padding: 24rpx 64rpx;
+        border-radius: 40rpx;
+        font-size: 32rpx;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 12rpx;
+        box-shadow: 0 8rpx 16rpx rgba(255, 77, 79, 0.2);
+        transition: all 0.3s ease;
+        width: 60%;
+
+        &:active {
+          transform: scale(0.95);
+          box-shadow: 0 4rpx 8rpx rgba(255, 77, 79, 0.15);
+        }
+
+        .u-icon {
+          animation: pulse 2s infinite;
+        }
+      }
+    }
+  }
+}
+
+// 添加动画
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.judge-popup {
+  background: #FFFFFF;
+  width: 600rpx;
+  border-radius: 24rpx;
+  overflow: hidden;
+  
+  .popup-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 32rpx;
+    border-bottom: 2rpx solid #F3F4F6;
+
+    text {
+      font-size: 36rpx;
+      font-weight: 600;
+      color: #1F2937;
+    }
+  }
+  
+  .popup-content {
+    padding: 32rpx;
+
+    .judge-options {
+      display: flex;
+      justify-content: space-between;
+      gap: 24rpx;
+      margin-bottom: 32rpx;
+
+      .judge-option {
+        flex: 1;
+        padding: 32rpx 24rpx;
+        border: 2rpx solid #E5E7EB;
+        border-radius: 16rpx;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12rpx;
+        transition: all 0.3s ease;
+
+        text {
+          font-size: 28rpx;
+          color: #4B5563;
+          font-weight: 500;
+        }
+
+        .sub-text {
+          font-size: 24rpx;
+          color: #9CA3AF;
+        }
+
+        &.active {
+          &.publisher {
+            border-color: #3B82F6;
+            background: #F0F7FF;
+          }
+
+          &.runner {
+            border-color: #10B981;
+            background: #ECFDF5;
+          }
+        }
+
+        &:active {
+          transform: scale(0.98);
+        }
+      }
+    }
+
+    .judge-remark {
+      margin-top: 24rpx;
+    }
+  }
+  
+  .popup-footer {
+    display: flex;
+    gap: 24rpx;
+    padding: 32rpx;
+    border-top: 2rpx solid #F3F4F6;
+
+    button {
+      flex: 1;
+      height: 88rpx;
+      border-radius: 44rpx;
+      font-size: 32rpx;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+
+      &.cancel-btn {
+        background: #F3F4F6;
+        color: #6B7280;
+
+        &:active {
+          background: #E5E7EB;
+        }
+      }
+
+      &.confirm-btn {
+        background: linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%);
+        color: #FFFFFF;
+
+        &:active {
+          transform: scale(0.98);
+        }
+
+        &:disabled {
+          background: linear-gradient(135deg, #93C5FD 0%, #BFDBFE 100%);
+          color: #FFFFFF;
         }
       }
     }
