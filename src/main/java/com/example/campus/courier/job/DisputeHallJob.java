@@ -21,10 +21,10 @@ public class DisputeHallJob {
     private final SysDisputeHandler disputeHandler;
 
     /**
-     * 每5分钟检查一次纠纷大厅状态
+     * 每1分钟检查一次纠纷大厅状态
      * 将已到期的纠纷状态更新为待处理(1)
      */
-    @Scheduled(fixedRate = 300000)
+    @Scheduled(fixedRate = 60000)
     public void updateDisputeHallStatus() {
         log.info("开始执行纠纷大厅状态更新任务...");
         try {
