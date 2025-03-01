@@ -258,23 +258,23 @@
                     </el-image>
                   </div>
                 </div>
-              </div>
 
-              <!-- 纠纷结果区域 -->
-              <div v-if="detail.dispute.status === 2" class="dispute-result">
-                <div class="result-header">
-                  <el-icon class="result-icon"><Trophy /></el-icon>
-                  <span class="result-title">处理结果</span>
-                </div>
-                <div class="result-content">
-                  <div class="winner-info">
-                    <el-tag type="success" effect="dark" class="winner-tag">
-                      {{ detail.dispute.result === 1 ? '发布者胜诉' : '跑腿者胜诉' }}
-                    </el-tag>
+                <!-- 纠纷结果区域 -->
+                <div v-if="detail.dispute.status === 2" class="result-section">
+                  <div class="result-header">
+                    <el-icon class="result-icon"><Trophy /></el-icon>
+                    <span class="result-title">处理结果</span>
                   </div>
-                  <div class="admin-remark">
-                    <div class="remark-label">处理说明：</div>
-                    <div class="remark-text">{{ detail.dispute.adminRemark || '无' }}</div>
+                  <div class="result-content">
+                    <div class="winner-info">
+                      <el-tag type="success" effect="dark" class="winner-tag">
+                        {{ detail.dispute.result === 1 ? '发布者胜诉' : '跑腿者胜诉' }}
+                      </el-tag>
+                    </div>
+                    <div class="admin-remark">
+                      <div class="remark-label">处理说明：</div>
+                      <div class="remark-text">{{ detail.dispute.adminRemark || '无' }}</div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1252,62 +1252,62 @@ const formatRemainingTime = (endTimeString) => {
           gap: 12px;
         }
       }
-    }
 
-    .dispute-result {
-      margin-top: 20px;
-      background: #f0fdf4;
-      border-radius: 8px;
-      padding: 16px;
-      border: 1px solid #86efac;
+      .dispute-result {
+        margin-top: 20px;
+        background: #f0fdf4;
+        border-radius: 8px;
+        padding: 16px;
+        border: 1px solid #86efac;
 
-      .result-header {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 16px;
-        
-        .result-icon {
-          font-size: 20px;
-          color: #059669;
-          animation: bounce 1s ease infinite;
-        }
-
-        .result-title {
-          font-size: 15px;
-          font-weight: 600;
-          color: #059669;
-        }
-      }
-
-      .result-content {
-        .winner-info {
-          margin-bottom: 12px;
+        .result-header {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          margin-bottom: 16px;
           
-          .winner-tag {
-            font-size: 14px;
-            padding: 6px 12px;
-            border-radius: 4px;
-            background: linear-gradient(45deg, #059669, #10b981);
+          .result-icon {
+            font-size: 20px;
+            color: #059669;
+            animation: bounce 1s ease infinite;
+          }
+
+          .result-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #059669;
           }
         }
 
-        .admin-remark {
-          background: #fff;
-          border-radius: 6px;
-          padding: 12px;
-          
-          .remark-label {
-            font-size: 13px;
-            color: #374151;
-            margin-bottom: 8px;
-            font-weight: 500;
+        .result-content {
+          .winner-info {
+            margin-bottom: 12px;
+            
+            .winner-tag {
+              font-size: 14px;
+              padding: 6px 12px;
+              border-radius: 4px;
+              background: linear-gradient(45deg, #059669, #10b981);
+            }
           }
-          
-          .remark-text {
-            font-size: 14px;
-            color: #1f2937;
-            line-height: 1.6;
+
+          .admin-remark {
+            background: #fff;
+            border-radius: 6px;
+            padding: 12px;
+            
+            .remark-label {
+              font-size: 13px;
+              color: #374151;
+              margin-bottom: 8px;
+              font-weight: 500;
+            }
+            
+            .remark-text {
+              font-size: 14px;
+              color: #1f2937;
+              line-height: 1.6;
+            }
           }
         }
       }
@@ -1944,5 +1944,74 @@ const formatRemainingTime = (endTimeString) => {
 
 :deep(.el-tabs__active-bar) {
   display: none;
+}
+
+/* 纠纷结果区域样式 */
+.result-section {
+  margin-top: 20px;
+  background: #f0fdf4;
+  border-radius: 8px;
+  padding: 16px;
+  border: 1px solid #86efac;
+
+  .result-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    
+    .result-icon {
+      font-size: 20px;
+      color: #059669;
+      animation: bounce 1s ease infinite;
+    }
+
+    .result-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #059669;
+    }
+  }
+
+  .result-content {
+    .winner-info {
+      margin-bottom: 12px;
+      
+      .winner-tag {
+        font-size: 14px;
+        padding: 6px 12px;
+        border-radius: 4px;
+        background: linear-gradient(45deg, #059669, #10b981);
+      }
+    }
+
+    .admin-remark {
+      background: #fff;
+      border-radius: 6px;
+      padding: 12px;
+      
+      .remark-label {
+        font-size: 13px;
+        color: #374151;
+        margin-bottom: 8px;
+        font-weight: 500;
+      }
+      
+      .remark-text {
+        font-size: 14px;
+        color: #1f2937;
+        line-height: 1.6;
+      }
+    }
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
 }
 </style> 
