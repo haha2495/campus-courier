@@ -11,7 +11,7 @@
         </div>
         <div class="title">纠纷详情</div>
         <el-button 
-          v-if="detail?.dispute?.status === 0"
+          v-if="detail?.dispute?.status === 0 || detail?.dispute?.status === 1"
           type="primary" 
           size="small" 
           class="handle-btn"
