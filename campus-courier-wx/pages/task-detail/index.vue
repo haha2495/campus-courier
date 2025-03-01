@@ -228,8 +228,15 @@
             @refresh="fetchTaskDetail"
           />
 
+          <!-- 支持信息 -->
+          <DisputeSupports
+            v-else-if="activeTab === 2 && taskDetail.dispute"
+            :dispute="taskDetail.dispute"
+            :disputeSupports="taskDetail.disputeSupports"
+          />
+
           <!-- 评价信息 -->
-          <view v-else-if="activeTab === 2" class="evaluation-section">
+          <view v-else-if="activeTab === 3" class="evaluation-section">
             <template v-if="taskDetail.evaluation">
               <view class="evaluation-card">
                 <!-- 评分展示 -->
@@ -347,6 +354,7 @@ import { TASK_STATUS } from '@/constants/taskStatus'
 import { userApi } from '@/api/user'
 import TaskTimeline from './components/TaskTimeline.vue'
 import TaskMessages from './components/TaskMessages.vue'
+import DisputeSupports from './components/DisputeSupports.vue'
 
 const loading = ref(true)
 const taskDetail = ref(null)
@@ -369,6 +377,14 @@ const tabs = computed(() => {
       icon: 'chat-fill'
     }
   ]
+  
+  // 如果有纠纷信息且用户有权限查看支持信息，添加支持信息标签
+  if (taskDetail.value?.dispute && (isTaskParticipant.value || taskDetail.value?.currentUserSupport)) {
+    baseTabs.push({
+      name: '支持信息',
+      icon: 'thumb-up-fill'
+    })
+  }
   
   // 只有当任务有评价信息时，才添加评价标签页
   if (taskDetail.value?.evaluation) {
@@ -412,7 +428,7 @@ const fetchTaskDetail = async () => {
     if (res.data) {
       taskDetail.value = res.data
       // 如果当前是评价标签页，但没有评价信息，则切换到第一个标签
-      if (activeTab.value === 2 && !taskDetail.value.evaluation) {
+      if (activeTab.value === 3 && !taskDetail.value.evaluation) {
         activeTab.value = 0
       }
     }
