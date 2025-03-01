@@ -259,6 +259,25 @@
                   </div>
                 </div>
               </div>
+
+              <!-- 纠纷结果区域 -->
+              <div v-if="detail.dispute.status === 2" class="dispute-result">
+                <div class="result-header">
+                  <el-icon class="result-icon"><Trophy /></el-icon>
+                  <span class="result-title">处理结果</span>
+                </div>
+                <div class="result-content">
+                  <div class="winner-info">
+                    <el-tag type="success" effect="dark" class="winner-tag">
+                      {{ detail.dispute.result === 1 ? '发布者胜诉' : '跑腿者胜诉' }}
+                    </el-tag>
+                  </div>
+                  <div class="admin-remark">
+                    <div class="remark-label">处理说明：</div>
+                    <div class="remark-text">{{ detail.dispute.adminRemark || '无' }}</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -408,15 +427,28 @@
               </div>
             </el-radio>
 
-            <el-radio label="UNCERTAIN" border class="option-card">
-              <div class="radio-content">
-                <div class="radio-header">
-                  <div class="radio-title">存在疑问</div>
-                  <el-icon class="option-icon"><Warning /></el-icon>
-                </div>
-                <div class="radio-desc">发布到纠纷大厅进行筛选</div>
+            <el-tooltip
+              content="该纠纷已经发布过纠纷大厅，不能重复发布"
+              placement="top"
+              :disabled="detail?.dispute?.status !== 1"
+            >
+              <div class="radio-wrapper">
+                <el-radio 
+                  label="UNCERTAIN" 
+                  border 
+                  class="option-card"
+                  :disabled="detail?.dispute?.status === 1"
+                >
+                  <div class="radio-content">
+                    <div class="radio-header">
+                      <div class="radio-title">存在疑问</div>
+                      <el-icon class="option-icon"><Warning /></el-icon>
+                    </div>
+                    <div class="radio-desc">发布到纠纷大厅进行筛选</div>
+                  </div>
+                </el-radio>
               </div>
-            </el-radio>
+            </el-tooltip>
           </div>
         </el-radio-group>
 
@@ -474,7 +506,7 @@ import {useRoute, useRouter} from 'vue-router'
 import {
   ArrowLeft, Phone, Picture, Tools, UserFilled, 
   Medal, Warning, Check, Document, Timer,
-  ChatDotRound, ChatLineSquare
+  ChatDotRound, ChatLineSquare, Trophy
 } from '@element-plus/icons-vue'
 import {ElMessage} from 'element-plus'
 import {getDisputeDetail} from '@/api/dispute'
@@ -1221,6 +1253,74 @@ const formatRemainingTime = (endTimeString) => {
         }
       }
     }
+
+    .dispute-result {
+      margin-top: 20px;
+      background: #f0fdf4;
+      border-radius: 8px;
+      padding: 16px;
+      border: 1px solid #86efac;
+
+      .result-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 16px;
+        
+        .result-icon {
+          font-size: 20px;
+          color: #059669;
+          animation: bounce 1s ease infinite;
+        }
+
+        .result-title {
+          font-size: 15px;
+          font-weight: 600;
+          color: #059669;
+        }
+      }
+
+      .result-content {
+        .winner-info {
+          margin-bottom: 12px;
+          
+          .winner-tag {
+            font-size: 14px;
+            padding: 6px 12px;
+            border-radius: 4px;
+            background: linear-gradient(45deg, #059669, #10b981);
+          }
+        }
+
+        .admin-remark {
+          background: #fff;
+          border-radius: 6px;
+          padding: 12px;
+          
+          .remark-label {
+            font-size: 13px;
+            color: #374151;
+            margin-bottom: 8px;
+            font-weight: 500;
+          }
+          
+          .remark-text {
+            font-size: 14px;
+            color: #1f2937;
+            line-height: 1.6;
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
   }
 }
 
@@ -1750,6 +1850,23 @@ const formatRemainingTime = (endTimeString) => {
     padding: 16px 24px;
     border-top: 1px solid #e5e7eb;
     background: #f9fafb;
+  }
+
+  .radio-wrapper {
+    width: 100%;
+  }
+
+  :deep(.el-radio.is-disabled) {
+    &.option-card {
+      opacity: 0.6;
+      cursor: not-allowed;
+      
+      &:hover {
+        background: #f9fafb;
+        border-color: #dcdfe6;
+        transform: none;
+      }
+    }
   }
 }
 
