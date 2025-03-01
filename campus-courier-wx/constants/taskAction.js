@@ -46,7 +46,7 @@ export const getActionIcon = (action) => {
     [TASK_ACTION.START]: 'play-circle-fill',           // 开始
     [TASK_ACTION.DELIVER]: 'car-fill',                 // 送达 - 改用送货车图标
     [TASK_ACTION.CONFIRM]: 'star-fill',                // 确认
-    [TASK_ACTION.SUBMIT_DISPUTE]: 'warning-circle-fill', // 纠纷
+    [TASK_ACTION.SUBMIT_DISPUTE]: 'error-circle-fill', // 纠纷
     [TASK_ACTION.RESOLVE_DISPUTE]: 'checkmark-circle-fill', // 解决
     [TASK_ACTION.EVALUATE]: 'thumb-up-fill'            // 评价
   }
