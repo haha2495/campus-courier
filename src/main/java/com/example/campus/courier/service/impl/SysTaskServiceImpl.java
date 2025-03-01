@@ -450,11 +450,32 @@ public class SysTaskServiceImpl implements SysTaskService {
             throw new IllegalArgumentException("只有任务发布者才能确认完成");
         }
 
-        // 4. 更新任务状态为已完成
+        // 4. 获取跑腿者信息
+        SysStudent runner = sysStudentHandler.getById(task.getRunnerId());
+        if (runner == null) {
+            throw new IllegalArgumentException("跑腿者信息不存在");
+        }
+
+        // 5. 计算任务报酬
+        BigDecimal totalReward = task.calculateTotalPrice();
+
+        // 6. 增加跑腿者余额
+        runner.increaseBalance(totalReward);
+        sysStudentHandler.updateById(runner);
+
+        // 7. 记录余额变动
+        sysBalanceRecordHandler.createRecord(
+            runner,
+            totalReward,
+            BalanceChangeTypeEnum.INCOME.getCode(),
+            String.format("完成任务[%s],获得报酬%.2f元", task.getTitle(), totalReward)
+        );
+
+        // 8. 更新任务状态为已完成
         task.updateStatus(TaskStatusEnum.COMPLETED);
         sysTaskHandler.updateById(task);
 
-        // 5. 记录任务日志
+        // 9. 记录任务日志
         SysTaskLog taskLog = new SysTaskLog().init(task.getId(), TaskActionEnum.CONFIRM, "确认完成任务:" + task.getTitle(), userId);
         sysTaskLogHandler.save(taskLog);
 
