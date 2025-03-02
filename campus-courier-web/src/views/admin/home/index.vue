@@ -57,7 +57,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import * as echarts from 'echarts'
 import { 
   Bicycle, 
@@ -110,13 +110,7 @@ const statisticsData = ref([
 const timeRange = ref('week')
 
 // 任务类型数据
-const taskTypes = [
-  { name: '快递代取', value: 45, color: '#409EFF' },
-  { name: '食堂代购', value: 25, color: '#67C23A' },
-  { name: '打印服务', value: 15, color: '#E6A23C' },
-  { name: '校园跑腿', value: 10, color: '#F56C6C' },
-  { name: '其他服务', value: 5, color: '#909399' }
-]
+const taskTypes = ref([])
 
 // 获取仪表盘数据
 const fetchDashboardStats = async () => {
@@ -169,10 +163,36 @@ const fetchDashboardStats = async () => {
   }
 }
 
+// 获取任务类型统计数据
+const fetchTaskTypeStats = async () => {
+  try {
+    const { data } = await axios.get('/api/dashboard/task-type-stats')
+    if (data.code === 200) {
+      // 设置固定的颜色数组
+      const colors = ['#409EFF', '#67C23A', '#E6A23C', '#F56C6C', '#909399']
+      
+      // 为每个类型分配颜色
+      taskTypes.value = data.data.map((item, index) => ({
+        name: item.typeName,
+        value: item.taskCount,
+        percentage: item.percentage,
+        color: colors[index % colors.length] // 循环使用颜色
+      }))
+    } else {
+      ElMessage.error(data.message || '获取任务类型统计失败')
+    }
+  } catch (error) {
+    console.error('获取任务类型统计出错:', error)
+    ElMessage.error('获取任务类型统计失败')
+  }
+}
+
 // 初始化图表
 onMounted(() => {
   // 获取统计数据
   fetchDashboardStats()
+  // 获取任务类型统计
+  fetchTaskTypeStats()
 
   // 任务趋势图表
   const taskTrendChart = echarts.init(document.getElementById('taskTrendChart'))
@@ -230,50 +250,56 @@ onMounted(() => {
 
   // 任务类型图表
   const taskTypeChart = echarts.init(document.getElementById('taskTypeChart'))
-  taskTypeChart.setOption({
-    tooltip: {
-      trigger: 'item',
-      formatter: '{b}: {c}%<br/>占比: {d}%'
-    },
-    series: [
-      {
-        type: 'pie',
-        radius: ['45%', '70%'],
-        center: ['50%', '50%'],
-        data: taskTypes.map(item => ({
-          name: item.name,
-          value: item.value,
-          itemStyle: {
-            color: item.color
-          }
-        })),
-        label: {
-          show: true,
-          position: 'outside',
-          formatter: '{b}\n{d}%',
-          fontSize: 12,
-          color: '#606266'
+  
+  // 监听数据变化，更新图表
+  watch(taskTypes, (newValue) => {
+    if (newValue.length > 0) {
+      taskTypeChart.setOption({
+        tooltip: {
+          trigger: 'item',
+          formatter: '{b}: {c} 个<br/>占比: {d}%'
         },
-        labelLine: {
-          length: 10,
-          length2: 10,
-          smooth: true
-        },
-        emphasis: {
-          label: {
-            show: true,
-            fontSize: 14,
-            fontWeight: 'bold'
-          },
-          itemStyle: {
-            shadowBlur: 10,
-            shadowOffsetX: 0,
-            shadowColor: 'rgba(0, 0, 0, 0.5)'
+        series: [
+          {
+            type: 'pie',
+            radius: ['45%', '70%'],
+            center: ['50%', '50%'],
+            data: newValue.map(item => ({
+              name: item.name,
+              value: item.value,
+              itemStyle: {
+                color: item.color
+              }
+            })),
+            label: {
+              show: true,
+              position: 'outside',
+              formatter: '{b}\n{d}%',
+              fontSize: 12,
+              color: '#606266'
+            },
+            labelLine: {
+              length: 10,
+              length2: 10,
+              smooth: true
+            },
+            emphasis: {
+              label: {
+                show: true,
+                fontSize: 14,
+                fontWeight: 'bold'
+              },
+              itemStyle: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.5)'
+              }
+            }
           }
-        }
-      }
-    ]
-  })
+        ]
+      })
+    }
+  }, { immediate: true })
 
   // 监听窗口大小变化
   window.addEventListener('resize', () => {

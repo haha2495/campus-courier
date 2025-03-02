@@ -3,6 +3,7 @@ package com.example.campus.courier.service.impl;
 import com.example.campus.courier.mapper.SysTaskMapper;
 import com.example.campus.courier.mapper.SysStudentMapper;
 import com.example.campus.courier.model.dto.DashboardStatDTO;
+import com.example.campus.courier.model.dto.TaskTypeStatDTO;
 import com.example.campus.courier.service.SysDashboardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 /**
  * 首页仪表盘服务实现类
@@ -57,6 +59,11 @@ public class SysDashboardServiceImpl implements SysDashboardService {
         stats.setCompletionRateChange(currentCompletionRate - previousCompletionRate);
 
         return stats;
+    }
+
+    @Override
+    public List<TaskTypeStatDTO> getTaskTypeStats() {
+        return taskMapper.getTaskTypeStats();
     }
 
     /**
