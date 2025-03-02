@@ -67,19 +67,48 @@
           </view>
         </view>
         
-        <view class="task-section">
-          <view class="section-header">
-            <text class="section-title">最近任务</text>
-            <view class="view-more" @click="navigateTo('tasks')">
-              <text class="more-text">查看全部</text>
-              <image src="https://cdn-icons-png.flaticon.com/128/271/271228.png" class="arrow-icon"></image>
-            </view>
+        <view class="tips-section">
+          <view class="tips-header">
+            <text class="tips-title">温馨提示</text>
+            <text class="tips-subtitle">让我们一起打造优质的校园跑腿体验 ✨</text>
           </view>
-          
-          <view v-if="showEmpty" class="custom-empty">
-            <image class="empty-image" src="https://cdn-icons-png.flaticon.com/128/7486/7486754.png" mode="aspectFit"></image>
-            <text class="empty-text">暂无数据</text>
-            <text class="empty-tips">下拉刷新试试看</text>
+          <view class="tips-content">
+            <view class="tip-item">
+              <view class="tip-icon-wrapper publisher">
+                <text class="tip-emoji">📝</text>
+              </view>
+              <view class="tip-info">
+                <text class="tip-title">信息准确</text>
+                <text class="tip-text">请确保填写正确的收货地址和联系方式哦</text>
+              </view>
+            </view>
+            <view class="tip-item">
+              <view class="tip-icon-wrapper publisher">
+                <text class="tip-emoji">💰</text>
+              </view>
+              <view class="tip-info">
+                <text class="tip-title">合理定价</text>
+                <text class="tip-text">合理设置跑腿费，让接单更快速~</text>
+              </view>
+            </view>
+            <view class="tip-item">
+              <view class="tip-icon-wrapper publisher">
+                <text class="tip-emoji">💬</text>
+              </view>
+              <view class="tip-info">
+                <text class="tip-title">及时沟通</text>
+                <text class="tip-text">保持良好沟通，让订单更顺畅</text>
+              </view>
+            </view>
+            <view class="tip-item">
+              <view class="tip-icon-wrapper publisher">
+                <text class="tip-emoji">🎯</text>
+              </view>
+              <view class="tip-info">
+                <text class="tip-title">问题处理</text>
+                <text class="tip-text">遇到问题记得联系客服小姐姐哦</text>
+              </view>
+            </view>
           </view>
         </view>
       </block>
@@ -107,28 +136,57 @@
             <text class="stats-label">进行中</text>
           </view>
           <view class="stats-card runner">
-            <text class="stats-value">0</text>
+            <text class="stats-value">{{ taskStats.completed }}</text>
             <text class="stats-label">已完成</text>
           </view>
           <view class="stats-card runner">
-            <text class="stats-value">0元</text>
+            <text class="stats-value">{{ taskStats.total_income }}元</text>
             <text class="stats-label">总收入</text>
           </view>
         </view>
         
-        <view class="task-section">
-          <view class="section-header">
-            <text class="section-title">热门任务</text>
-            <view class="view-more" @click="navigateTo('orders')">
-              <text class="more-text">查看全部</text>
-              <image src="https://cdn-icons-png.flaticon.com/128/271/271228.png" class="arrow-icon"></image>
-            </view>
+        <view class="tips-section">
+          <view class="tips-header">
+            <text class="tips-title">温馨提示</text>
+            <text class="tips-subtitle">成为最棒的校园跑腿达人 🌟</text>
           </view>
-          
-          <view v-if="showEmpty" class="custom-empty">
-            <image class="empty-image" src="https://cdn-icons-png.flaticon.com/128/7486/7486754.png" mode="aspectFit"></image>
-            <text class="empty-text">暂无数据</text>
-            <text class="empty-tips">下拉刷新试试看</text>
+          <view class="tips-content">
+            <view class="tip-item">
+              <view class="tip-icon-wrapper runner">
+                <text class="tip-emoji">📋</text>
+              </view>
+              <view class="tip-info">
+                <text class="tip-title">仔细阅读</text>
+                <text class="tip-text">接单前请认真查看任务要求和时间哦</text>
+              </view>
+            </view>
+            <view class="tip-item">
+              <view class="tip-icon-wrapper runner">
+                <text class="tip-emoji">🤝</text>
+              </view>
+              <view class="tip-info">
+                <text class="tip-title">服务态度</text>
+                <text class="tip-text">微笑服务，让每个订单都温暖人心</text>
+              </view>
+            </view>
+            <view class="tip-item">
+              <view class="tip-icon-wrapper runner">
+                <text class="tip-emoji">⏰</text>
+              </view>
+              <view class="tip-info">
+                <text class="tip-title">准时送达</text>
+                <text class="tip-text">守时是最基本的职业素养呢</text>
+              </view>
+            </view>
+            <view class="tip-item">
+              <view class="tip-icon-wrapper runner">
+                <text class="tip-emoji">💡</text>
+              </view>
+              <view class="tip-info">
+                <text class="tip-title">解决问题</text>
+                <text class="tip-text">遇到困难及时沟通，我们一起解决</text>
+              </view>
+            </view>
           </view>
         </view>
       </block>
@@ -1257,6 +1315,92 @@ const loadIconCache = () => {
   .button-text {
     font-size: 28rpx;
     font-weight: 500;
+  }
+}
+
+.tips-section {
+  background-color: #ffffff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+}
+
+.tips-header {
+  margin-bottom: 30rpx;
+  
+  .tips-title {
+    font-size: 34rpx;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 8rpx;
+    display: block;
+  }
+
+  .tips-subtitle {
+    font-size: 26rpx;
+    color: #999;
+    display: block;
+  }
+}
+
+.tips-content {
+  padding: 10rpx 0;
+}
+
+.tip-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid rgba(0, 0, 0, 0.05);
+  transition: all 0.3s;
+  
+  &:last-child {
+    border-bottom: none;
+  }
+  
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.tip-icon-wrapper {
+  width: 70rpx;
+  height: 70rpx;
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+  
+  &.publisher {
+    background: linear-gradient(135deg, rgba(255, 149, 0, 0.1), rgba(255, 125, 0, 0.1));
+  }
+  
+  &.runner {
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(41, 128, 185, 0.1));
+  }
+  
+  .tip-emoji {
+    font-size: 36rpx;
+  }
+}
+
+.tip-info {
+  flex: 1;
+  
+  .tip-title {
+    font-size: 30rpx;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 6rpx;
+    display: block;
+  }
+  
+  .tip-text {
+    font-size: 26rpx;
+    color: #666;
+    line-height: 1.5;
   }
 }
 </style>
