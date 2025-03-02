@@ -544,7 +544,7 @@ const handleJudge = async () => {
     // 构造请求参数
     const params = {
       disputeId: taskDetail.value.dispute.id,
-      supportType: selectedParty.value === 'publisher' ? taskDetail.value.publisher.id : taskDetail.value.runner.id,
+      supportType: selectedParty.value === 'publisher' ? 1 : 2,
       remark: judgeRemark.value || '用户支持'
     }
     

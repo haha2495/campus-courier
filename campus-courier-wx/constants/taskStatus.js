@@ -72,7 +72,8 @@ export const TASK_STATUS = {
       { label: '待确认', value: 3 },
       { label: '已完成', value: 4 },
       { label: '已取消', value: 5 },
-      { label: '已评价', value: 8 }
+      { label: '存在纠纷', value: 7 },
+      { label: '已评价', value: 8 },
     ]
   }
 } 

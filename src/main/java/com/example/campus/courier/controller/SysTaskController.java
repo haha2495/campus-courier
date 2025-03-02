@@ -99,7 +99,6 @@ public class SysTaskController extends BaseController {
 
     /**
      * 获取我当前接单的任务列表
-     * 只返回进行中的任务（已接单、进行中、待确认状态）
      *
      * @return 任务列表
      */

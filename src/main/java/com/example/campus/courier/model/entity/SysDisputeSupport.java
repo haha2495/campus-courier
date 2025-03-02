@@ -48,7 +48,7 @@ public class SysDisputeSupport {
         support.setDisputeId(request.getDisputeId());
         support.setStudentId(studentId);
         support.setSupportType(request.getSupportType());
-        support.setReason(StringUtils.defaultString(request.getReason()));
+        support.setReason(StringUtils.defaultString(request.getRemark()));
         support.setCreateTime(LocalDateTime.now());
         return support;
     }

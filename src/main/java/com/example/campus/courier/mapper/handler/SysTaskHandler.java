@@ -75,6 +75,7 @@ public class SysTaskHandler extends ServiceImpl<SysTaskMapper, SysTask> {
                 .in(SysTask::getStatus, 
                     TaskStatusEnum.ACCEPTED.getCode(),
                     TaskStatusEnum.IN_PROGRESS.getCode(),
+                    TaskStatusEnum.DISPUTED.getCode(),
                     TaskStatusEnum.AWAITING_CONFIRMATION.getCode())
                 .orderByDesc(SysTask::getCreateTime)
                 .list();

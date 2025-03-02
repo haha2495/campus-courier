@@ -11,7 +11,7 @@
         </div>
         <div class="title">{{ type === 'detail' ? '任务详情' : '纠纷详情' }}</div>
         <el-button
-            v-if="type === 'detail' && (detail?.dispute?.status === 0 || detail?.dispute?.status === 1)"
+            v-if="type === 'dispute' && (detail?.dispute?.status === 0 || detail?.dispute?.status === 1)"
             type="primary"
             size="small"
             class="handle-btn"

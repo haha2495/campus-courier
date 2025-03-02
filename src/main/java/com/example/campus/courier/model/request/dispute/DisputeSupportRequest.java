@@ -17,5 +17,5 @@ public class DisputeSupportRequest {
     private Integer supportType;
     
     @Schema(description = "支持原因")
-    private String reason;
+    private String remark;
 } 
