@@ -20,7 +20,7 @@
       <!-- 任务类型 -->
       <div class="task-type">
         <img class="type-icon" :src="taskType?.icon" alt="任务类型">
-        <span>{{ taskType?.name }}</span>
+        <span>{{ taskType?.typeName }}</span>
       </div>
 
       <!-- 任务标题和描述 -->
