@@ -32,13 +32,13 @@
         <el-empty v-if="tableData.length === 0" description="暂无纠纷数据"/>
         <div v-else class="disputes-list">
           <task-card
-            v-for="item in tableData"
-            :key="item.id"
-            :task="item.task"
-            :task-type="item.taskType"
-            action-text="前去处理"
-            @click="handleView"
-            @action="handleView"
+              v-for="item in tableData"
+              :key="item.id"
+              :task="item.task"
+              :task-type="item.taskType"
+              action-text="前去处理"
+              @click="handleView"
+              @action="handleView"
           />
         </div>
       </div>
@@ -71,7 +71,7 @@ import {
 import {ElMessage} from 'element-plus'
 import {DisputeStatusEnum} from '@/utils/enums/disputeEnums'
 import {pageDisputes} from '@/api/dispute'
-import { TaskStatusEnum } from '@/utils/enums/taskEnums'
+import {TaskStatusEnum} from '@/utils/enums/taskEnums'
 import TaskCard from '@/components/task-card/index.vue'
 
 const router = useRouter()
@@ -147,7 +147,8 @@ const handleView = (row) => {
   router.push({
     path: '/admin/disputes/detail',
     query: {
-      taskId: row.id
+      taskId: row.id,
+      type: 'dispute'
     }
   })
 }
@@ -206,7 +207,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  
+
   &:hover {
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
   }
@@ -343,7 +344,7 @@ onMounted(() => {
   .el-pagination__sizes {
     .el-select {
       .el-input {
-        width: 110px;  // 调整选择器宽度
+        width: 110px; // 调整选择器宽度
       }
     }
   }

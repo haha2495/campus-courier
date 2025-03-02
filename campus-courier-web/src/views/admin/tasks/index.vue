@@ -156,7 +156,8 @@ const handleViewDetail = (row) => {
   router.push({
     path: '/admin/disputes/detail',
     query: {
-      taskId: row.id
+      taskId: row.id,
+      type: 'detail'
     }
   })
 }

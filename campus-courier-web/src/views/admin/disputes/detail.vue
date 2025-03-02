@@ -9,15 +9,17 @@
           </el-icon>
           <span>返回列表</span>
         </div>
-        <div class="title">纠纷详情</div>
-        <el-button 
-          v-if="detail?.dispute?.status === 0 || detail?.dispute?.status === 1"
-          type="primary" 
-          size="small" 
-          class="handle-btn"
-          @click="handleDisputeClick"
+        <div class="title">{{ type === 'detail' ? '任务详情' : '纠纷详情' }}</div>
+        <el-button
+            v-if="type === 'detail' && (detail?.dispute?.status === 0 || detail?.dispute?.status === 1)"
+            type="primary"
+            size="small"
+            class="handle-btn"
+            @click="handleDisputeClick"
         >
-          <el-icon class="btn-icon"><Tools /></el-icon>
+          <el-icon class="btn-icon">
+            <Tools/>
+          </el-icon>
           处理纠纷
         </el-button>
       </div>
@@ -25,20 +27,22 @@
 
     <!-- 纠纷大厅提示 -->
     <el-alert
-      v-if="detail?.dispute?.status === 3"
-      type="warning"
-      :closable="false"
-      class="dispute-hall-alert"
+        v-if="detail?.dispute?.status === 3"
+        type="warning"
+        :closable="false"
+        class="dispute-hall-alert"
     >
       <template #title>
         <div class="alert-content">
-          <el-icon class="alert-icon"><Warning /></el-icon>
+          <el-icon class="alert-icon">
+            <Warning/>
+          </el-icon>
           <span>当前纠纷正在大厅公示中，请等待公示结束后进行处理</span>
-          <el-tag 
-            size="small" 
-            effect="dark"
-            type="warning"
-            class="time-tag"
+          <el-tag
+              size="small"
+              effect="dark"
+              type="warning"
+              class="time-tag"
           >
             剩余时间：{{ formatRemainingTime(detail.dispute.deadline) }}
           </el-tag>
@@ -78,8 +82,8 @@
             <div class="user-cards">
               <div class="user-card" v-if="detail.publisher">
                 <div class="user-role">发布者</div>
-                <el-avatar 
-                  :src="detail.publisher.avatar || null"
+                <el-avatar
+                    :src="detail.publisher.avatar || null"
                 >
                   {{ detail.publisher.name?.[0]?.toUpperCase() || '?' }}
                 </el-avatar>
@@ -90,8 +94,8 @@
               </div>
               <div class="user-card" v-if="detail.runner">
                 <div class="user-role">跑腿者</div>
-                <el-avatar 
-                  :src="detail.runner.avatar || null"
+                <el-avatar
+                    :src="detail.runner.avatar || null"
                 >
                   {{ detail.runner.name?.[0]?.toUpperCase() || '?' }}
                 </el-avatar>
@@ -210,20 +214,20 @@
             <div class="dispute-content">
               <div class="dispute-header">
                 <div class="dispute-tags">
-                  <el-tag 
-                    :type="getDisputeTypeStyle(detail.dispute.type)"
-                    class="dispute-tag"
-                    size="large"
+                  <el-tag
+                      :type="getDisputeTypeStyle(detail.dispute.type)"
+                      class="dispute-tag"
+                      size="large"
                   >
                     <el-icon class="tag-icon">
                       <component :is="getDisputeTypeIcon(detail.dispute.type)"/>
                     </el-icon>
                     <span>{{ getDisputeType(detail.dispute.type) }}</span>
                   </el-tag>
-                  <el-tag 
-                    :type="DisputeStatusEnum.getType(detail.dispute.status)"
-                    class="dispute-tag"
-                    size="large"
+                  <el-tag
+                      :type="DisputeStatusEnum.getType(detail.dispute.status)"
+                      class="dispute-tag"
+                      size="large"
                   >
                     <el-icon class="tag-icon">
                       <component :is="DisputeStatusEnum.getIcon(detail.dispute.status)"/>
@@ -240,18 +244,20 @@
                   <h5>证据图片</h5>
                   <div class="evidence-grid">
                     <el-image
-                      v-for="(url, index) in detail.dispute.evidence"
-                      :key="index"
-                      :src="url"
-                      :preview-src-list="detail.dispute.evidence"
-                      :initial-index="index"
-                      fit="cover"
-                      class="evidence-image"
-                      :hide-on-click-modal="false"
+                        v-for="(url, index) in detail.dispute.evidence"
+                        :key="index"
+                        :src="url"
+                        :preview-src-list="detail.dispute.evidence"
+                        :initial-index="index"
+                        fit="cover"
+                        class="evidence-image"
+                        :hide-on-click-modal="false"
                     >
                       <template #error>
                         <div class="image-error">
-                          <el-icon><Picture /></el-icon>
+                          <el-icon>
+                            <Picture/>
+                          </el-icon>
                           <span>加载失败</span>
                         </div>
                       </template>
@@ -262,7 +268,9 @@
                 <!-- 纠纷结果区域 -->
                 <div v-if="detail.dispute.status === 2" class="result-section">
                   <div class="result-header">
-                    <el-icon class="result-icon"><Trophy /></el-icon>
+                    <el-icon class="result-icon">
+                      <Trophy/>
+                    </el-icon>
                     <span class="result-title">处理结果</span>
                   </div>
                   <div class="result-content">
@@ -286,7 +294,9 @@
             <el-tab-pane>
               <template #label>
                 <div class="custom-tab">
-                  <el-icon><Document /></el-icon>
+                  <el-icon>
+                    <Document/>
+                  </el-icon>
                   <span>任务日志</span>
                 </div>
               </template>
@@ -304,17 +314,19 @@
                       <!-- 日志图片展示 -->
                       <div v-if="log.images?.length" class="log-images">
                         <el-image
-                          v-for="(url, index) in log.images"
-                          :key="index"
-                          :src="url"
-                          :preview-src-list="log.images"
-                          :initial-index="index"
-                          fit="cover"
-                          class="log-image"
+                            v-for="(url, index) in log.images"
+                            :key="index"
+                            :src="url"
+                            :preview-src-list="log.images"
+                            :initial-index="index"
+                            fit="cover"
+                            class="log-image"
                         >
                           <template #error>
                             <div class="image-error">
-                              <el-icon><Picture /></el-icon>
+                              <el-icon>
+                                <Picture/>
+                              </el-icon>
                             </div>
                           </template>
                         </el-image>
@@ -328,7 +340,9 @@
             <el-tab-pane>
               <template #label>
                 <div class="custom-tab">
-                  <el-icon><ChatDotRound /></el-icon>
+                  <el-icon>
+                    <ChatDotRound/>
+                  </el-icon>
                   <span>留言记录</span>
                 </div>
               </template>
@@ -340,9 +354,9 @@
                       class="message-item"
                       :class="{ 'self-message': msg.student.id === detail.publisher.id }"
                   >
-                    <el-avatar 
-                      :src="msg.student?.avatar || null"
-                      size="small"
+                    <el-avatar
+                        :src="msg.student?.avatar || null"
+                        size="small"
                     >
                       {{ msg.student?.name?.[0]?.toUpperCase() || '?' }}
                     </el-avatar>
@@ -356,17 +370,19 @@
                         <!-- 消息图片展示 -->
                         <div v-if="msg.message.images?.length && msg.message.images[0]" class="message-images">
                           <el-image
-                            v-for="(url, index) in msg.message.images"
-                            :key="index"
-                            :src="url"
-                            :preview-src-list="msg.message.images"
-                            :initial-index="index"
-                            fit="cover"
-                            class="message-image"
+                              v-for="(url, index) in msg.message.images"
+                              :key="index"
+                              :src="url"
+                              :preview-src-list="msg.message.images"
+                              :initial-index="index"
+                              fit="cover"
+                              class="message-image"
                           >
                             <template #error>
                               <div class="image-error">
-                                <el-icon><Picture /></el-icon>
+                                <el-icon>
+                                  <Picture/>
+                                </el-icon>
                               </div>
                             </template>
                           </el-image>
@@ -381,13 +397,15 @@
             <el-tab-pane v-if="detail.dispute">
               <template #label>
                 <div class="custom-tab">
-                  <el-icon><ChatLineSquare /></el-icon>
+                  <el-icon>
+                    <ChatLineSquare/>
+                  </el-icon>
                   <span>支持信息</span>
-                  <el-badge :value="detail.disputeSupports?.length || 0" class="support-badge" />
+                  <el-badge :value="detail.disputeSupports?.length || 0" class="support-badge"/>
                 </div>
               </template>
               <div class="supports-section">
-                <DisputeSupports :dispute-supports="detail.disputeSupports" />
+                <DisputeSupports :dispute-supports="detail.disputeSupports"/>
               </div>
             </el-tab-pane>
           </el-tabs>
@@ -397,12 +415,12 @@
 
     <!-- 处理纠纷弹窗 -->
     <el-dialog
-      v-model="dialogVisible"
-      title="处理纠纷"
-      width="900px"
-      :close-on-click-modal="false"
-      :close-on-press-escape="false"
-      class="dispute-dialog"
+        v-model="dialogVisible"
+        title="处理纠纷"
+        width="900px"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+        class="dispute-dialog"
     >
       <div class="handle-options">
         <el-radio-group v-model="handleResult" class="handle-radio-group">
@@ -411,7 +429,9 @@
               <div class="radio-content">
                 <div class="radio-header">
                   <div class="radio-title">发布者胜</div>
-                  <el-icon class="option-icon"><UserFilled /></el-icon>
+                  <el-icon class="option-icon">
+                    <UserFilled/>
+                  </el-icon>
                 </div>
                 <div class="radio-desc">判定发布者胜诉，退还订单金额</div>
               </div>
@@ -421,28 +441,32 @@
               <div class="radio-content">
                 <div class="radio-header">
                   <div class="radio-title">跑腿者胜</div>
-                  <el-icon class="option-icon"><Medal /></el-icon>
+                  <el-icon class="option-icon">
+                    <Medal/>
+                  </el-icon>
                 </div>
                 <div class="radio-desc">判定跑腿者胜诉，订单金额归跑腿者</div>
               </div>
             </el-radio>
 
             <el-tooltip
-              content="该纠纷已经发布过纠纷大厅，不能重复发布"
-              placement="top"
-              :disabled="detail?.dispute?.status !== 1"
+                content="该纠纷已经发布过纠纷大厅，不能重复发布"
+                placement="top"
+                :disabled="detail?.dispute?.status !== 1"
             >
               <div class="radio-wrapper">
-                <el-radio 
-                  label="UNCERTAIN" 
-                  border 
-                  class="option-card"
-                  :disabled="detail?.dispute?.status === 1"
+                <el-radio
+                    label="UNCERTAIN"
+                    border
+                    class="option-card"
+                    :disabled="detail?.dispute?.status === 1"
                 >
                   <div class="radio-content">
                     <div class="radio-header">
                       <div class="radio-title">存在疑问</div>
-                      <el-icon class="option-icon"><Warning /></el-icon>
+                      <el-icon class="option-icon">
+                        <Warning/>
+                      </el-icon>
                     </div>
                     <div class="radio-desc">发布到纠纷大厅进行筛选</div>
                   </div>
@@ -456,24 +480,28 @@
         <div class="handle-details" v-if="handleResult">
           <div v-if="handleResult === 'PUBLISHER_WIN' || handleResult === 'RUNNER_WIN'" class="reason-section">
             <h4 class="details-title">
-              <el-icon><Document /></el-icon>
+              <el-icon>
+                <Document/>
+              </el-icon>
               处理原因
             </h4>
             <el-input
-              v-model="handleReason"
-              type="textarea"
-              :rows="4"
-              :placeholder="handleResult === 'PUBLISHER_WIN' ? '请输入判定发布者胜诉的原因（必填）' : '请输入判定跑腿者胜诉的原因（必填）'"
-              maxlength="200"
-              show-word-limit
-              resize="none"
-              class="reason-input"
+                v-model="handleReason"
+                type="textarea"
+                :rows="4"
+                :placeholder="handleResult === 'PUBLISHER_WIN' ? '请输入判定发布者胜诉的原因（必填）' : '请输入判定跑腿者胜诉的原因（必填）'"
+                maxlength="200"
+                show-word-limit
+                resize="none"
+                class="reason-input"
             />
           </div>
 
           <div v-if="handleResult === 'UNCERTAIN'" class="time-section">
             <h4 class="details-title">
-              <el-icon><Timer /></el-icon>
+              <el-icon>
+                <Timer/>
+              </el-icon>
               展示时长
             </h4>
             <div class="time-options">
@@ -491,7 +519,7 @@
         <span class="dialog-footer">
           <el-button @click="dialogVisible = false" class="cancel-btn" plain>取消</el-button>
           <el-button type="primary" @click="handleSubmit" :loading="submitting" class="confirm-btn">
-            <el-icon class="btn-icon"><Check /></el-icon>
+            <el-icon class="btn-icon"><Check/></el-icon>
             确认处理
           </el-button>
         </span>
@@ -504,17 +532,25 @@
 import {onBeforeUnmount, onMounted, ref, watch} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import {
-  ArrowLeft, Phone, Picture, Tools, UserFilled, 
-  Medal, Warning, Check, Document, Timer,
-  ChatDotRound, ChatLineSquare, Trophy
+  ArrowLeft,
+  ChatDotRound,
+  ChatLineSquare,
+  Check,
+  Document,
+  Medal,
+  Picture,
+  Timer,
+  Tools,
+  Trophy,
+  UserFilled,
+  Warning
 } from '@element-plus/icons-vue'
 import {ElMessage} from 'element-plus'
-import {getDisputeDetail} from '@/api/dispute'
+import {handleDispute} from '@/api/dispute'
 import {TaskStatusEnum} from '@/utils/enums/taskEnums'
 import {DisputeStatusEnum} from '@/utils/enums/disputeEnums'
 import {DisputeTypeEnum} from "@/utils/enums/disputeTypeEnums.js";
 import {getTaskDetail} from "@/api/task.js";
-import { handleDispute } from '@/api/dispute'
 import DisputeSupports from '@/components/DisputeSupports.vue'
 
 const router = useRouter()
@@ -529,15 +565,11 @@ const displayHours = ref(24)
 
 // 获取路由参数
 const taskId = route.query.taskId
+const type = route.query.type
 
 // 返回列表页
 const handleBack = () => {
   router.back()
-}
-
-// 拨打电话
-const handleCall = (phone) => {
-  window.location.href = `tel:${phone}`
 }
 
 // 格式化时间
@@ -560,11 +592,6 @@ const getStatusType = (status) => {
 // 获取任务状态文本
 const getStatusText = (status) => {
   return status ? TaskStatusEnum.getDesc(status) : ''
-}
-
-// 获取纠纷状态
-const getDisputeStatus = (status) => {
-  return status ? DisputeStatusEnum.getDesc(status) : ''
 }
 
 // 获取纠纷类型
@@ -641,7 +668,7 @@ const handleSubmit = async () => {
   }
 
   // 验证必填项
-  if ((handleResult.value === 'PUBLISHER_WIN' || handleResult.value === 'RUNNER_WIN') 
+  if ((handleResult.value === 'PUBLISHER_WIN' || handleResult.value === 'RUNNER_WIN')
       && !handleReason.value.trim()) {
     ElMessage.warning('请输入处理原因')
     return
@@ -692,7 +719,7 @@ watch(dialogVisible, (val) => {
 // 格式化剩余时间
 const formatRemainingTime = (endTimeString) => {
   if (!endTimeString) return '未知'
-  
+
   const endTime = new Date(endTimeString).getTime()
   const now = new Date().getTime()
   const diff = endTime - now
@@ -701,13 +728,13 @@ const formatRemainingTime = (endTimeString) => {
 
   const hours = Math.floor(diff / (1000 * 60 * 60))
   const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
-  
+
   if (hours > 24) {
     const days = Math.floor(hours / 24)
     const remainingHours = hours % 24
     return `${days}天${remainingHours}小时`
   }
-  
+
   return `${hours}小时${minutes}分钟`
 }
 </script>
@@ -845,7 +872,7 @@ const formatRemainingTime = (endTimeString) => {
   &::-webkit-scrollbar-thumb {
     background: linear-gradient(to bottom, #409EFF, #36cfc9);
     border-radius: 4px;
-    
+
     &:hover {
       background: linear-gradient(to bottom, #66b1ff, #5cdbd3);
     }
@@ -1265,7 +1292,7 @@ const formatRemainingTime = (endTimeString) => {
           align-items: center;
           gap: 8px;
           margin-bottom: 16px;
-          
+
           .result-icon {
             font-size: 20px;
             color: #059669;
@@ -1282,7 +1309,7 @@ const formatRemainingTime = (endTimeString) => {
         .result-content {
           .winner-info {
             margin-bottom: 12px;
-            
+
             .winner-tag {
               font-size: 14px;
               padding: 6px 12px;
@@ -1295,14 +1322,14 @@ const formatRemainingTime = (endTimeString) => {
             background: #fff;
             border-radius: 6px;
             padding: 12px;
-            
+
             .remark-label {
               font-size: 13px;
               color: #374151;
               margin-bottom: 8px;
               font-weight: 500;
             }
-            
+
             .remark-text {
               font-size: 14px;
               color: #1f2937;
@@ -1393,7 +1420,7 @@ const formatRemainingTime = (endTimeString) => {
 
       .custom-tab {
         transform: translateY(-2px);
-        
+
         .el-icon {
           transform: scale(1.2) rotate(360deg);
           color: #409EFF;
@@ -1404,10 +1431,10 @@ const formatRemainingTime = (endTimeString) => {
     &:hover:not(.is-active) {
       color: #409EFF;
       background: rgba(255, 255, 255, 0.5) !important;
-      
+
       .custom-tab {
         transform: translateY(-2px);
-        
+
         .el-icon {
           transform: scale(1.1) rotate(15deg);
           color: #409EFF;
@@ -1430,7 +1457,7 @@ const formatRemainingTime = (endTimeString) => {
     .support-badge {
       margin-left: 4px;
       transform: translateY(-8px);
-      
+
       :deep(.el-badge__content) {
         background: linear-gradient(135deg, #10b981, #34d399);
         border: 2px solid #fff;
@@ -1440,7 +1467,7 @@ const formatRemainingTime = (endTimeString) => {
         min-width: 20px;
         height: 20px;
         border-radius: 10px;
-        
+
         &.is-fixed {
           top: 0;
           right: 0;
@@ -1725,18 +1752,18 @@ const formatRemainingTime = (endTimeString) => {
     .time-options {
       display: flex;
       justify-content: center;
-      
+
       .time-radio-group {
         display: inline-flex;
         gap: 12px;
 
         :deep(.el-radio-button) {
           height: 36px;
-          
+
           &:first-child .el-radio-button__inner {
             border-radius: 8px 0 0 8px;
           }
-          
+
           &:last-child .el-radio-button__inner {
             border-radius: 0 8px 8px 0;
           }
@@ -1783,7 +1810,7 @@ const formatRemainingTime = (endTimeString) => {
     min-width: 100px;
     height: 36px;
     border-color: #dcdfe6;
-    
+
     &:hover {
       border-color: #409EFF;
       color: #409EFF;
@@ -1798,7 +1825,7 @@ const formatRemainingTime = (endTimeString) => {
     background: linear-gradient(45deg, #409EFF, #36cfc9);
     border: none;
     transition: all 0.3s;
-    
+
     &:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(64, 158, 255, 0.3);
@@ -1822,7 +1849,7 @@ const formatRemainingTime = (endTimeString) => {
     padding: 20px 24px;
     border-bottom: 1px solid #e5e7eb;
     background: linear-gradient(135deg, #e6f4ff 0%, #f0f9ff 100%);
-    
+
     .el-dialog__title {
       font-size: 18px;
       font-weight: 600;
@@ -1860,7 +1887,7 @@ const formatRemainingTime = (endTimeString) => {
     &.option-card {
       opacity: 0.6;
       cursor: not-allowed;
-      
+
       &:hover {
         background: #f9fafb;
         border-color: #dcdfe6;
@@ -1884,7 +1911,7 @@ const formatRemainingTime = (endTimeString) => {
     display: flex;
     align-items: center;
     gap: 8px;
-    
+
     .alert-icon {
       font-size: 16px;
       animation: pulse 2s infinite;
@@ -1912,7 +1939,7 @@ const formatRemainingTime = (endTimeString) => {
 /* 支持信息区域样式 */
 .supports-section {
   margin-top: 24px;
-  
+
   .section-title {
     font-size: 16px;
     font-weight: 600;
@@ -1959,7 +1986,7 @@ const formatRemainingTime = (endTimeString) => {
     align-items: center;
     gap: 8px;
     margin-bottom: 16px;
-    
+
     .result-icon {
       font-size: 20px;
       color: #059669;
@@ -1976,7 +2003,7 @@ const formatRemainingTime = (endTimeString) => {
   .result-content {
     .winner-info {
       margin-bottom: 12px;
-      
+
       .winner-tag {
         font-size: 14px;
         padding: 6px 12px;
@@ -1989,14 +2016,14 @@ const formatRemainingTime = (endTimeString) => {
       background: #fff;
       border-radius: 6px;
       padding: 12px;
-      
+
       .remark-label {
         font-size: 13px;
         color: #374151;
         margin-bottom: 8px;
         font-weight: 500;
       }
-      
+
       .remark-text {
         font-size: 14px;
         color: #1f2937;
