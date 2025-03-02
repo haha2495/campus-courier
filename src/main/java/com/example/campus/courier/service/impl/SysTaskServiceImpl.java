@@ -1,17 +1,9 @@
 package com.example.campus.courier.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.campus.courier.exception.BusinessException;
-import com.example.campus.courier.mapper.handler.SysTaskHandler;
-import com.example.campus.courier.mapper.handler.SysTaskLogHandler;
-import com.example.campus.courier.mapper.handler.SysTaskTypeHandler;
-import com.example.campus.courier.mapper.handler.SysTaskMessageHandler;
-import com.example.campus.courier.mapper.handler.SysStudentHandler;
-import com.example.campus.courier.mapper.handler.SysTaskEvaluationHandler;
-import com.example.campus.courier.mapper.handler.SysDisputeHandler;
-import com.example.campus.courier.mapper.handler.SysBalanceRecordHandler;
-import com.example.campus.courier.mapper.handler.SysDisputeSupportHandler;
+import com.example.campus.courier.mapper.handler.*;
+import com.example.campus.courier.model.dto.RunnerTaskStatDTO;
 import com.example.campus.courier.model.dto.TaskDTO;
 import com.example.campus.courier.model.dto.TaskDetailDTO;
 import com.example.campus.courier.model.dto.TaskMessageDTO;
@@ -20,8 +12,8 @@ import com.example.campus.courier.model.enums.BalanceChangeTypeEnum;
 import com.example.campus.courier.model.enums.TaskActionEnum;
 import com.example.campus.courier.model.enums.TaskStatusEnum;
 import com.example.campus.courier.model.request.task.TaskAddRequest;
-import com.example.campus.courier.model.request.task.TaskQueryRequest;
 import com.example.campus.courier.model.request.task.TaskMessageAddRequest;
+import com.example.campus.courier.model.request.task.TaskQueryRequest;
 import com.example.campus.courier.model.response.PageResult;
 import com.example.campus.courier.service.SysTaskService;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -68,7 +61,7 @@ public class SysTaskServiceImpl implements SysTaskService {
 
         // 2. 使用贫血模型初始化任务实体
         SysTask task = new SysTask().init(request, publisherId);
-        
+
         // 3. 计算总价并校验余额
         BigDecimal totalPrice = task.calculateTotalPrice();
         if (!publisher.hasEnoughBalance(totalPrice)) {
@@ -84,10 +77,10 @@ public class SysTaskServiceImpl implements SysTaskService {
 
         // 6. 记录余额变动
         sysBalanceRecordHandler.createRecord(
-            publisher,
-            totalPrice,
-            BalanceChangeTypeEnum.EXPENSE.getCode(),
-            String.format("发布任务[%s],支付金额%.2f元", task.getTitle(), totalPrice)
+                publisher,
+                totalPrice,
+                BalanceChangeTypeEnum.EXPENSE.getCode(),
+                String.format("发布任务[%s],支付金额%.2f元", task.getTitle(), totalPrice)
         );
 
         // 7. 初始化并保存任务日志
@@ -177,10 +170,10 @@ public class SysTaskServiceImpl implements SysTaskService {
 
         // 7. 记录余额变动
         sysBalanceRecordHandler.createRecord(
-            publisher,
-            refundAmount,
-            BalanceChangeTypeEnum.INCOME.getCode(),
-            String.format("取消任务[%s],退还金额%.2f元", task.getTitle(), refundAmount)
+                publisher,
+                refundAmount,
+                BalanceChangeTypeEnum.INCOME.getCode(),
+                String.format("取消任务[%s],退还金额%.2f元", task.getTitle(), refundAmount)
         );
 
         // 8. 更新任务状态为已取消
@@ -302,7 +295,7 @@ public class SysTaskServiceImpl implements SysTaskService {
      * 获取任务详情
      * 包含任务信息、任务类型信息、发布者信息、跑腿者信息、纠纷信息、留言列表和任务日志列表
      *
-     * @param taskId 任务ID
+     * @param taskId      任务ID
      * @param loginUserId 当前登录用户ID
      * @return 任务详情DTO
      */
@@ -319,7 +312,7 @@ public class SysTaskServiceImpl implements SysTaskService {
 
         // 3. 获取发布者和跑腿者信息
         SysStudent publisher = sysStudentHandler.getById(task.getPublisherId());
-        SysStudent runner = task.getRunnerId() != null ? 
+        SysStudent runner = task.getRunnerId() != null ?
                 sysStudentHandler.getById(task.getRunnerId()) : null;
 
         // 4. 获取纠纷信息
@@ -327,7 +320,7 @@ public class SysTaskServiceImpl implements SysTaskService {
 
         // 5. 获取任务留言列表
         List<SysTaskMessage> messages = sysTaskMessageHandler.getTaskMessages(taskId);
-        
+
         // 6. 获取所有留言发送者的ID
         List<Integer> studentIds = messages.stream()
                 .map(SysTaskMessage::getUserId)
@@ -362,16 +355,16 @@ public class SysTaskServiceImpl implements SysTaskService {
 
         // 12. 构建并返回DTO
         return TaskDetailDTO.build(
-            task, 
-            taskType,
-            publisher,
-            runner,
-            dispute,
-            messageDTOs, 
-            taskLogs, 
-            evaluation,
-            currentUserSupport,
-            disputeSupports
+                task,
+                taskType,
+                publisher,
+                runner,
+                dispute,
+                messageDTOs,
+                taskLogs,
+                evaluation,
+                currentUserSupport,
+                disputeSupports
         );
     }
 
@@ -481,10 +474,10 @@ public class SysTaskServiceImpl implements SysTaskService {
 
         // 7. 记录余额变动
         sysBalanceRecordHandler.createRecord(
-            runner,
-            totalReward,
-            BalanceChangeTypeEnum.INCOME.getCode(),
-            String.format("完成任务[%s],获得报酬%.2f元", task.getTitle(), totalReward)
+                runner,
+                totalReward,
+                BalanceChangeTypeEnum.INCOME.getCode(),
+                String.format("完成任务[%s],获得报酬%.2f元", task.getTitle(), totalReward)
         );
 
         // 8. 更新任务状态为已完成
@@ -540,12 +533,42 @@ public class SysTaskServiceImpl implements SysTaskService {
     }
 
     @Override
-    public List<TaskDTO> getMyCompletedTasks(Integer userId) {
+    public RunnerTaskStatDTO getMyCompletedTasks(Integer userId) {
         // 获取已完成的任务列表
         List<SysTask> tasks = sysTaskHandler.getCompletedTasks(userId);
-        
-        // 转换为DTO并返回
-        return getTaskDTOS(tasks);
+
+        // 转换为TaskDTO列表
+        List<TaskDTO> taskDTOs = getTaskDTOS(tasks);
+
+        // 创建统计DTO
+        RunnerTaskStatDTO statDTO = new RunnerTaskStatDTO();
+        statDTO.setTaskList(taskDTOs);
+
+        // 计算总完成数量
+        statDTO.setTotalCompleted(tasks.size());
+
+        // 计算总赚取金额
+        BigDecimal totalEarnings = tasks.stream()
+                .map(task -> task.getReward().add(task.getUrgentReward() != null ? task.getUrgentReward() : BigDecimal.ZERO))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        statDTO.setTotalEarnings(totalEarnings);
+
+        // 获取本月数据
+        LocalDateTime monthStart = LocalDateTime.now().withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0);
+        List<SysTask> monthlyTasks = tasks.stream()
+                .filter(task -> task.getCreateTime().isAfter(monthStart))
+                .toList();
+
+        // 计算本月完成数量
+        statDTO.setMonthlyCompleted(monthlyTasks.size());
+
+        // 计算本月赚取金额
+        BigDecimal monthlyEarnings = monthlyTasks.stream()
+                .map(task -> task.getReward().add(task.getUrgentReward() != null ? task.getUrgentReward() : BigDecimal.ZERO))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        statDTO.setMonthlyEarnings(monthlyEarnings);
+
+        return statDTO;
     }
 
     private List<TaskDTO> getTaskDTOS(List<SysTask> tasks) {

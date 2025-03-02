@@ -6,6 +6,7 @@ import com.example.campus.courier.model.request.task.TaskMessageAddRequest;
 import com.example.campus.courier.model.request.task.TaskQueryRequest;
 import com.example.campus.courier.model.response.PageResult;
 import com.example.campus.courier.model.dto.TaskDetailDTO;
+import com.example.campus.courier.model.dto.RunnerTaskStatDTO;
 
 import java.util.List;
 
@@ -125,10 +126,10 @@ public interface SysTaskService {
     PageResult<TaskDTO> pageTask(TaskQueryRequest request);
 
     /**
-     * 获取跑腿者已完成的任务列表
+     * 获取跑腿者已完成的任务列表及统计信息
      *
      * @param userId 用户ID
-     * @return 任务列表
+     * @return 任务列表及统计信息
      */
-    List<TaskDTO> getMyCompletedTasks(Integer userId);
+    RunnerTaskStatDTO getMyCompletedTasks(Integer userId);
 } 
