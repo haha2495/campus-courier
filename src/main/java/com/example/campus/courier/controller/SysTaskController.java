@@ -1,5 +1,6 @@
 package com.example.campus.courier.controller;
 
+import com.example.campus.courier.model.dto.RunnerTaskStatDTO;
 import com.example.campus.courier.model.dto.TaskDTO;
 import com.example.campus.courier.model.dto.TaskDetailDTO;
 import com.example.campus.courier.model.request.task.TaskAddRequest;
@@ -184,7 +185,7 @@ public class SysTaskController extends BaseController {
      */
     @GetMapping("/my-completed")
     @Operation(summary = "获取我已完成的跑腿任务列表")
-    public Result<List<TaskDTO>> getMyCompletedTasks() {
+    public Result<RunnerTaskStatDTO> getMyCompletedTasks() {
         return Result.success(sysTaskService.getMyCompletedTasks(getLoginUserId()));
     }
 

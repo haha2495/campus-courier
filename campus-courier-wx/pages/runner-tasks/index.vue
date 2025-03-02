@@ -1,16 +1,21 @@
 <template>
   <view class="runner-tasks-container">
-    <!-- 状态切换器 -->
-    <view class="status-tabs">
-      <view 
-        v-for="(tab, index) in statusTabs" 
-        :key="index"
-        class="tab-item"
-        :class="{ active: currentStatus === tab.value }"
-        @click="handleStatusChange(tab.value)"
-      >
-        <text class="tab-text">{{ tab.label }}</text>
-        <view class="tab-line" :class="{ 'tab-line-active': currentStatus === tab.value }"></view>
+    <!-- 顶部导航栏 -->
+    <view class="nav-bar" :style="{ paddingTop: statusBarHeight + 'px' }">
+      <text class="nav-title">我的接单</text>
+    </view>
+
+    <!-- 统计卡片区域 -->
+    <view class="stats-section">
+      <view class="stats-card total">
+        <view class="stats-title">总计收入</view>
+        <view class="stats-value">¥{{ formatAmount(stats.totalEarnings) }}</view>
+        <view class="stats-subtitle">完成 {{ stats.totalCompleted }} 单</view>
+      </view>
+      <view class="stats-card monthly">
+        <view class="stats-title">本月收入</view>
+        <view class="stats-value">¥{{ formatAmount(stats.monthlyEarnings) }}</view>
+        <view class="stats-subtitle">完成 {{ stats.monthlyCompleted }} 单</view>
       </view>
     </view>
 
@@ -24,7 +29,6 @@
       @refresherrefresh="onRefresh"
       @refresherrestore="onRestore"
       @refresherabort="onAbort"
-      @scrolltolower="loadMore"
     >
       <!-- 加载中状态 -->
       <view v-if="loading" class="loading-state">
@@ -37,9 +41,9 @@
         <view v-if="taskList.length > 0" class="task-list-content">
           <view 
             v-for="task in taskList" 
-            :key="task.id" 
+            :key="task.task.id" 
             class="task-card"
-            @click="navigateToDetail(task.id)"
+            @click="navigateToDetail(task.task.id)"
           >
             <!-- 任务类型和状态 -->
             <view class="task-header">
@@ -47,40 +51,26 @@
                 <image class="type-icon" :src="task.taskType.icon" mode="aspectFit"></image>
                 <text class="type-name">{{ task.taskType.typeName }}</text>
               </view>
-              <view class="status-tag" :class="'status-' + task.status">
-                {{ getStatusText(task.status) }}
-              </view>
+              <view class="status-tag status-2">已完成</view>
             </view>
 
             <!-- 任务标题 -->
-            <view class="task-title">{{ task.title }}</view>
+            <view class="task-title">{{ task.task.title }}</view>
 
             <!-- 任务信息 -->
             <view class="task-info">
               <view class="info-item">
                 <text class="label">配送地址</text>
-                <text class="value">{{ task.deliveryAddress }}</text>
+                <text class="value">{{ task.task.deliveryAddress }}</text>
               </view>
               <view class="info-item">
                 <text class="label">赏金</text>
-                <text class="value price">¥{{ task.reward }}</text>
+                <text class="value price">¥{{ formatAmount(task.task.reward) }}</text>
               </view>
               <view class="info-item">
-                <text class="label">期望送达</text>
-                <text class="value">{{ formatTime(task.expectedFinishTime) }}</text>
+                <text class="label">完成时间</text>
+                <text class="value">{{ formatTime(task.task.createTime) }}</text>
               </view>
-            </view>
-
-            <!-- 任务操作按钮 -->
-            <view class="task-actions">
-              <button 
-                v-if="showActionButton(task.status)"
-                class="action-btn"
-                :class="getActionButtonClass(task.status)"
-                @click.stop="handleTaskAction(task)"
-              >
-                {{ getActionButtonText(task.status) }}
-              </button>
             </view>
           </view>
         </view>
@@ -89,20 +79,9 @@
         <view v-else class="empty-state">
           <u-empty
             mode="list"
-            text="暂无相关任务"
+            text="暂无已完成的任务"
             margin-top="40"
           ></u-empty>
-        </view>
-
-        <!-- 加载更多 -->
-        <view v-if="hasMore && taskList.length > 0" class="load-more">
-          <u-loading-icon></u-loading-icon>
-          <text>加载更多...</text>
-        </view>
-
-        <!-- 无更多数据 -->
-        <view v-if="!hasMore && taskList.length > 0" class="no-more">
-          <text>没有更多数据了</text>
         </view>
       </block>
     </scroll-view>
@@ -111,7 +90,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-// import { getRunnerTasks } from '@/api/task'  // 暂时注释掉接口导入
+import { getMyCompletedTasks } from '@/api/task'
 
 // 系统状态栏高度
 const statusBarHeight = ref(20)
@@ -119,23 +98,15 @@ const statusBarHeight = ref(20)
 // 页面状态
 const loading = ref(false)
 const isRefreshing = ref(false)
-const hasMore = ref(true)
-const currentPage = ref(1)
-const pageSize = ref(10)
-
-// 当前选中的状态
-const currentStatus = ref(0)
-
-// 任务列表
 const taskList = ref([])
 
-// 状态标签配置
-const statusTabs = [
-  { label: '全部', value: 0 },
-  { label: '进行中', value: 1 },
-  { label: '已完成', value: 2 },
-  { label: '已取消', value: 3 }
-]
+// 统计数据
+const stats = ref({
+  totalCompleted: 0,
+  totalEarnings: 0,
+  monthlyCompleted: 0,
+  monthlyEarnings: 0
+})
 
 // 获取系统信息
 const getSystemInfo = () => {
@@ -159,81 +130,22 @@ const formatTime = (timeString) => {
   return `${year}-${month}-${day} ${hours}:${minutes}`
 }
 
-// 获取状态文本
-const getStatusText = (status) => {
-  const statusMap = {
-    0: '待接单',
-    1: '进行中',
-    2: '已完成',
-    3: '已取消'
-  }
-  return statusMap[status] || '未知状态'
-}
-
-// 处理状态切换
-const handleStatusChange = (status) => {
-  if (currentStatus.value === status) return
-  currentStatus.value = status
-  resetList()
-  loadTaskList()
-}
-
-// 重置列表
-const resetList = () => {
-  taskList.value = []
-  currentPage.value = 1
-  hasMore.value = true
-}
-
-// 加载任务列表
+// 加载任务列表和统计数据
 const loadTaskList = async () => {
-  if (loading.value || !hasMore.value) return
+  if (loading.value) return
   
   loading.value = true
   try {
-    // 暂时使用模拟数据
-    const mockData = {
-      data: {
-        records: [
-          {
-            id: 1,
-            title: '帮取快递',
-            status: 1,
-            taskType: {
-              icon: 'https://cdn-icons-png.flaticon.com/128/2203/2203124.png',
-              typeName: '快递代取'
-            },
-            deliveryAddress: '第一教学楼',
-            reward: 10,
-            expectedFinishTime: '2024-03-20 14:30:00'
-          },
-          {
-            id: 2,
-            title: '帮买奶茶',
-            status: 2,
-            taskType: {
-              icon: 'https://cdn-icons-png.flaticon.com/128/2203/2203124.png',
-              typeName: '食品代购'
-            },
-            deliveryAddress: '图书馆',
-            reward: 8,
-            expectedFinishTime: '2024-03-20 15:00:00'
-          }
-        ]
-      }
-    }
-
-    const res = mockData // 使用模拟数据
-    
+    const res = await getMyCompletedTasks()
     if (res.data) {
-      if (currentPage.value === 1) {
-        taskList.value = res.data.records
-      } else {
-        taskList.value = [...taskList.value, ...res.data.records]
+      taskList.value = res.data.taskList
+      // 更新统计数据
+      stats.value = {
+        totalCompleted: res.data.totalCompleted,
+        totalEarnings: res.data.totalEarnings,
+        monthlyCompleted: res.data.monthlyCompleted,
+        monthlyEarnings: res.data.monthlyEarnings
       }
-      
-      hasMore.value = res.data.records.length === pageSize.value
-      currentPage.value++
     }
   } catch (error) {
     console.error('加载任务列表失败:', error)
@@ -254,7 +166,6 @@ const onPulling = () => {
 
 const onRefresh = () => {
   isRefreshing.value = true
-  resetList()
   loadTaskList()
 }
 
@@ -266,13 +177,6 @@ const onAbort = () => {
   console.log('刷新中断')
 }
 
-// 加载更多
-const loadMore = () => {
-  if (hasMore.value && !loading.value) {
-    loadTaskList()
-  }
-}
-
 // 跳转到详情页
 const navigateToDetail = (taskId) => {
   uni.navigateTo({
@@ -280,44 +184,9 @@ const navigateToDetail = (taskId) => {
   })
 }
 
-// 显示操作按钮条件
-const showActionButton = (status) => {
-  return [1, 2].includes(status)
-}
-
-// 获取操作按钮文本
-const getActionButtonText = (status) => {
-  const textMap = {
-    1: '确认送达',
-    2: '查看评价'
-  }
-  return textMap[status] || ''
-}
-
-// 获取操作按钮样式类
-const getActionButtonClass = (status) => {
-  return {
-    'btn-confirm': status === 1,
-    'btn-review': status === 2
-  }
-}
-
-// 处理任务操作
-const handleTaskAction = (task) => {
-  switch (task.status) {
-    case 1:
-      // 确认送达
-      uni.navigateTo({
-        url: `/pages/task-confirm/index?id=${task.id}`
-      })
-      break
-    case 2:
-      // 查看评价
-      uni.navigateTo({
-        url: `/pages/task-detail/index?id=${task.id}&tab=3`
-      })
-      break
-  }
+// 格式化金额
+const formatAmount = (amount) => {
+  return amount ? amount.toFixed(2) : '0.00'
 }
 
 onMounted(() => {
@@ -347,46 +216,47 @@ onMounted(() => {
   }
 }
 
-.status-tabs {
+.stats-section {
+  padding: 16px;
   display: flex;
-  background: #ffffff;
-  padding: 0 16px;
-  position: relative;
-  height: 44px;
-  
-  .tab-item {
+  gap: 12px;
+
+  .stats-card {
     flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    
-    .tab-text {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    text-align: center;
+
+    &.total {
+      background: linear-gradient(135deg, #3B82F6, #60A5FA);
+      .stats-title, .stats-value, .stats-subtitle {
+        color: #ffffff;
+      }
+    }
+
+    &.monthly {
+      background: linear-gradient(135deg, #10B981, #34D399);
+      .stats-title, .stats-value, .stats-subtitle {
+        color: #ffffff;
+      }
+    }
+
+    .stats-title {
       font-size: 14px;
-      color: #666;
-      transition: all 0.3s;
+      margin-bottom: 8px;
     }
-    
-    .tab-line {
-      position: absolute;
-      bottom: 0;
-      width: 20px;
-      height: 3px;
-      border-radius: 2px;
-      background: transparent;
-      transition: all 0.3s;
+
+    .stats-value {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 4px;
     }
-    
-    &.active {
-      .tab-text {
-        color: #3B82F6;
-        font-weight: 500;
-      }
-      
-      .tab-line {
-        background: #3B82F6;
-      }
+
+    .stats-subtitle {
+      font-size: 12px;
+      opacity: 0.9;
     }
   }
 }
@@ -483,28 +353,6 @@ onMounted(() => {
       }
     }
   }
-  
-  .task-actions {
-    margin-top: 16px;
-    display: flex;
-    justify-content: flex-end;
-    
-    .action-btn {
-      padding: 6px 16px;
-      border-radius: 4px;
-      font-size: 13px;
-      
-      &.btn-confirm {
-        background: #3B82F6;
-        color: #ffffff;
-      }
-      
-      &.btn-review {
-        background: #10B981;
-        color: #ffffff;
-      }
-    }
-  }
 }
 
 .loading-state {
@@ -521,7 +369,7 @@ onMounted(() => {
   }
 }
 
-.load-more, .no-more {
+.empty-state {
   text-align: center;
   padding: 16px 0;
   color: #999;

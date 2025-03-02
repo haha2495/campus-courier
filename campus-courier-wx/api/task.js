@@ -171,3 +171,13 @@ export function checkTaskEvaluated(taskId) {
         method: 'GET'
     })
 }
+
+/**
+ * 获取已完成任务列表及统计信息
+ */
+export function getMyCompletedTasks() {
+    return http({
+        url: '/api/tasks/my-completed',
+        method: 'GET'
+    })
+}
