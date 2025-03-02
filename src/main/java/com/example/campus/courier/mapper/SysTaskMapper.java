@@ -55,4 +55,28 @@ public interface SysTaskMapper extends BaseMapper<SysTask> {
             ") " +
             "SELECT * FROM TaskStats ORDER BY taskCount DESC")
     List<TaskTypeStatDTO> getTaskTypeStats();
+
+    /**
+     * 统计指定日期的已完成任务数
+     */
+    @Select("SELECT COUNT(*) FROM sys_task " +
+            "WHERE status = 4 " +
+            "AND DATE(create_time) = DATE(#{date})")
+    Integer countCompletedTasksByDate(@Param("date") LocalDateTime date);
+
+    /**
+     * 统计指定日期的进行中任务数（已接单、进行中、待确认状态）
+     */
+    @Select("SELECT COUNT(*) FROM sys_task " +
+            "WHERE status IN (1, 2, 3) " +
+            "AND DATE(create_time) = DATE(#{date})")
+    Integer countProcessingTasksByDate(@Param("date") LocalDateTime date);
+
+    /**
+     * 统计指定日期的待接单任务数
+     */
+    @Select("SELECT COUNT(*) FROM sys_task " +
+            "WHERE status = 0 " +
+            "AND DATE(create_time) = DATE(#{date})")
+    Integer countPendingTasksByDate(@Param("date") LocalDateTime date);
 } 

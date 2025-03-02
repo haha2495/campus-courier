@@ -1,6 +1,7 @@
 package com.example.campus.courier.service;
 
 import com.example.campus.courier.model.dto.DashboardStatDTO;
+import com.example.campus.courier.model.dto.TaskTrendDTO;
 import com.example.campus.courier.model.dto.TaskTypeStatDTO;
 
 import java.util.List;
@@ -31,4 +32,13 @@ public interface SysDashboardService {
      * @return 任务类型统计列表
      */
     List<TaskTypeStatDTO> getTaskTypeStats();
+
+    /**
+     * 获取任务趋势数据
+     * 根据时间范围返回每天的任务数量统计
+     *
+     * @param range 时间范围：week-最近7天，month-最近30天
+     * @return 任务趋势数据
+     */
+    TaskTrendDTO getTaskTrend(String range);
 } 
