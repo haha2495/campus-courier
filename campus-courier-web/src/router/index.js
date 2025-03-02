@@ -80,6 +80,15 @@ const routes = [
                     requiresAuth: true,
                 },
             },
+            {
+                path: "tasks",
+                name: "TaskManage",
+                component: () => import("../views/admin/tasks/index.vue"),
+                meta: {
+                    title: "任务管理",
+                    requiresAuth: true,
+                },
+            },
         ],
     },
     // 根路径重定向到登录页

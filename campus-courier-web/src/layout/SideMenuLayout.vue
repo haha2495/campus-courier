@@ -44,6 +44,12 @@
             </el-icon>
             <span>任务类型管理</span>
           </el-menu-item>
+          <el-menu-item index="/admin/tasks">
+            <el-icon>
+              <Document/>
+            </el-icon>
+            <span>任务管理</span>
+          </el-menu-item>
           <el-menu-item index="/admin/disputes">
             <el-icon>
               <Warning/>
@@ -108,7 +114,7 @@
 <script setup>
 import {onMounted, onUnmounted, ref, watch} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
-import {HomeFilled, School, User, UserFilled, List, Warning} from '@element-plus/icons-vue'
+import {HomeFilled, School, User, UserFilled, List, Warning, Document} from '@element-plus/icons-vue'
 import {ElMessage} from 'element-plus'
 import {adminLogout, getCurrentAdmin} from '@/api/admin'
 import {getCurrentStudent, studentLogout} from '@/api/student'
@@ -128,8 +134,9 @@ const getBreadcrumbTitle = () => {
     '/admin/home': '首页',
     '/admin/students': '学生管理',
     '/admin/admins': '管理员管理',
-    '/admin/task-type': '任务类型管理',
-    '/admin/task': '任务管理',
+    '/admin/task-types': '任务类型管理',
+    '/admin/tasks': '任务管理',
+    '/admin/disputes': '纠纷管理',
     '/admin/dispute': '纠纷管理',
     '/admin/dispute-type': '纠纷类型管理',
   }
