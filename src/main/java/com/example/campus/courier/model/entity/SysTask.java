@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import com.example.campus.courier.common.annotation.IpReplace;
 import com.example.campus.courier.common.utils.TaskUtils;
 import com.example.campus.courier.model.enums.TaskStatusEnum;
 import com.example.campus.courier.model.request.task.TaskAddRequest;
@@ -86,6 +87,7 @@ public class SysTask implements Serializable {
     @Schema(description = "联系电话")
     private String contactPhone;
 
+    @IpReplace
     @Schema(description = "图片(JSON格式)")
     @TableField(typeHandler = JacksonTypeHandler.class)
     private List<String> images;

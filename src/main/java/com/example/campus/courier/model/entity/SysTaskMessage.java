@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import com.example.campus.courier.common.annotation.IpReplace;
 import com.example.campus.courier.model.request.task.TaskMessageAddRequest;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -36,6 +37,7 @@ public class SysTaskMessage {
     @Schema(description = "留言内容")
     private String content;
 
+    @IpReplace
     @Schema(description = "图片列表")
     @TableField(typeHandler = JacksonTypeHandler.class)
     private List<String> images;

@@ -3,6 +3,7 @@ package com.example.campus.courier.model.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.example.campus.courier.common.annotation.IpReplace;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -30,6 +31,7 @@ public class SysAdmin {
     private String nickname;
 
     @Schema(description = "头像URL")
+    @IpReplace
     private String avatar;
 
     @Schema(description = "状态：1-正常，0-禁用")

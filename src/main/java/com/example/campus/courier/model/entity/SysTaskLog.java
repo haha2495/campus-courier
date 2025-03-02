@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import com.example.campus.courier.common.annotation.IpReplace;
 import com.example.campus.courier.model.enums.TaskActionEnum;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -40,6 +41,7 @@ public class SysTaskLog implements Serializable {
     @Schema(description = "操作类型（参见TaskActionEnum枚举类）")
     private Integer action;
 
+    @IpReplace
     @Schema(description = "图片(JSON格式)")
     @TableField(typeHandler = JacksonTypeHandler.class)
     private List<String> images = new ArrayList<>();

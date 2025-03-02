@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import com.example.campus.courier.common.annotation.IpReplace;
 import com.example.campus.courier.model.request.dispute.DisputeCreateRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -45,6 +46,7 @@ public class SysDispute {
 
     @Schema(description = "证据图片列表,JSON数组存储图片URL")
     @TableField(typeHandler = JacksonTypeHandler.class)
+    @IpReplace
     private List<String> evidence;
 
     @Schema(description = "管理员处理备注")

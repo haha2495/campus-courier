@@ -3,6 +3,7 @@ package com.example.campus.courier.model.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.example.campus.courier.common.annotation.IpReplace;
 import com.example.campus.courier.model.enums.UserRoleEnum;
 import com.example.campus.courier.model.request.student.StudentProfileUpdateRequest;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -36,6 +37,7 @@ public class SysStudent {
     @Schema(description = "性别：1-男，2-女")
     private Integer gender;
 
+    @IpReplace
     @Schema(description = "头像URL")
     private String avatar;
 
