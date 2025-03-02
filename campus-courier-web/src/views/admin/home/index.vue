@@ -57,6 +57,22 @@
           <div id="taskTypeChart" class="type-chart"></div>
         </el-card>
       </el-col>
+      
+      <!-- 任务趋势 -->
+      <el-col :span="16">
+        <el-card class="chart-card trend-card">
+          <template #header>
+            <div class="card-header">
+              <h3>任务趋势</h3>
+              <el-radio-group v-model="trendRange" size="small" @change="fetchTaskTrend">
+                <el-radio-button label="week">最近7天</el-radio-button>
+                <el-radio-button label="month">最近30天</el-radio-button>
+              </el-radio-group>
+            </div>
+          </template>
+          <div id="taskTrendChart" class="trend-chart"></div>
+        </el-card>
+      </el-col>
     </el-row>
   </div>
 </template>
@@ -114,6 +130,9 @@ const statisticsData = ref([
 
 // 任务类型数据
 const taskTypes = ref([])
+
+// 任务趋势数据
+const trendRange = ref('week')
 
 // 获取仪表盘数据
 const fetchDashboardStats = async () => {
@@ -190,6 +209,179 @@ const fetchTaskTypeStats = async () => {
   }
 }
 
+// 任务趋势图表
+const taskTrendChart = ref(null)
+
+// 获取任务趋势数据
+const fetchTaskTrend = async () => {
+  try {
+    const { data } = await axios.get('/api/dashboard/task-trend', {
+      params: { range: trendRange.value }
+    })
+    if (data.code === 200) {
+      const trendData = data.data
+      updateTrendChart(trendData)
+    } else {
+      ElMessage.error(data.message || '获取任务趋势数据失败')
+    }
+  } catch (error) {
+    console.error('获取任务趋势数据出错:', error)
+    ElMessage.error('获取任务趋势数据失败')
+  }
+}
+
+// 更新任务趋势图表
+const updateTrendChart = (data) => {
+  if (!taskTrendChart.value) return
+  
+  taskTrendChart.value.setOption({
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'line',
+        lineStyle: {
+          color: '#dcdfe6',
+          width: 1,
+          type: 'solid'
+        }
+      }
+    },
+    legend: {
+      data: ['已完成', '进行中', '待接单'],
+      bottom: '0%',
+      icon: 'circle'
+    },
+    grid: {
+      left: '3%',
+      right: '4%',
+      bottom: '10%',
+      top: '3%',
+      containLabel: true
+    },
+    xAxis: {
+      type: 'category',
+      boundaryGap: false,
+      data: data.dateList,
+      axisLine: {
+        lineStyle: {
+          color: '#dcdfe6'
+        }
+      },
+      axisTick: {
+        show: false
+      }
+    },
+    yAxis: {
+      type: 'value',
+      minInterval: 1,
+      splitLine: {
+        lineStyle: {
+          color: '#ebeef5',
+          type: 'dashed'
+        }
+      },
+      axisLine: {
+        show: false
+      },
+      axisTick: {
+        show: false
+      }
+    },
+    series: [
+      {
+        name: '已完成',
+        type: 'line',
+        smooth: true,
+        symbol: 'circle',
+        symbolSize: 8,
+        itemStyle: {
+          color: '#67C23A'
+        },
+        lineStyle: {
+          width: 2
+        },
+        areaStyle: {
+          color: {
+            type: 'linear',
+            x: 0,
+            y: 0,
+            x2: 0,
+            y2: 1,
+            colorStops: [{
+              offset: 0,
+              color: 'rgba(103, 194, 58, 0.2)'
+            }, {
+              offset: 1,
+              color: 'rgba(103, 194, 58, 0)'
+            }]
+          }
+        },
+        data: data.completedList
+      },
+      {
+        name: '进行中',
+        type: 'line',
+        smooth: true,
+        symbol: 'circle',
+        symbolSize: 8,
+        itemStyle: {
+          color: '#E6A23C'
+        },
+        lineStyle: {
+          width: 2
+        },
+        areaStyle: {
+          color: {
+            type: 'linear',
+            x: 0,
+            y: 0,
+            x2: 0,
+            y2: 1,
+            colorStops: [{
+              offset: 0,
+              color: 'rgba(230, 162, 60, 0.2)'
+            }, {
+              offset: 1,
+              color: 'rgba(230, 162, 60, 0)'
+            }]
+          }
+        },
+        data: data.processingList
+      },
+      {
+        name: '待接单',
+        type: 'line',
+        smooth: true,
+        symbol: 'circle',
+        symbolSize: 8,
+        itemStyle: {
+          color: '#909399'
+        },
+        lineStyle: {
+          width: 2
+        },
+        areaStyle: {
+          color: {
+            type: 'linear',
+            x: 0,
+            y: 0,
+            x2: 0,
+            y2: 1,
+            colorStops: [{
+              offset: 0,
+              color: 'rgba(144, 147, 153, 0.2)'
+            }, {
+              offset: 1,
+              color: 'rgba(144, 147, 153, 0)'
+            }]
+          }
+        },
+        data: data.pendingList
+      }
+    ]
+  })
+}
+
 // 图表实例引用
 const taskTypeChart = ref(null)
 
@@ -202,6 +394,11 @@ onMounted(() => {
 
   // 任务类型图表
   taskTypeChart.value = echarts.init(document.getElementById('taskTypeChart'))
+  
+  // 初始化任务趋势图表
+  taskTrendChart.value = echarts.init(document.getElementById('taskTrendChart'))
+  // 获取任务趋势数据
+  fetchTaskTrend()
   
   // 监听数据变化，更新图表
   watch(taskTypes, (newValue) => {
@@ -256,6 +453,7 @@ onMounted(() => {
   // 监听窗口大小变化
   window.addEventListener('resize', () => {
     taskTypeChart.value?.resize()
+    taskTrendChart.value?.resize()
   })
 })
 
@@ -407,6 +605,7 @@ const showStatsInfo = () => {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        padding: 0 20px;
 
         h3 {
           font-size: 16px;
@@ -420,6 +619,15 @@ const showStatsInfo = () => {
       height: 480px;
 
       .type-chart {
+        height: 400px;
+        width: 100%;
+      }
+    }
+    
+    .trend-card {
+      height: 480px;
+      
+      .trend-chart {
         height: 400px;
         width: 100%;
       }
