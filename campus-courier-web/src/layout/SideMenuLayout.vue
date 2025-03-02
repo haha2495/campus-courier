@@ -17,45 +17,51 @@
           :background-color="'transparent'"
           :text-color="'#4b5563'"
           :active-text-color="'#2563eb'"
+          unique-opened
       >
         <!-- 管理员菜单 -->
         <template v-if="userInfo.role === 'admin'">
+          <!-- 首页 -->
           <el-menu-item index="/admin/home">
-            <el-icon>
-              <HomeFilled/>
-            </el-icon>
+            <el-icon><HomeFilled /></el-icon>
             <span>首页</span>
           </el-menu-item>
-          <el-menu-item index="/admin/admins">
-            <el-icon>
-              <UserFilled/>
-            </el-icon>
-            <span>管理员管理</span>
-          </el-menu-item>
-          <el-menu-item index="/admin/students">
-            <el-icon>
-              <User/>
-            </el-icon>
-            <span>学生管理</span>
-          </el-menu-item>
-          <el-menu-item index="/admin/task-types">
-            <el-icon>
-              <List/>
-            </el-icon>
-            <span>任务类型管理</span>
-          </el-menu-item>
-          <el-menu-item index="/admin/tasks">
-            <el-icon>
-              <Document/>
-            </el-icon>
-            <span>任务管理</span>
-          </el-menu-item>
-          <el-menu-item index="/admin/disputes">
-            <el-icon>
-              <Warning/>
-            </el-icon>
-            <span>纠纷管理</span>
-          </el-menu-item>
+
+          <!-- 用户管理 -->
+          <el-sub-menu index="user">
+            <template #title>
+              <el-icon><UserFilled /></el-icon>
+              <span>用户管理</span>
+            </template>
+            <el-menu-item index="/admin/admins">
+              <el-icon><Avatar /></el-icon>
+              <span>管理员管理</span>
+            </el-menu-item>
+            <el-menu-item index="/admin/students">
+              <el-icon><User /></el-icon>
+              <span>学生管理</span>
+            </el-menu-item>
+          </el-sub-menu>
+
+          <!-- 任务中心 -->
+          <el-sub-menu index="task">
+            <template #title>
+              <el-icon><Tickets /></el-icon>
+              <span>任务中心</span>
+            </template>
+            <el-menu-item index="/admin/task-types">
+              <el-icon><List /></el-icon>
+              <span>任务类型管理</span>
+            </el-menu-item>
+            <el-menu-item index="/admin/tasks">
+              <el-icon><Document /></el-icon>
+              <span>任务管理</span>
+            </el-menu-item>
+            <el-menu-item index="/admin/disputes">
+              <el-icon><Warning /></el-icon>
+              <span>纠纷管理</span>
+            </el-menu-item>
+          </el-sub-menu>
         </template>
       </el-menu>
 
@@ -114,7 +120,18 @@
 <script setup>
 import {onMounted, onUnmounted, ref, watch} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
-import {HomeFilled, School, User, UserFilled, List, Warning, Document} from '@element-plus/icons-vue'
+import {
+  HomeFilled, 
+  School, 
+  User, 
+  UserFilled, 
+  List, 
+  Warning, 
+  Document, 
+  Monitor, 
+  Avatar,
+  Tickets
+} from '@element-plus/icons-vue'
 import {ElMessage} from 'element-plus'
 import {adminLogout, getCurrentAdmin} from '@/api/admin'
 import {getCurrentStudent, studentLogout} from '@/api/student'
@@ -344,58 +361,70 @@ onMounted(() => {
       border: none;
     }
 
-    :deep(.el-menu-item) {
-      height: 40px;
-      line-height: 40px;
-      border-radius: 6px;
-      margin: 4px 0;
-      padding: 0 16px;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      overflow: hidden;
-      color: #4b5563;
-      background: transparent;
-      font-size: 14px;
-
-      .el-icon {
-        font-size: 16px;
-        min-width: 16px;
-        margin-right: 12px;
+    :deep(.el-sub-menu) {
+      .el-sub-menu__title {
+        height: 40px;
+        line-height: 40px;
+        border-radius: 6px;
+        margin: 4px 0;
+        padding: 0 16px;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         color: #4b5563;
-      }
+        background: transparent;
 
-      span {
-        opacity: 1;
-        transform: translateX(0);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        color: #4b5563;
-      }
-
-      &:hover {
-        background: #f3f4f6;
-        color: #1a1a1a;
-
-        .el-icon {
+        &:hover {
+          background: #f3f4f6;
           color: #1a1a1a;
-          transform: translateX(4px);
+
+          .el-icon {
+            color: #1a1a1a;
+            transform: translateX(4px);
+          }
         }
 
-        span {
-          color: #1a1a1a;
+        .el-icon {
+          font-size: 16px;
+          min-width: 16px;
+          margin-right: 12px;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          color: #4b5563;
         }
       }
 
       &.is-active {
-        background: #f0f7ff;
-        color: #2563eb;
-        font-weight: 500;
-
-        .el-icon, span {
+        > .el-sub-menu__title {
           color: #2563eb;
-        }
 
-        &:hover {
-          background: #e6f0ff;
+          .el-icon {
+            color: #2563eb;
+          }
+        }
+      }
+    }
+
+    :deep(.el-menu--inline) {
+      padding-left: 8px;
+      background: transparent;
+
+      .el-menu-item {
+        height: 36px;
+        line-height: 36px;
+        margin: 4px 0;
+        
+        &.is-active {
+          background: #f0f7ff;
+          
+          &::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 16px;
+            background: #2563eb;
+            border-radius: 0 4px 4px 0;
+          }
         }
       }
     }
