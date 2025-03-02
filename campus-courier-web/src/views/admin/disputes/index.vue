@@ -143,10 +143,11 @@ const handleCurrentChange = (val) => {
 
 // 查看详情
 const handleView = (row) => {
+  console.log(row)
   router.push({
     path: '/admin/disputes/detail',
     query: {
-      taskId: row.task.id
+      taskId: row.id
     }
   })
 }

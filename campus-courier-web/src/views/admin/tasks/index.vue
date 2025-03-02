@@ -7,11 +7,11 @@
           <!-- 状态筛选器 -->
           <div class="custom-filter-group">
             <div
-              v-for="option in taskStatusOptions"
-              :key="option.value"
-              class="filter-option"
-              :class="{ active: searchForm.status === option.value }"
-              @click="selectStatus(option.value)"
+                v-for="option in taskStatusOptions"
+                :key="option.value"
+                class="filter-option"
+                :class="{ active: searchForm.status === option.value }"
+                @click="selectStatus(option.value)"
             >
               <div class="option-content">
                 <el-icon v-if="option.icon" class="option-icon">
@@ -32,13 +32,13 @@
         <el-empty v-if="taskList.length === 0" description="暂无任务数据"/>
         <div v-else class="tasks-list">
           <task-card
-            v-for="item in taskList"
-            :key="item.id"
-            :task="item.task"
-            :task-type="item.taskType"
-            action-text="查看详情"
-            @click="handleViewDetail"
-            @action="handleViewDetail"
+              v-for="item in taskList"
+              :key="item.id"
+              :task="item.task"
+              :task-type="item.taskType"
+              action-text="查看详情"
+              @click="handleViewDetail"
+              @action="handleViewDetail"
           />
         </div>
       </div>
@@ -48,14 +48,14 @@
     <el-card class="pagination-card" shadow="hover">
       <div class="pagination-container">
         <el-pagination
-          v-model:current-page="page"
-          v-model:page-size="pageSize"
-          :page-sizes="[4, 8, 12, 16, 20]"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="total"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          background
+            v-model:current-page="page"
+            v-model:page-size="pageSize"
+            :page-sizes="[4, 8, 12, 16, 20]"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            background
         />
       </div>
     </el-card>
@@ -63,12 +63,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { Timer, Clock, Loading, Van, CircleCheck, Select, Close, Warning, Star } from '@element-plus/icons-vue'
-import { TaskStatusEnum } from '@/utils/enums/taskEnums'
-import { getTaskList } from '@/api/task'
-import { ElMessage } from 'element-plus'
+import {onMounted, ref} from 'vue'
+import {useRouter} from 'vue-router'
+import {TaskStatusEnum} from '@/utils/enums/taskEnums'
+import {getTaskList} from '@/api/task'
+import {ElMessage} from 'element-plus'
 import TaskCard from '@/components/task-card/index.vue'
 
 const router = useRouter()
@@ -154,7 +153,12 @@ const formatDateTime = (dateTimeStr) => {
 
 // 查看详情
 const handleViewDetail = (row) => {
-  router.push(`/admin/tasks/detail?id=${row.id}`)
+  router.push({
+    path: '/admin/disputes/detail',
+    query: {
+      taskId: row.id
+    }
+  })
 }
 
 // 分页大小改变
@@ -207,7 +211,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  
+
   &:hover {
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
   }
