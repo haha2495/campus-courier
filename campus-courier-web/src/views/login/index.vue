@@ -147,7 +147,7 @@
 
     <!-- 底部版权信息 -->
     <div class="footer">
-      <p>© 2023 校园跑腿系统 - 为校园生活提供便捷服务</p>
+      <p>© 2025 校园跑腿系统 - 为校园生活提供便捷服务</p>
     </div>
   </div>
 </template>
@@ -183,8 +183,8 @@ const fieldStatus = ref({
 
 // 登录表单数据
 const loginForm = ref({
-  username: "admin",
-  password: "123456",
+  username: "",
+  password: "",
   captcha: "",
 });
 
