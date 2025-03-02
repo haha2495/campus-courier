@@ -106,6 +106,12 @@
       "style": {
         "navigationBarTitleText": "纠纷大厅"
       }
+    },
+    {
+      "path": "pages/runner-tasks/index",
+      "style": {
+        "navigationBarTextStyle": "我的接单"
+      }
     }
   ],
   "globalStyle": {

@@ -443,7 +443,7 @@ const handleTabNavigation = (tab) => {
       case TabPageName.RECORDS:
         // 跑腿者的我的任务页面
         uni.navigateTo({
-          url: '/pages/my-tasks/index'
+          url: '/pages/runner-tasks/index'
         })
         break
       case TabPageName.MINE:
