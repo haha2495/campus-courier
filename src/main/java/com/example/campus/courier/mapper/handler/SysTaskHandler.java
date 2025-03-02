@@ -106,22 +106,25 @@ public class SysTaskHandler extends ServiceImpl<SysTaskMapper, SysTask> {
      * @return 任务列表
      */
     public List<SysTask> getCompletedTasks(Integer userId) {
-        LambdaQueryWrapper<SysTask> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(SysTask::getRunnerId, userId)  // 当前用户作为跑腿者
-               .eq(SysTask::getStatus, TaskStatusEnum.COMPLETED.getCode())  // 已完成状态
-               .orderByDesc(SysTask::getCreateTime);  // 按创建时间倒序排序
-
-        return baseMapper.selectList(wrapper);
+        return lambdaQuery()
+                .eq(SysTask::getRunnerId, userId)
+                .eq(SysTask::getStatus, TaskStatusEnum.COMPLETED.getCode())
+                .orderByDesc(SysTask::getCreateTime)
+                .list();
     }
 
     /**
-     * 获取发布者任务状态统计
+     * 统计发布者任务状态数量
      *
      * @param userId 用户ID
-     * @return 任务状态统计列表，每个Map包含status和count两个字段
+     * @param status 任务状态
+     * @return 任务数量
      */
-    public List<Map<String, Object>> getPublisherTaskStats(Integer userId) {
-        return baseMapper.getPublisherTaskStats(userId);
+    public Long countPublisherTasksByStatus(Integer userId, Integer status) {
+        return lambdaQuery()
+                .eq(SysTask::getPublisherId, userId)
+                .eq(SysTask::getStatus, status)
+                .count();
     }
 
     /**

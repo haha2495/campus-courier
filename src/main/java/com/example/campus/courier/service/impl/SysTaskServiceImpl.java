@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 任务服务实现类
@@ -578,36 +579,33 @@ public class SysTaskServiceImpl implements SysTaskService {
      */
     @Override
     public Map<String, Integer> getPublisherTaskStats(Integer userId) {
-        // 1. 初始化返回结果
         Map<String, Integer> stats = new HashMap<>();
-        stats.put("processing", 0);
-        stats.put("completed", 0);
-        stats.put("pending_payment", 0);
-
-        // 2. 获取用户发布的所有任务状态统计
-        List<Map<String, Object>> taskStats = sysTaskHandler.getPublisherTaskStats(userId);
-
-        // 3. 处理统计结果
-        for (Map<String, Object> stat : taskStats) {
-            Integer status = (Integer) stat.get("status");
-            Long count = (Long) stat.get("count");
-            
-            // 根据任务状态分类统计
-            if (TaskStatusEnum.ACCEPTED.getCode().equals(status) 
-                || TaskStatusEnum.IN_PROGRESS.getCode().equals(status)
-                    || TaskStatusEnum.EVALUATED.getCode().equals(status)
-                    || TaskStatusEnum.DISPUTED.getCode().equals(status)) {
-                // 进行中的任务
-                stats.put("processing", stats.get("processing") + count.intValue());
-            } else if (TaskStatusEnum.COMPLETED.getCode().equals(status)) {
-                // 已完成的任务
-                stats.put("completed", stats.get("completed") + count.intValue());
-            } else if (TaskStatusEnum.AWAITING_CONFIRMATION.getCode().equals(status)) {
-                // 待支付的任务
-                stats.put("pending_payment", stats.get("pending_payment") + count.intValue());
-            }
-        }
-
+        
+        // 统计进行中的任务（已接单、进行中、评价中、纠纷中）
+        long processingCount = Stream.of(
+                TaskStatusEnum.ACCEPTED.getCode(),
+                TaskStatusEnum.IN_PROGRESS.getCode(),
+                TaskStatusEnum.EVALUATED.getCode(),
+                TaskStatusEnum.DISPUTED.getCode()
+        ).mapToLong(status ->
+            sysTaskHandler.countPublisherTasksByStatus(userId, status)
+        ).sum();
+        stats.put("processing", (int) processingCount);
+        
+        // 统计已完成的任务
+        long completedCount = sysTaskHandler.countPublisherTasksByStatus(
+            userId, 
+            TaskStatusEnum.COMPLETED.getCode()
+        );
+        stats.put("completed", (int) completedCount);
+        
+        // 统计待支付的任务
+        long pendingPaymentCount = sysTaskHandler.countPublisherTasksByStatus(
+            userId, 
+            TaskStatusEnum.AWAITING_CONFIRMATION.getCode()
+        );
+        stats.put("pending_payment", (int) pendingPaymentCount);
+        
         return stats;
     }
 
