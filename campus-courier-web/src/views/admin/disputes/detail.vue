@@ -206,6 +206,54 @@
             </div>
           </div>
 
+          <!-- 评价信息 -->
+          <div class="evaluation-section" v-if="detail.evaluation">
+            <h3 class="section-title">
+              <el-icon class="title-icon"><Star /></el-icon>
+              评价信息
+            </h3>
+            <div class="evaluation-content">
+              <div class="rating-area">
+                <div class="rating-header">
+                  <div class="score-display">
+                    <div class="score-box">
+                      <span class="score-number">{{ detail.evaluation.score }}</span>
+                      <span class="score-text">分</span>
+                    </div>
+                    <div class="rating-score">
+                      <el-rate
+                        v-model="detail.evaluation.score"
+                        disabled
+                        show-score
+                        text-color="#ff9900"
+                        score-template=""
+                        class="custom-rate"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="rating-tags" v-if="detail.evaluation.tags?.length">
+                  <el-tag
+                    v-for="(tag, index) in detail.evaluation.tags"
+                    :key="tag"
+                    class="tag-item"
+                    effect="light"
+                    :style="{ animationDelay: index * 0.1 + 's' }"
+                  >
+                    <el-icon class="tag-icon"><Medal /></el-icon>
+                    {{ tag }}
+                  </el-tag>
+                </div>
+              </div>
+              <div class="evaluation-remark" v-if="detail.evaluation.content">
+                <div class="quote-icon">
+                  <el-icon><ChatRound /></el-icon>
+                </div>
+                <div class="remark-content">{{ detail.evaluation.content }}</div>
+              </div>
+            </div>
+          </div>
+
           <!-- 纠纷信息 -->
           <div class="dispute-section" v-if="detail.dispute">
             <h3 class="section-title">
@@ -543,7 +591,9 @@ import {
   Tools,
   Trophy,
   UserFilled,
-  Warning
+  Warning,
+  Star,
+  ChatRound
 } from '@element-plus/icons-vue'
 import {ElMessage} from 'element-plus'
 import {handleDispute} from '@/api/dispute'
@@ -1214,6 +1264,136 @@ const formatRemainingTime = (endTimeString) => {
         flex: 1;
         color: #1f2937;
         font-size: 14px;
+      }
+    }
+  }
+}
+
+/* 评价信息区域 */
+.evaluation-section {
+  margin-bottom: 24px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .title-icon {
+    color: #fbbf24;
+    font-size: 18px;
+    margin-right: 6px;
+  }
+
+  .evaluation-content {
+    .rating-area {
+      margin-bottom: 16px;
+
+      .rating-header {
+        margin-bottom: 16px;
+        padding: 16px;
+        background: #f8fafc;
+        border-radius: 8px;
+
+        .score-display {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+
+          .score-box {
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+            
+            .score-number {
+              font-size: 32px;
+              font-weight: 600;
+              color: #f59e0b;
+              line-height: 1;
+            }
+
+            .score-text {
+              font-size: 14px;
+              color: #f59e0b;
+            }
+          }
+
+          .rating-score {
+            :deep(.custom-rate) {
+              .el-rate__icon {
+                font-size: 20px;
+                margin-right: 4px;
+                
+                &.el-rate__icon--on {
+                  color: #f59e0b;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      .rating-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+
+        .tag-item {
+          padding: 4px 12px;
+          border-radius: 16px;
+          font-size: 13px;
+          background: #fff7ed;
+          border-color: #fed7aa;
+          color: #c2410c;
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          transition: all 0.3s ease;
+
+          &:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(194, 65, 12, 0.1);
+          }
+
+          .tag-icon {
+            font-size: 14px;
+          }
+        }
+      }
+    }
+
+    .evaluation-remark {
+      position: relative;
+      background: #f8fafc;
+      padding: 16px 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+
+      .quote-icon {
+        position: absolute;
+        top: -10px;
+        left: 16px;
+        width: 20px;
+        height: 20px;
+        background: #3b82f6;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 12px;
+      }
+
+      .remark-content {
+        color: #4b5563;
+        font-size: 14px;
+        line-height: 1.6;
+        font-style: italic;
+        padding-top: 4px;
       }
     }
   }
