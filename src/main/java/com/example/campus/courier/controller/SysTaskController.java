@@ -18,6 +18,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 任务控制器
@@ -200,5 +201,17 @@ public class SysTaskController extends BaseController {
     public Result<PageResult<TaskDTO>> pageTask(
             @Parameter(description = "查询条件") @Validated @RequestBody TaskQueryRequest request) {
         return Result.success(sysTaskService.pageTask(request));
+    }
+
+    /**
+     * 获取发布者任务统计数据
+     * 包含进行中、已完成、待支付的任务数量
+     *
+     * @return 任务统计数据
+     */
+    @GetMapping("/publisher/stats")
+    @Operation(summary = "获取发布者任务统计数据")
+    public Result<Map<String, Integer>> getPublisherTaskStats() {
+        return Result.success(sysTaskService.getPublisherTaskStats(getLoginUserId()));
     }
 } 

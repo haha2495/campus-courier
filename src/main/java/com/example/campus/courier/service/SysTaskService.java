@@ -9,6 +9,7 @@ import com.example.campus.courier.model.dto.TaskDetailDTO;
 import com.example.campus.courier.model.dto.RunnerTaskStatDTO;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 任务服务接口
@@ -132,4 +133,13 @@ public interface SysTaskService {
      * @return 任务列表及统计信息
      */
     RunnerTaskStatDTO getMyCompletedTasks(Integer userId);
+
+    /**
+     * 获取发布者任务统计数据
+     * 包含进行中、已完成、待支付的任务数量
+     *
+     * @param userId 用户ID
+     * @return 任务统计数据，key为状态（processing-进行中, completed-已完成, pending_payment-待支付），value为数量
+     */
+    Map<String, Integer> getPublisherTaskStats(Integer userId);
 } 

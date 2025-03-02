@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 任务数据处理层
@@ -110,5 +111,15 @@ public class SysTaskHandler extends ServiceImpl<SysTaskMapper, SysTask> {
                .orderByDesc(SysTask::getCreateTime);  // 按创建时间倒序排序
 
         return baseMapper.selectList(wrapper);
+    }
+
+    /**
+     * 获取发布者任务状态统计
+     *
+     * @param userId 用户ID
+     * @return 任务状态统计列表，每个Map包含status和count两个字段
+     */
+    public List<Map<String, Object>> getPublisherTaskStats(Integer userId) {
+        return baseMapper.getPublisherTaskStats(userId);
     }
 }

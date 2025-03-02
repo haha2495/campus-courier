@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Select;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 任务Mapper接口
@@ -79,4 +80,13 @@ public interface SysTaskMapper extends BaseMapper<SysTask> {
             "WHERE status = 0 " +
             "AND DATE(create_time) = DATE(#{date})")
     Integer countPendingTasksByDate(@Param("date") LocalDateTime date);
+
+    /**
+     * 获取发布者任务状态统计
+     *
+     * @param userId 用户ID
+     * @return 任务状态统计列表
+     */
+    @Select("SELECT status, COUNT(*) as count FROM sys_task WHERE publisher_id = #{userId} GROUP BY status")
+    List<Map<String, Object>> getPublisherTaskStats(Integer userId);
 } 

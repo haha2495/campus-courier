@@ -54,15 +54,15 @@
         
         <view class="stats-section">
           <view class="stats-card">
-            <text class="stats-value">0</text>
+            <text class="stats-value">{{ taskStats.processing }}</text>
             <text class="stats-label">进行中</text>
           </view>
           <view class="stats-card">
-            <text class="stats-value">0</text>
+            <text class="stats-value">{{ taskStats.completed }}</text>
             <text class="stats-label">已完成</text>
           </view>
           <view class="stats-card">
-            <text class="stats-value">0</text>
+            <text class="stats-value">{{ taskStats.pending_payment }}</text>
             <text class="stats-label">待支付</text>
           </view>
         </view>
@@ -260,6 +260,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { TabBarType, TabPageName, publisherTabConfig, runnerTabConfig, getCenterButton, getVersionedIconUrl, ICON_VERSION } from '@/utils/tabConfig'
+import { getPublisherTaskStats } from '@/api/task'
 
 // 当前角色：publisher(发布者) 或 runner(跑腿者)
 const currentRole = ref(TabBarType.PUBLISHER)
@@ -289,6 +290,13 @@ const iconCache = ref({})
 const showEmpty = ref(true)
 const isLoading = ref(false)
 
+// 任务统计数据
+const taskStats = ref({
+  processing: 0,  // 进行中
+  completed: 0,   // 已完成
+  pending_payment: 0  // 待支付
+})
+
 // 页面生命周期钩子
 onMounted(() => {
   // 初始化操作
@@ -298,6 +306,7 @@ onMounted(() => {
   loadIconCache()
   preloadTabIcons()
   refreshData()
+  loadTaskStats()
 })
 
 // 页面显示时执行
@@ -316,9 +325,14 @@ const refreshData = async () => {
   showEmpty.value = false
   
   try {
-    // 这里添加你的数据加载逻辑
-    // 模拟数据加载
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    // 根据当前角色获取不同的统计数据
+    if (currentRole.value === TabBarType.PUBLISHER) {
+      // 获取发布者统计数据
+      const result = await getPublisherTaskStats()
+      if (result.code === 200 && result.data) {
+        taskStats.value = result.data
+      }
+    }
     
     // 如果没有数据则显示空状态
     showEmpty.value = true
@@ -327,6 +341,18 @@ const refreshData = async () => {
     showEmpty.value = true
   } finally {
     isLoading.value = false
+  }
+}
+
+// 获取任务统计数据
+const loadTaskStats = async () => {
+  try {
+    const res = await getPublisherTaskStats()
+    if (res.code === 200) {
+      taskStats.value = res.data
+    }
+  } catch (error) {
+    console.error('获取任务统计失败:', error)
   }
 }
 
@@ -506,12 +532,17 @@ const onPulling = () => {
   console.log('下拉中...')
 }
 
-const onRefresh = () => {
+const onRefresh = async () => {
   isRefreshing.value = true
-  setTimeout(() => {
-    isRefreshing.value = false
+  try {
+    await refreshData()
     showMessage('刷新成功')
-  }, 1000)
+  } catch (error) {
+    console.error('刷新失败:', error)
+    showMessage('刷新失败')
+  } finally {
+    isRefreshing.value = false
+  }
 }
 
 const onRestore = () => {

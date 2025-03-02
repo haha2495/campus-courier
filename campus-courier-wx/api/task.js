@@ -181,3 +181,14 @@ export function getMyCompletedTasks() {
         method: 'GET'
     })
 }
+
+/**
+ * 获取发布者任务统计数据
+ * @returns {Promise} 返回统计数据
+ */
+export function getPublisherTaskStats() {
+    return http({
+        url: '/api/tasks/publisher/stats',
+        method: 'get'
+    })
+}

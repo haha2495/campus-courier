@@ -23,9 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -569,6 +567,48 @@ public class SysTaskServiceImpl implements SysTaskService {
         statDTO.setMonthlyEarnings(monthlyEarnings);
 
         return statDTO;
+    }
+
+    /**
+     * 获取发布者任务统计数据
+     * 包含进行中、已完成、待支付的任务数量
+     *
+     * @param userId 用户ID
+     * @return 任务统计数据，key为状态（processing-进行中, completed-已完成, pending_payment-待支付），value为数量
+     */
+    @Override
+    public Map<String, Integer> getPublisherTaskStats(Integer userId) {
+        // 1. 初始化返回结果
+        Map<String, Integer> stats = new HashMap<>();
+        stats.put("processing", 0);
+        stats.put("completed", 0);
+        stats.put("pending_payment", 0);
+
+        // 2. 获取用户发布的所有任务状态统计
+        List<Map<String, Object>> taskStats = sysTaskHandler.getPublisherTaskStats(userId);
+
+        // 3. 处理统计结果
+        for (Map<String, Object> stat : taskStats) {
+            Integer status = (Integer) stat.get("status");
+            Long count = (Long) stat.get("count");
+            
+            // 根据任务状态分类统计
+            if (TaskStatusEnum.ACCEPTED.getCode().equals(status) 
+                || TaskStatusEnum.IN_PROGRESS.getCode().equals(status)
+                    || TaskStatusEnum.EVALUATED.getCode().equals(status)
+                    || TaskStatusEnum.DISPUTED.getCode().equals(status)) {
+                // 进行中的任务
+                stats.put("processing", stats.get("processing") + count.intValue());
+            } else if (TaskStatusEnum.COMPLETED.getCode().equals(status)) {
+                // 已完成的任务
+                stats.put("completed", stats.get("completed") + count.intValue());
+            } else if (TaskStatusEnum.AWAITING_CONFIRMATION.getCode().equals(status)) {
+                // 待支付的任务
+                stats.put("pending_payment", stats.get("pending_payment") + count.intValue());
+            }
+        }
+
+        return stats;
     }
 
     private List<TaskDTO> getTaskDTOS(List<SysTask> tasks) {
