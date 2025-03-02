@@ -34,40 +34,13 @@
       <!-- 任务列表内容 -->
       <block v-else>
         <view v-if="taskList.length > 0" class="task-list-content">
-          <view 
-            v-for="task in taskList" 
-            :key="task.task.id" 
-            class="task-card"
-            @click="navigateToDetail(task.task.id)"
+          <task-card
+            v-for="item in taskList"
+            :key="item.task.id"
+            :task="item"
+            @click="navigateToDetail(item.task.id)"
           >
-            <!-- 任务类型和状态 -->
-            <view class="task-header">
-              <view class="type-info">
-                <image class="type-icon" :src="task.taskType.icon" mode="aspectFit"></image>
-                <text class="type-name">{{ task.taskType.typeName }}</text>
-              </view>
-              <view class="status-tag status-2">已完成</view>
-            </view>
-
-            <!-- 任务标题 -->
-            <view class="task-title">{{ task.task.title }}</view>
-
-            <!-- 任务信息 -->
-            <view class="task-info">
-              <view class="info-item">
-                <text class="label">配送地址</text>
-                <text class="value">{{ task.task.deliveryAddress }}</text>
-              </view>
-              <view class="info-item">
-                <text class="label">赏金</text>
-                <text class="value price">¥{{ formatAmount(task.task.reward) }}</text>
-              </view>
-              <view class="info-item">
-                <text class="label">完成时间</text>
-                <text class="value">{{ formatTime(task.task.createTime) }}</text>
-              </view>
-            </view>
-          </view>
+          </task-card>
         </view>
 
         <!-- 空状态 -->
@@ -94,6 +67,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { getMyCompletedTasks } from '@/api/task'
+import TaskCard from '@/components/task-card/index.vue'
 
 // 页面状态
 const loading = ref(false)
@@ -248,77 +222,9 @@ onMounted(() => {
   height: calc(100vh - 180rpx);
   padding: 16rpx;
   box-sizing: border-box;
-}
 
-.task-card {
-  background: #ffffff;
-  border-radius: 12rpx;
-  padding: 16rpx;
-  margin-bottom: 12rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
-  
-  .task-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12rpx;
-    
-    .type-info {
-      display: flex;
-      align-items: center;
-      gap: 8rpx;
-      
-      .type-icon {
-        width: 40rpx;
-        height: 40rpx;
-      }
-      
-      .type-name {
-        font-size: 28rpx;
-        color: #666;
-      }
-    }
-    
-    .status-tag {
-      padding: 8rpx 24rpx;
-      border-radius: 8rpx;
-      font-size: 24rpx;
-      
-      &.status-2 {
-        background: #ECFDF5;
-        color: #059669;
-      }
-    }
-  }
-  
-  .task-title {
-    font-size: 32rpx;
-    font-weight: 500;
-    color: #333;
-    margin-bottom: 12rpx;
-  }
-  
-  .task-info {
-    .info-item {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 8rpx;
-      
-      .label {
-        font-size: 26rpx;
-        color: #666;
-      }
-      
-      .value {
-        font-size: 26rpx;
-        color: #333;
-        
-        &.price {
-          color: #f5222d;
-          font-weight: 500;
-        }
-      }
-    }
+  .task-list-content {
+    padding: 0 16rpx;
   }
 }
 
