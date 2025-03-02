@@ -188,6 +188,40 @@
                 <text>进行审判</text>
               </button>
             </view>
+
+            <!-- 添加审判结果展示 -->
+            <view v-if="taskDetail.dispute.status === 2" class="judgment-result">
+              <view class="result-header">
+                <u-icon name="checkmark-circle-fill" color="#07c160" size="44"></u-icon>
+                <text class="result-title">审判结果</text>
+              </view>
+              
+              <view class="result-content">
+                <!-- 胜诉方信息 -->
+                <view class="result-party winner">
+                  <view class="party-tag">胜诉方</view>
+                  <view class="party-name">
+                    <text>{{ getWinnerName }}</text>
+                    <text v-if="isCurrentUserWinner" class="current-user-tag">（我）</text>
+                  </view>
+                </view>
+                
+                <!-- 败诉方信息 -->
+                <view class="result-party loser">
+                  <view class="party-tag">败诉方</view>
+                  <view class="party-name">
+                    <text>{{ getLoserName }}</text>
+                    <text v-if="!isCurrentUserWinner" class="current-user-tag">（我）</text>
+                  </view>
+                </view>
+                
+                <!-- 审判理由 -->
+                <view class="judgment-reason">
+                  <text class="reason-label">审判理由：</text>
+                  <text class="reason-content">{{ taskDetail.dispute.adminRemark || '无' }}</text>
+                </view>
+              </view>
+            </view>
           </view>
         </view>
       </view>
@@ -560,6 +594,35 @@ const fetchCurrentUser = async () => {
     console.error('获取当前用户信息失败：', error)
   }
 }
+
+// 计算胜诉方名称
+const getWinnerName = computed(() => {
+  if (!taskDetail.value?.dispute?.result) return '';
+  // 1-支持发起人，2-支持被投诉人
+  return taskDetail.value.dispute.result === 1
+    ? taskDetail.value.publisher.name
+    : taskDetail.value.runner.name;
+});
+
+// 计算败诉方名称
+const getLoserName = computed(() => {
+  if (!taskDetail.value?.dispute?.result) return '';
+  // 1-支持发起人，2-支持被投诉人
+  return taskDetail.value.dispute.result === 1
+    ? taskDetail.value.runner.name
+    : taskDetail.value.publisher.name;
+});
+
+// 判断当前用户是否是胜诉方
+const isCurrentUserWinner = computed(() => {
+  if (!taskDetail.value?.dispute?.result || !currentUser.value) return false;
+  // 1-支持发起人，2-支持被投诉人
+  if (taskDetail.value.dispute.result === 1) {
+    return currentUser.value.id === taskDetail.value.publisher.id;
+  } else {
+    return currentUser.value.id === taskDetail.value.runner.id;
+  }
+});
 
 onMounted(async () => {
   await fetchCurrentUser()
@@ -1357,6 +1420,100 @@ onMounted(async () => {
 
         .u-icon {
           animation: pulse 2s infinite;
+        }
+      }
+    }
+
+    .judgment-result {
+      margin-top: 32rpx;
+      padding: 24rpx;
+      background: #F0FDF4;
+      border-radius: 16rpx;
+      border: 2rpx solid #86EFAC;
+
+      .result-header {
+        display: flex;
+        align-items: center;
+        gap: 12rpx;
+        margin-bottom: 24rpx;
+
+        .result-title {
+          font-size: 32rpx;
+          font-weight: 600;
+          color: #047857;
+        }
+      }
+
+      .result-content {
+        padding: 16rpx;
+        background: #FFFFFF;
+        border-radius: 12rpx;
+
+        .result-party {
+          display: flex;
+          align-items: center;
+          gap: 16rpx;
+          margin-bottom: 16rpx;
+          padding: 12rpx 16rpx;
+          border-radius: 8rpx;
+
+          .party-tag {
+            padding: 4rpx 16rpx;
+            border-radius: 20rpx;
+            font-size: 24rpx;
+            font-weight: 500;
+          }
+
+          .party-name {
+            font-size: 28rpx;
+            color: #1F2937;
+            display: flex;
+            align-items: center;
+            gap: 8rpx;
+
+            .current-user-tag {
+              font-size: 24rpx;
+              color: #6B7280;
+            }
+          }
+
+          &.winner {
+            background: #ECFDF5;
+            
+            .party-tag {
+              background: #D1FAE5;
+              color: #059669;
+            }
+          }
+
+          &.loser {
+            background: #FEF2F2;
+            
+            .party-tag {
+              background: #FEE2E2;
+              color: #DC2626;
+            }
+          }
+        }
+
+        .judgment-reason {
+          margin-top: 20rpx;
+          padding: 16rpx;
+          background: #F9FAFB;
+          border-radius: 8rpx;
+          
+          .reason-label {
+            font-size: 26rpx;
+            color: #4B5563;
+            font-weight: 500;
+            margin-right: 8rpx;
+          }
+          
+          .reason-content {
+            font-size: 26rpx;
+            color: #1F2937;
+            line-height: 1.6;
+          }
         }
       }
     }

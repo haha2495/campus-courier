@@ -54,7 +54,10 @@
         <view class="info-item reward">
           <text class="reward-icon">¥</text>
           <text class="reward-value">{{ task.task.reward }}</text>
-x`          <text v-if="task.task.urgent && task.task.urgentReward" class="urgent-reward">{{ task.task.urgentReward }}</text>
+          <text v-if="task.task.urgent && task.task.urgentReward" class="urgent-reward">{{
+              task.task.urgentReward
+            }}
+          </text>
         </view>
         <view class="info-item time">
           <text class="time-label">期望送达：</text>
@@ -75,7 +78,7 @@ x`          <text v-if="task.task.urgent && task.task.urgentReward" class="urgen
 </template>
 
 <script setup>
-import { TASK_STATUS } from '@/constants/taskStatus'
+import {TASK_STATUS} from '@/constants/taskStatus'
 
 const props = defineProps({
   task: {
@@ -200,10 +203,10 @@ const handleClick = () => {
       width: 200%;
       height: 200%;
       background: linear-gradient(
-        to right,
-        rgba(255, 255, 255, 0) 0%,
-        rgba(255, 255, 255, 0.1) 50%,
-        rgba(255, 255, 255, 0) 100%
+              to right,
+              rgba(255, 255, 255, 0) 0%,
+              rgba(255, 255, 255, 0.1) 50%,
+              rgba(255, 255, 255, 0) 100%
       );
       transform: rotate(45deg);
       animation: shine 3s infinite;
@@ -485,7 +488,7 @@ const handleClick = () => {
   padding: 8rpx 16rpx;
   background-color: #FEF3C7;
   border-radius: 8rpx;
-  
+
   .tip-text {
     margin-left: 8rpx;
     font-size: 24rpx;
