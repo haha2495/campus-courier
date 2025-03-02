@@ -96,8 +96,8 @@
             <div class="card-footer">
               <div class="left-info">
                 <div class="price-info">
-                  <span class="amount">¥{{ item.task.reward }}</span>
-                  <span v-if="item.task.urgent" class="urgent-price">{{ item.task.urgentReward }}</span>
+                  <span class="amount">{{ item.task.reward }}</span>
+                  <span v-if="item.task.urgent" class="urgent-price">+{{ item.task.urgentReward }}</span>
                 </div>
                 <div class="time-info">
                   <el-icon><Timer /></el-icon>
@@ -581,6 +581,7 @@ onMounted(() => {
         font-size: 14px;
         color: #ff4d4f;
         font-weight: 500;
+        margin-left: 4px;
       }
     }
 
