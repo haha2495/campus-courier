@@ -31,84 +31,15 @@
       <div class="content-area" v-loading="loading">
         <el-empty v-if="taskList.length === 0" description="暂无任务数据"/>
         <div v-else class="tasks-list">
-          <div v-for="item in taskList" :key="item.id" class="task-card" @click="handleViewDetail(item)">
-            <!-- 卡片头部 - 任务编号和状态 -->
-            <div class="card-header">
-              <div class="left-section">
-                <span class="task-no">{{ item.taskNo }}</span>
-                <el-tag
-                  :type="getStatusType(item.status)"
-                  effect="light"
-                  class="status-tag"
-                >
-                  {{ getStatusText(item.status) }}
-                </el-tag>
-              </div>
-              <div v-if="item.urgent" class="urgent-tag">加急</div>
-            </div>
-
-            <!-- 卡片内容 -->
-            <div class="card-body">
-              <!-- 任务类型 -->
-              <div class="task-type">
-                <img class="type-icon" :src="item.type?.icon" alt="任务类型">
-                <span>{{ item.type?.name }}</span>
-              </div>
-
-              <!-- 任务标题和描述 -->
-              <div class="task-info">
-                <div class="task-title">{{ item.title }}</div>
-                <div class="task-desc">{{ item.description }}</div>
-              </div>
-
-              <!-- 地址信息 -->
-              <div class="address-info">
-                <div class="address-item" v-if="item.pickupAddress">
-                  <div class="address-icon pickup">取</div>
-                  <div class="address-content">
-                    <div class="address-label">取件地址</div>
-                    <div class="address-value">{{ item.pickupAddress }}</div>
-                  </div>
-                </div>
-                <div class="address-item" v-if="item.deliveryAddress">
-                  <div class="address-icon delivery">送</div>
-                  <div class="address-content">
-                    <div class="address-label">送达地址</div>
-                    <div class="address-value">{{ item.deliveryAddress }}</div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- 规格信息 -->
-              <div class="specs-info">
-                <div class="spec-item">
-                  <span class="spec-label">重量</span>
-                  <span class="spec-value">{{ item.estimatedWeight }}kg</span>
-                </div>
-                <div class="spec-item">
-                  <span class="spec-label">大小</span>
-                  <span class="spec-value">{{ item.estimatedSize }}</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- 卡片底部 -->
-            <div class="card-footer">
-              <div class="left-info">
-                <div class="price-info">
-                  <span class="amount">{{ item.reward }}</span>
-                  <span v-if="item.urgent" class="urgent-price">+{{ item.urgentReward }}</span>
-                </div>
-                <div class="time-info">
-                  <el-icon><Timer /></el-icon>
-                  <span>{{ formatDateTime(item.createTime) }}</span>
-                </div>
-              </div>
-              <el-button type="primary" plain @click.stop="handleViewDetail(item)">
-                查看详情
-              </el-button>
-            </div>
-          </div>
+          <task-card
+            v-for="item in taskList"
+            :key="item.id"
+            :task="item.task"
+            :task-type="item.taskType"
+            action-text="查看详情"
+            @click="handleViewDetail"
+            @action="handleViewDetail"
+          />
         </div>
       </div>
     </el-card>
@@ -138,6 +69,7 @@ import { Timer, Clock, Loading, Van, CircleCheck, Select, Close, Warning, Star }
 import { TaskStatusEnum } from '@/utils/enums/taskEnums'
 import { getTaskList } from '@/api/task'
 import { ElMessage } from 'element-plus'
+import TaskCard from '@/components/task-card/index.vue'
 
 const router = useRouter()
 
@@ -272,6 +204,8 @@ onMounted(() => {
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   background: #fff;
+  display: flex;
+  flex-direction: column;
   
   &:hover {
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
@@ -279,11 +213,48 @@ onMounted(() => {
 
   :deep(.el-card__body) {
     padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
   }
 }
 
 .content-area {
   min-height: 300px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  .tasks-list {
+    flex: 1;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    padding: 16px;
+    align-content: start;
+
+    /* 美化滚动条 */
+    &::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #ccc;
+      border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background: #999;
+    }
+  }
 }
 
 /* 自定义状态筛选器样式 */
