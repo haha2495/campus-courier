@@ -539,6 +539,15 @@ public class SysTaskServiceImpl implements SysTaskService {
         return PageResult.build(taskPage.getTotal(), dtoList);
     }
 
+    @Override
+    public List<TaskDTO> getMyCompletedTasks(Integer userId) {
+        // 获取已完成的任务列表
+        List<SysTask> tasks = sysTaskHandler.getCompletedTasks(userId);
+        
+        // 转换为DTO并返回
+        return getTaskDTOS(tasks);
+    }
+
     private List<TaskDTO> getTaskDTOS(List<SysTask> tasks) {
         if (tasks.isEmpty()) {
             return List.of();

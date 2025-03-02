@@ -178,6 +178,17 @@ public class SysTaskController extends BaseController {
     }
 
     /**
+     * 获取我已完成的跑腿任务列表
+     *
+     * @return 任务列表
+     */
+    @GetMapping("/my-completed")
+    @Operation(summary = "获取我已完成的跑腿任务列表")
+    public Result<List<TaskDTO>> getMyCompletedTasks() {
+        return Result.success(sysTaskService.getMyCompletedTasks(getLoginUserId()));
+    }
+
+    /**
      * 管理员分页查询任务列表
      *
      * @param request 查询条件

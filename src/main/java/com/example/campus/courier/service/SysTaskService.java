@@ -123,4 +123,12 @@ public interface SysTaskService {
      * @return 任务列表分页结果
      */
     PageResult<TaskDTO> pageTask(TaskQueryRequest request);
+
+    /**
+     * 获取跑腿者已完成的任务列表
+     *
+     * @param userId 用户ID
+     * @return 任务列表
+     */
+    List<TaskDTO> getMyCompletedTasks(Integer userId);
 } 

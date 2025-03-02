@@ -96,4 +96,19 @@ public class SysTaskHandler extends ServiceImpl<SysTaskMapper, SysTask> {
         // 执行分页查询并返回结果
         return page(page, queryWrapper);
     }
+
+    /**
+     * 获取跑腿者已完成的任务列表
+     *
+     * @param userId 用户ID
+     * @return 任务列表
+     */
+    public List<SysTask> getCompletedTasks(Integer userId) {
+        LambdaQueryWrapper<SysTask> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(SysTask::getRunnerId, userId)  // 当前用户作为跑腿者
+               .eq(SysTask::getStatus, TaskStatusEnum.COMPLETED.getCode())  // 已完成状态
+               .orderByDesc(SysTask::getCreateTime);  // 按创建时间倒序排序
+
+        return baseMapper.selectList(wrapper);
+    }
 }
