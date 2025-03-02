@@ -1,10 +1,5 @@
 <template>
   <view class="runner-tasks-container">
-    <!-- 顶部导航栏 -->
-    <view class="nav-bar" :style="{ paddingTop: statusBarHeight + 'px' }">
-      <text class="nav-title">我的接单</text>
-    </view>
-
     <!-- 统计卡片区域 -->
     <view class="stats-section">
       <view class="stats-card total">
@@ -77,11 +72,19 @@
 
         <!-- 空状态 -->
         <view v-else class="empty-state">
-          <u-empty
-            mode="list"
-            text="暂无已完成的任务"
-            margin-top="40"
-          ></u-empty>
+          <view class="empty-content">
+            <image 
+              class="empty-image" 
+              src="https://cdn-icons-png.flaticon.com/128/7486/7486754.png" 
+              mode="aspectFit"
+            ></image>
+            <text class="empty-title">暂无已完成的任务</text>
+            <text class="empty-desc">快去抢单大厅接单赚钱吧~</text>
+            <button class="go-hall-btn" @click="goToTaskHall">
+              <text>去抢单</text>
+              <u-icon name="arrow-right" color="#FFFFFF" size="28"></u-icon>
+            </button>
+          </view>
         </view>
       </block>
     </scroll-view>
@@ -91,9 +94,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { getMyCompletedTasks } from '@/api/task'
-
-// 系统状态栏高度
-const statusBarHeight = ref(20)
 
 // 页面状态
 const loading = ref(false)
@@ -107,16 +107,6 @@ const stats = ref({
   monthlyCompleted: 0,
   monthlyEarnings: 0
 })
-
-// 获取系统信息
-const getSystemInfo = () => {
-  try {
-    const info = uni.getSystemInfoSync()
-    statusBarHeight.value = info.statusBarHeight
-  } catch (e) {
-    console.error('获取系统信息失败:', e)
-  }
-}
 
 // 格式化时间
 const formatTime = (timeString) => {
@@ -184,13 +174,19 @@ const navigateToDetail = (taskId) => {
   })
 }
 
+// 跳转到抢单大厅
+const goToTaskHall = () => {
+  uni.navigateTo({
+    url: '/pages/task-hall/index'
+  })
+}
+
 // 格式化金额
 const formatAmount = (amount) => {
   return amount ? amount.toFixed(2) : '0.00'
 }
 
 onMounted(() => {
-  getSystemInfo()
   loadTaskList()
 })
 </script>
@@ -199,34 +195,20 @@ onMounted(() => {
 .runner-tasks-container {
   min-height: 100vh;
   background-color: #f5f7fa;
-}
-
-.nav-bar {
-  background: #ffffff;
-  padding: 10px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  
-  .nav-title {
-    font-size: 16px;
-    font-weight: 600;
-    color: #333;
-  }
+  padding-top: 16rpx;
 }
 
 .stats-section {
-  padding: 16px;
+  padding: 16rpx;
   display: flex;
-  gap: 12px;
+  gap: 12rpx;
 
   .stats-card {
     flex: 1;
     background: #ffffff;
-    border-radius: 12px;
-    padding: 16px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border-radius: 12rpx;
+    padding: 16rpx;
+    box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
     text-align: center;
 
     &.total {
@@ -244,18 +226,18 @@ onMounted(() => {
     }
 
     .stats-title {
-      font-size: 14px;
-      margin-bottom: 8px;
+      font-size: 28rpx;
+      margin-bottom: 16rpx;
     }
 
     .stats-value {
-      font-size: 24px;
+      font-size: 48rpx;
       font-weight: bold;
-      margin-bottom: 4px;
+      margin-bottom: 8rpx;
     }
 
     .stats-subtitle {
-      font-size: 12px;
+      font-size: 24rpx;
       opacity: 0.9;
     }
   }
@@ -263,87 +245,72 @@ onMounted(() => {
 
 .task-list {
   flex: 1;
-  height: calc(100vh - 44px - var(--status-bar-height));
-  padding: 16px;
+  height: calc(100vh - 180rpx);
+  padding: 16rpx;
   box-sizing: border-box;
 }
 
 .task-card {
   background: #ffffff;
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 12rpx;
+  padding: 16rpx;
+  margin-bottom: 12rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
   
   .task-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 12rpx;
     
     .type-info {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 8rpx;
       
       .type-icon {
-        width: 20px;
-        height: 20px;
+        width: 40rpx;
+        height: 40rpx;
       }
       
       .type-name {
-        font-size: 14px;
+        font-size: 28rpx;
         color: #666;
       }
     }
     
     .status-tag {
-      padding: 4px 12px;
-      border-radius: 4px;
-      font-size: 12px;
-      
-      &.status-0 {
-        background: #E5E7EB;
-        color: #6B7280;
-      }
-      
-      &.status-1 {
-        background: #EFF6FF;
-        color: #3B82F6;
-      }
+      padding: 8rpx 24rpx;
+      border-radius: 8rpx;
+      font-size: 24rpx;
       
       &.status-2 {
         background: #ECFDF5;
         color: #059669;
       }
-      
-      &.status-3 {
-        background: #FEF2F2;
-        color: #DC2626;
-      }
     }
   }
   
   .task-title {
-    font-size: 16px;
+    font-size: 32rpx;
     font-weight: 500;
     color: #333;
-    margin-bottom: 12px;
+    margin-bottom: 12rpx;
   }
   
   .task-info {
     .info-item {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 8px;
+      margin-bottom: 8rpx;
       
       .label {
-        font-size: 13px;
+        font-size: 26rpx;
         color: #666;
       }
       
       .value {
-        font-size: 13px;
+        font-size: 26rpx;
         color: #333;
         
         &.price {
@@ -360,19 +327,64 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px 0;
+  padding: 40rpx 0;
   
   text {
-    font-size: 13px;
+    font-size: 26rpx;
     color: #999;
-    margin-top: 8px;
+    margin-top: 16rpx;
   }
 }
 
 .empty-state {
-  text-align: center;
-  padding: 16px 0;
-  color: #999;
-  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 40rpx;
+  
+  .empty-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+    .empty-image {
+      width: 240rpx;
+      height: 240rpx;
+      margin-bottom: 40rpx;
+    }
+    
+    .empty-title {
+      font-size: 32rpx;
+      color: #333;
+      font-weight: 500;
+      margin-bottom: 16rpx;
+    }
+    
+    .empty-desc {
+      font-size: 28rpx;
+      color: #666;
+      margin-bottom: 48rpx;
+    }
+    
+    .go-hall-btn {
+      background: linear-gradient(135deg, #3B82F6, #60A5FA);
+      color: #ffffff;
+      padding: 20rpx 80rpx;
+      border-radius: 44rpx;
+      font-size: 32rpx;
+      border: none;
+      box-shadow: 0 8rpx 16rpx rgba(59, 130, 246, 0.2);
+      display: flex;
+      align-items: center;
+      gap: 8rpx;
+      transition: all 0.3s ease;
+      
+      &:active {
+        transform: scale(0.96);
+        box-shadow: 0 4rpx 8rpx rgba(59, 130, 246, 0.15);
+      }
+    }
+  }
 }
 </style> 
