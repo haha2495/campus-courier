@@ -183,10 +183,10 @@ public class SysTaskController extends BaseController {
      * @param request 查询条件
      * @return 任务列表分页结果
      */
-    @GetMapping("/page")
+    @PostMapping("/page")
     @Operation(summary = "管理员分页查询任务列表")
     public Result<PageResult<TaskDTO>> pageTask(
-            @Parameter(description = "查询条件") @Validated TaskQueryRequest request) {
+            @Parameter(description = "查询条件") @Validated @RequestBody TaskQueryRequest request) {
         return Result.success(sysTaskService.pageTask(request));
     }
 } 

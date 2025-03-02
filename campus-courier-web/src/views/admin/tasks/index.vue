@@ -132,10 +132,12 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { Timer, Clock, Loading, Van, CircleCheck, Select, Close, Warning, Star } from '@element-plus/icons-vue'
 import { TaskStatusEnum } from '@/utils/enums/taskEnums'
+import { getTaskList } from '@/api/task'
+import { ElMessage } from 'element-plus'
 
 const router = useRouter()
 
@@ -160,12 +162,14 @@ const taskStatusOptions = TaskStatusEnum.getOptions().map(option => ({
 
 // 搜索表单
 const searchForm = ref({
-  status: null
+  status: null,
+  pageNum: 1,
+  pageSize: 4
 })
 
 // 表格数据
 const loading = ref(false)
-const taskList = ref([]) // 暂时使用空数组
+const taskList = ref([])
 const page = ref(1)
 const pageSize = ref(4)
 const total = ref(0)
@@ -183,8 +187,22 @@ const getStatusText = (status) => {
 // 选择状态
 const selectStatus = (status) => {
   searchForm.value.status = status
-  page.value = 1
-  // 暂时不执行实际搜索
+  searchForm.value.pageNum = 1
+  loadTaskList()
+}
+
+// 加载任务列表
+const loadTaskList = async () => {
+  loading.value = true
+  try {
+    const res = await getTaskList(searchForm.value)
+    taskList.value = res.records
+    total.value = res.total
+  } catch (error) {
+    ElMessage.error('获取任务列表失败：' + error.message)
+  } finally {
+    loading.value = false
+  }
 }
 
 // 格式化日期时间
@@ -209,15 +227,19 @@ const handleViewDetail = (row) => {
 
 // 分页大小改变
 const handleSizeChange = (val) => {
-  pageSize.value = val
-  // 暂时不执行实际加载
+  searchForm.value.pageSize = val
+  loadTaskList()
 }
 
 // 页码改变
 const handleCurrentChange = (val) => {
-  page.value = val
-  // 暂时不执行实际加载
+  searchForm.value.pageNum = val
+  loadTaskList()
 }
+
+onMounted(() => {
+  loadTaskList()
+})
 </script>
 
 <style scoped lang="scss">
