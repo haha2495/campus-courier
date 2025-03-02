@@ -134,21 +134,33 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { Timer } from '@element-plus/icons-vue'
+import { Timer, Clock, Loading, Van, CircleCheck, Select, Close, Warning, Star } from '@element-plus/icons-vue'
+import { TaskStatusEnum } from '@/utils/enums/taskEnums'
 
 const router = useRouter()
 
+// 状态图标映射
+const statusIconMap = {
+  [TaskStatusEnum.PENDING]: 'Clock',
+  [TaskStatusEnum.ACCEPTED]: 'Loading',
+  [TaskStatusEnum.IN_PROGRESS]: 'Van',
+  [TaskStatusEnum.AWAITING_CONFIRMATION]: 'CircleCheck',
+  [TaskStatusEnum.COMPLETED]: 'Select',
+  [TaskStatusEnum.CANCELED]: 'Close',
+  [TaskStatusEnum.EXPIRED]: 'Timer',
+  [TaskStatusEnum.DISPUTED]: 'Warning',
+  [TaskStatusEnum.EVALUATED]: 'Star'
+}
+
 // 任务状态选项
-const taskStatusOptions = [
-  { label: '待接单', value: 0, icon: 'Clock' },
-  { label: '已接单', value: 1, icon: 'Loading' },
-  { label: '已完成', value: 2, icon: 'Select' },
-  { label: '已取消', value: 3, icon: 'Close' }
-]
+const taskStatusOptions = TaskStatusEnum.getOptions().map(option => ({
+  ...option,
+  icon: option.value !== null ? statusIconMap[option.value] : null
+}))
 
 // 搜索表单
 const searchForm = ref({
-  status: ''
+  status: null
 })
 
 // 表格数据
@@ -160,24 +172,12 @@ const total = ref(0)
 
 // 获取状态类型
 const getStatusType = (status) => {
-  const statusMap = {
-    0: 'info',
-    1: 'warning',
-    2: 'success',
-    3: 'danger'
-  }
-  return statusMap[status] || 'info'
+  return TaskStatusEnum.getType(status)
 }
 
 // 获取状态文本
 const getStatusText = (status) => {
-  const statusMap = {
-    0: '待接单',
-    1: '已接单',
-    2: '已完成',
-    3: '已取消'
-  }
-  return statusMap[status] || '未知'
+  return TaskStatusEnum.getDesc(status)
 }
 
 // 选择状态
