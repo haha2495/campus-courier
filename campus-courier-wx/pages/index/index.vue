@@ -39,7 +39,10 @@
       <block v-if="currentRole === TabBarType.PUBLISHER">
         <view class="welcome-card">
           <view class="welcome-content">
-            <text class="welcome-title">Hi, 欢迎回来!</text>
+            <view class="welcome-header">
+              <text class="welcome-title">Hi, 欢迎回来!</text>
+              <text class="welcome-emoji">👋</text>
+            </view>
             <text class="welcome-subtitle">有什么需要帮忙的吗？</text>
             <view class="publish-button" @click="navigateTo('publish')">
               <text class="button-text">发布新任务</text>
@@ -85,7 +88,10 @@
       <block v-else>
         <view class="welcome-card runner">
           <view class="welcome-content">
-            <text class="welcome-title">Hi, 接单英雄!</text>
+            <view class="welcome-header">
+              <text class="welcome-title">Hi, 接单英雄!</text>
+              <text class="welcome-emoji">💪</text>
+            </view>
             <text class="welcome-subtitle">准备开始新的旅程？</text>
             <view class="publish-button runner" @click="navigateTo('orders')">
               <text class="button-text">前往抢单</text>
@@ -766,37 +772,72 @@ const loadIconCache = () => {
 
 .welcome-content {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.welcome-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8rpx;
+}
+
+.welcome-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #fff;
+}
+
+.welcome-emoji {
+  font-size: 36rpx;
+  margin-left: 10rpx;
+}
+
+.welcome-subtitle {
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 30rpx;
+  font-weight: 400;
+}
+
+.publish-button {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 40rpx;
+  padding: 16rpx 32rpx;
+  backdrop-filter: blur(10rpx);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+  width: 85%;
+  margin-top: 10rpx;
   
-  .welcome-title {
-    font-size: 36rpx;
-    font-weight: bold;
-    color: #fff;
-    margin-bottom: 12rpx;
+  &:active {
+    transform: scale(0.98);
+    background: rgba(255, 255, 255, 0.3);
   }
   
-  .welcome-subtitle {
-    font-size: 26rpx;
-    color: rgba(255, 255, 255, 0.9);
-    margin-bottom: 30rpx;
+  .button-text {
+    color: #ffffff;
+    font-size: 28rpx;
+    font-weight: 500;
+    flex: 1;
   }
   
-  .publish-button {
-    display: inline-flex;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.25);
-    border-radius: 40rpx;
-    padding: 12rpx 25rpx;
-    backdrop-filter: blur(10rpx);
+  .arrow-icon {
+    width: 32rpx;
+    height: 32rpx;
+    opacity: 0.9;
+  }
+  
+  &.runner {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     
-    .button-text {
-      color: #ffffff;
-      font-size: 26rpx;
-      font-weight: 500;
-      margin-right: 8rpx;
-    }
-    
-    &.runner {
-      background: rgba(255, 255, 255, 0.2);
+    &:active {
+      background: rgba(255, 255, 255, 0.25);
     }
   }
 }
