@@ -214,4 +214,16 @@ public class SysTaskController extends BaseController {
     public Result<Map<String, Integer>> getPublisherTaskStats() {
         return Result.success(sysTaskService.getPublisherTaskStats(getLoginUserId()));
     }
+
+    /**
+     * 获取跑腿者任务统计数据
+     * 包含进行中、已完成、总收入的统计
+     *
+     * @return 任务统计数据
+     */
+    @GetMapping("/runner/stats")
+    @Operation(summary = "获取跑腿者任务统计数据")
+    public Result<Map<String, Object>> getRunnerTaskStats() {
+        return Result.success(sysTaskService.getRunnerTaskStats(getLoginUserId()));
+    }
 } 

@@ -611,6 +611,34 @@ public class SysTaskServiceImpl implements SysTaskService {
         return stats;
     }
 
+    @Override
+    public Map<String, Object> getRunnerTaskStats(Integer userId) {
+        // 1. 初始化返回结果
+        Map<String, Object> stats = new HashMap<>();
+        stats.put("processing", 0);
+        stats.put("completed", 0);
+        stats.put("total_income", 0.0);
+
+        try {
+            // 2. 获取进行中的任务数量（已接单、进行中、待确认状态）
+            int processingCount = sysTaskHandler.countRunnerProcessingTasks(userId);
+            stats.put("processing", processingCount);
+
+            // 3. 获取已完成的任务数量
+            int completedCount = sysTaskHandler.countRunnerCompletedTasks(userId);
+            stats.put("completed", completedCount);
+
+            // 4. 计算总收入
+            BigDecimal totalIncome = sysTaskHandler.sumRunnerTotalIncome(userId);
+            stats.put("total_income", totalIncome);
+
+        } catch (Exception e) {
+            log.error("获取跑腿者任务统计失败", e);
+        }
+
+        return stats;
+    }
+
     private List<TaskDTO> getTaskDTOS(List<SysTask> tasks) {
         if (tasks.isEmpty()) {
             return List.of();

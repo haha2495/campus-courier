@@ -10,6 +10,7 @@ import com.example.campus.courier.model.request.task.TaskQueryRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -121,5 +122,53 @@ public class SysTaskHandler extends ServiceImpl<SysTaskMapper, SysTask> {
      */
     public List<Map<String, Object>> getPublisherTaskStats(Integer userId) {
         return baseMapper.getPublisherTaskStats(userId);
+    }
+
+    /**
+     * 统计跑腿者进行中的任务数量
+     *
+     * @param userId 用户ID
+     * @return 进行中的任务数量
+     */
+    public int countRunnerProcessingTasks(Integer userId) {
+        return lambdaQuery()
+                .eq(SysTask::getRunnerId, userId)
+                .in(SysTask::getStatus, 
+                    TaskStatusEnum.ACCEPTED.getCode(),
+                    TaskStatusEnum.IN_PROGRESS.getCode(),
+                    TaskStatusEnum.AWAITING_CONFIRMATION.getCode())
+                .count()
+                .intValue();
+    }
+
+    /**
+     * 统计跑腿者已完成的任务数量
+     *
+     * @param userId 用户ID
+     * @return 已完成的任务数量
+     */
+    public int countRunnerCompletedTasks(Integer userId) {
+        return lambdaQuery()
+                .eq(SysTask::getRunnerId, userId)
+                .eq(SysTask::getStatus, TaskStatusEnum.COMPLETED.getCode())
+                .count()
+                .intValue();
+    }
+
+    /**
+     * 计算跑腿者总收入
+     *
+     * @param userId 用户ID
+     * @return 总收入
+     */
+    public BigDecimal sumRunnerTotalIncome(Integer userId) {
+        List<SysTask> completedTasks = lambdaQuery()
+                .eq(SysTask::getRunnerId, userId)
+                .eq(SysTask::getStatus, TaskStatusEnum.COMPLETED.getCode())
+                .list();
+
+        return completedTasks.stream()
+                .map(task -> task.getReward().add(task.getUrgentReward() != null ? task.getUrgentReward() : BigDecimal.ZERO))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

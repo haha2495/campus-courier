@@ -192,3 +192,14 @@ export function getPublisherTaskStats() {
         method: 'get'
     })
 }
+
+/**
+ * 获取跑腿者任务统计数据
+ * @returns {Promise} 返回统计数据
+ */
+export function getRunnerTaskStats() {
+    return http({
+        url: '/api/tasks/runner/stats',
+        method: 'get'
+    })
+}

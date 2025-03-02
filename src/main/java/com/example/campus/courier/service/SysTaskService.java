@@ -142,4 +142,13 @@ public interface SysTaskService {
      * @return 任务统计数据，key为状态（processing-进行中, completed-已完成, pending_payment-待支付），value为数量
      */
     Map<String, Integer> getPublisherTaskStats(Integer userId);
+
+    /**
+     * 获取跑腿者任务统计数据
+     * 包含进行中、已完成、总收入的统计
+     *
+     * @param userId 用户ID
+     * @return 任务统计数据，key为状态（processing-进行中, completed-已完成, total_income-总收入），value为数量或金额
+     */
+    Map<String, Object> getRunnerTaskStats(Integer userId);
 } 

@@ -103,7 +103,7 @@
         
         <view class="stats-section">
           <view class="stats-card runner">
-            <text class="stats-value">0</text>
+            <text class="stats-value">{{ taskStats.processing }}</text>
             <text class="stats-label">进行中</text>
           </view>
           <view class="stats-card runner">
@@ -260,7 +260,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { TabBarType, TabPageName, publisherTabConfig, runnerTabConfig, getCenterButton, getVersionedIconUrl, ICON_VERSION } from '@/utils/tabConfig'
-import { getPublisherTaskStats } from '@/api/task'
+import { getPublisherTaskStats, getRunnerTaskStats } from '@/api/task'
 
 // 当前角色：publisher(发布者) 或 runner(跑腿者)
 const currentRole = ref(TabBarType.PUBLISHER)
@@ -294,7 +294,8 @@ const isLoading = ref(false)
 const taskStats = ref({
   processing: 0,  // 进行中
   completed: 0,   // 已完成
-  pending_payment: 0  // 待支付
+  pending_payment: 0,  // 待支付
+  total_income: 0  // 总收入（跑腿者模式）
 })
 
 // 页面生命周期钩子
@@ -329,6 +330,12 @@ const refreshData = async () => {
     if (currentRole.value === TabBarType.PUBLISHER) {
       // 获取发布者统计数据
       const result = await getPublisherTaskStats()
+      if (result.code === 200 && result.data) {
+        taskStats.value = result.data
+      }
+    } else {
+      // 获取跑腿者统计数据
+      const result = await getRunnerTaskStats()
       if (result.code === 200 && result.data) {
         taskStats.value = result.data
       }
@@ -417,6 +424,9 @@ const switchRole = (role) => {
   
   // 保存到本地存储
   uni.setStorageSync('userRole', role)
+  
+  // 刷新数据
+  refreshData()
 }
 
 // 切换导航Tab
