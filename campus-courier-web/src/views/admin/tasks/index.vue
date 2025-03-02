@@ -206,6 +206,7 @@ onMounted(() => {
   background: #fff;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   
   &:hover {
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
@@ -213,27 +214,28 @@ onMounted(() => {
 
   :deep(.el-card__body) {
     padding: 20px;
-    flex: 1;
+    height: 100%;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
   }
 }
 
 .content-area {
-  min-height: 300px;
-  flex: 1;
+  height: calc(100vh - 250px);
   display: flex;
   flex-direction: column;
   overflow: hidden;
 
   .tasks-list {
-    flex: 1;
+    height: 100%;
     overflow-y: auto;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 24px;
     padding: 16px;
     align-content: start;
+    grid-auto-rows: min-content;
 
     /* 美化滚动条 */
     &::-webkit-scrollbar {
@@ -333,6 +335,8 @@ onMounted(() => {
 
 /* 卡片基础样式 */
 .task-card {
+  height: fit-content;
+  min-height: 400px;
   background: white;
   border-radius: 12px;
   overflow: hidden;
