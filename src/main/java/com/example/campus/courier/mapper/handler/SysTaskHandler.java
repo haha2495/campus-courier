@@ -77,4 +77,23 @@ public class SysTaskHandler extends ServiceImpl<SysTaskMapper, SysTask> {
                 .orderByDesc(SysTask::getCreateTime)
                 .list();
     }
-} 
+
+    public Page<SysTask> pageTask(TaskQueryRequest request) {
+        // 创建分页对象
+        Page<SysTask> page = new Page<>(request.getPageNum(), request.getPageSize());
+
+        // 构建查询条件
+        LambdaQueryWrapper<SysTask> queryWrapper = new LambdaQueryWrapper<>();
+
+        // 如果指定了状态，则按状态筛选
+        if (request.getStatus() != null) {
+            queryWrapper.eq(SysTask::getStatus, request.getStatus());
+        }
+
+        // 按创建时间降序排序
+        queryWrapper.orderByDesc(SysTask::getCreateTime);
+
+        // 执行分页查询并返回结果
+        return page(page, queryWrapper);
+    }
+}

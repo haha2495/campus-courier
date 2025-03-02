@@ -115,4 +115,12 @@ public interface SysTaskService {
      * @return 操作是否成功
      */
     boolean confirmTask(Integer taskId, Integer userId);
+
+    /**
+     * 管理员分页查询任务列表
+     * 
+     * @param request 查询参数
+     * @return 任务列表分页结果
+     */
+    PageResult<TaskDTO> pageTask(TaskQueryRequest request);
 } 

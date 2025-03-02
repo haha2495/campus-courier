@@ -498,6 +498,47 @@ public class SysTaskServiceImpl implements SysTaskService {
         return Boolean.TRUE;
     }
 
+    /**
+     * 管理员分页查询任务列表
+     *
+     * @param request 查询参数
+     * @return 任务列表分页结果
+     */
+    @Override
+    public PageResult<TaskDTO> pageTask(TaskQueryRequest request) {
+        // 1. 使用Handler查询任务基础数据
+        Page<SysTask> taskPage = sysTaskHandler.pageTask(request);
+
+        // 2. 如果没有数据，返回空结果
+        if (taskPage.getRecords().isEmpty()) {
+            return PageResult.empty();
+        }
+
+        // 3. 提取任务类型ID列表
+        List<Integer> typeIds = taskPage.getRecords().stream()
+                .map(SysTask::getTaskTypeId)
+                .distinct()
+                .collect(Collectors.toList());
+
+        // 4. 通过TaskTypeHandler查询任务类型数据
+        List<SysTaskType> taskTypes = sysTaskTypeHandler.getTaskTypesByIds(typeIds);
+
+        // 5. 将任务类型数据转为Map，方便后续查找
+        Map<Integer, SysTaskType> typeMap = taskTypes.stream()
+                .collect(Collectors.toMap(SysTaskType::getId, type -> type));
+
+        // 6. 在Service层组装DTO
+        List<TaskDTO> dtoList = taskPage.getRecords().stream().map(task -> {
+            TaskDTO dto = new TaskDTO();
+            dto.setTask(task);
+            dto.setTaskType(typeMap.get(task.getTaskTypeId()));
+            return dto;
+        }).collect(Collectors.toList());
+
+        // 7. 构建并返回分页结果
+        return PageResult.build(taskPage.getTotal(), dtoList);
+    }
+
     private List<TaskDTO> getTaskDTOS(List<SysTask> tasks) {
         if (tasks.isEmpty()) {
             return List.of();
