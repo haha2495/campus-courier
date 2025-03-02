@@ -1,9 +1,32 @@
 <template>
   <div class="admin-home">
     <!-- 数据概览卡片 -->
+    <div class="statistics-info">
+      <el-alert
+        title="数据统计说明"
+        type="info"
+        :closable="false"
+      >
+        <template #default>
+          <div class="alert-content">
+            <p>• 统计周期：最近30天的数据</p>
+            <p>• 增长率：与前30天（30-60天前）数据对比</p>
+            <p>• 计算方式：(本期 - 上期) / 上期 × 100%</p>
+          </div>
+        </template>
+      </el-alert>
+    </div>
     <el-row :gutter="20" class="data-overview">
       <el-col :span="6" v-for="(item, index) in statisticsData" :key="index">
-        <el-card class="statistics-card" :class="item.type">
+        <el-card 
+          class="statistics-card" 
+          :class="item.type"
+          v-tooltip="{
+            content: getTooltipContent(item),
+            effect: 'light',
+            placement: 'top'
+          }"
+        >
           <div class="card-content">
             <div class="icon-wrapper">
               <el-icon><component :is="item.icon" /></el-icon>
@@ -47,9 +70,10 @@ import {
   Money, 
   DataLine,
   ArrowUp,
-  ArrowDown
+  ArrowDown,
+  InfoFilled
 } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import axios from 'axios'
 
 // 统计数据
@@ -234,10 +258,68 @@ onMounted(() => {
     taskTypeChart.value?.resize()
   })
 })
+
+const getTooltipContent = (item) => {
+  const tooltipMap = {
+    '总任务数': '统计最近30天内创建的所有任务数量\n增长率 = (本期 - 上期) / 上期 × 100%',
+    '活跃用户': '统计最近30天内有操作的用户数量\n增长率 = (本期 - 上期) / 上期 × 100%',
+    '总收入': '统计最近30天内完成任务的总收入\n增长率 = (本期 - 上期) / 上期 × 100%',
+    '完成率': '统计最近30天内任务的完成比例\n变化值 = 本期完成率 - 上期完成率'
+  }
+  return tooltipMap[item.label] || '暂无说明'
+}
+
+const showStatsInfo = () => {
+  ElMessageBox.alert(
+    `<div class="stats-info-content">
+      <h3>数据统计说明</h3>
+      <p><strong>统计周期：</strong>最近30天</p>
+      <p><strong>对比周期：</strong>前30天（即30-60天前）</p>
+      <h4>统计规则：</h4>
+      <ul>
+        <li><strong>总任务数：</strong>统计周期内创建的所有任务数量</li>
+        <li><strong>活跃用户：</strong>统计周期内有操作的用户数量</li>
+        <li><strong>总收入：</strong>统计周期内完成任务的总收入</li>
+        <li><strong>完成率：</strong>统计周期内已完成任务占总任务的比例</li>
+      </ul>
+      <h4>增长率计算规则：</h4>
+      <ul>
+        <li>常规情况：(本期值 - 上期值) / 上期值 × 100%</li>
+        <li>上期为0，本期大于0：增长率为100%</li>
+        <li>上期和本期都为0：增长率为0%</li>
+      </ul>
+    </div>`,
+    '统计规则说明',
+    {
+      dangerouslyUseHTMLString: true,
+      confirmButtonText: '我知道了',
+      customClass: 'stats-info-dialog'
+    }
+  )
+}
 </script>
 
 <style scoped lang="scss">
 .admin-home {
+  .statistics-info {
+    margin-bottom: 20px;
+    
+    :deep(.el-alert) {
+      margin-bottom: 16px;
+      
+      .alert-content {
+        margin-top: 8px;
+        color: #606266;
+        
+        p {
+          margin: 4px 0;
+          line-height: 1.6;
+          font-size: 13px;
+        }
+      }
+    }
+  }
+
   .data-overview {
     margin-bottom: 20px;
   }
@@ -341,6 +423,47 @@ onMounted(() => {
         height: 400px;
         width: 100%;
       }
+    }
+  }
+}
+
+:global(.stats-info-dialog) {
+  .el-message-box__content {
+    padding: 20px;
+  }
+  
+  .stats-info-content {
+    h3 {
+      margin-top: 0;
+      margin-bottom: 16px;
+      font-size: 18px;
+      color: #303133;
+    }
+    
+    h4 {
+      margin-top: 16px;
+      margin-bottom: 12px;
+      font-size: 16px;
+      color: #606266;
+    }
+    
+    p {
+      margin: 8px 0;
+      line-height: 1.6;
+    }
+    
+    ul {
+      margin: 8px 0;
+      padding-left: 20px;
+      
+      li {
+        margin: 6px 0;
+        line-height: 1.6;
+      }
+    }
+    
+    strong {
+      color: #303133;
     }
   }
 }
