@@ -67,42 +67,44 @@ import {
   ArrowUp,
   ArrowDown
 } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import axios from 'axios'
 
 // 统计数据
-const statisticsData = [
+const statisticsData = ref([
   {
     label: '总任务数',
-    value: '2,851',
+    value: '0',
     icon: 'Bicycle',
     type: 'primary',
     trend: 'up',
-    percentage: '12%'
+    percentage: '0%'
   },
   {
     label: '活跃用户',
-    value: '1,264',
+    value: '0',
     icon: 'User',
     type: 'success',
     trend: 'up',
-    percentage: '8%'
+    percentage: '0%'
   },
   {
     label: '总收入',
-    value: '￥15,841',
+    value: '￥0',
     icon: 'Money',
     type: 'warning',
     trend: 'up',
-    percentage: '15%'
+    percentage: '0%'
   },
   {
     label: '完成率',
-    value: '94.5%',
+    value: '0%',
     icon: 'DataLine',
     type: 'info',
-    trend: 'down',
-    percentage: '2%'
+    trend: 'up',
+    percentage: '0%'
   }
-]
+])
 
 // 时间范围
 const timeRange = ref('week')
@@ -116,8 +118,62 @@ const taskTypes = [
   { name: '其他服务', value: 5, color: '#909399' }
 ]
 
+// 获取仪表盘数据
+const fetchDashboardStats = async () => {
+  try {
+    const { data } = await axios.get('/api/dashboard/stats')
+    if (data.code === 200) {
+      const stats = data.data
+      
+      // 更新统计卡片数据
+      statisticsData.value = [
+        {
+          label: '总任务数',
+          value: stats.totalTaskCount.toLocaleString(),
+          icon: 'Bicycle',
+          type: 'primary',
+          trend: stats.totalTaskGrowth >= 0 ? 'up' : 'down',
+          percentage: `${Math.abs(stats.totalTaskGrowth).toFixed(1)}%`
+        },
+        {
+          label: '活跃用户',
+          value: stats.activeUserCount.toLocaleString(),
+          icon: 'User',
+          type: 'success',
+          trend: stats.activeUserGrowth >= 0 ? 'up' : 'down',
+          percentage: `${Math.abs(stats.activeUserGrowth).toFixed(1)}%`
+        },
+        {
+          label: '总收入',
+          value: `￥${stats.totalIncome.toLocaleString()}`,
+          icon: 'Money',
+          type: 'warning',
+          trend: stats.totalIncomeGrowth >= 0 ? 'up' : 'down',
+          percentage: `${Math.abs(stats.totalIncomeGrowth).toFixed(1)}%`
+        },
+        {
+          label: '完成率',
+          value: `${stats.taskCompletionRate.toFixed(1)}%`,
+          icon: 'DataLine',
+          type: 'info',
+          trend: stats.completionRateChange >= 0 ? 'up' : 'down',
+          percentage: `${Math.abs(stats.completionRateChange).toFixed(1)}%`
+        }
+      ]
+    } else {
+      ElMessage.error(data.message || '获取统计数据失败')
+    }
+  } catch (error) {
+    console.error('获取统计数据出错:', error)
+    ElMessage.error('获取统计数据失败')
+  }
+}
+
 // 初始化图表
 onMounted(() => {
+  // 获取统计数据
+  fetchDashboardStats()
+
   // 任务趋势图表
   const taskTrendChart = echarts.init(document.getElementById('taskTrendChart'))
   taskTrendChart.setOption({
