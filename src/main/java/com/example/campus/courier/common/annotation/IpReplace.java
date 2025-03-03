@@ -8,5 +8,5 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface IpReplace {
-    String value() default "localhost:8080"; // 需要替换的域名
+    String value() default "127.0.0.1:9001"; // 需要替换的域名
 } 

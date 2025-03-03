@@ -15,14 +15,14 @@ import java.net.InetAddress;
 @Component
 public class IpReplaceSerializer extends JsonSerializer<String> implements ContextualSerializer {
 
-    @Value("${server.port:8080}")
+    @Value("${server.port}")
     private String serverPort;
 
     private String domainToReplace;
     private boolean enabled;
 
     public IpReplaceSerializer() {
-        this.domainToReplace = "localhost:8080";
+        this.domainToReplace = "127.0.0.1:9001";
         this.enabled = false;
     }
 

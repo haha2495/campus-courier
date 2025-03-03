@@ -13,7 +13,7 @@ export const uploadApi = {
                         const response = JSON.parse(res.data)
                         if (response.code === 200) {
                             // 确保返回完整的URL，解决可能的跨域问题
-                            resolve(response.data)
+                            resolve(`${baseUrl}${response.data}`)
                         } else {
                             reject(new Error(response.message || '上传失败'))
                         }

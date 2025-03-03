@@ -3,6 +3,8 @@ package com.example.campus.courier.controller;
 import com.example.campus.courier.model.response.Result;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,7 +22,7 @@ public class FileUploadController {
 
     @Operation(summary = "上传图片")
     @PostMapping("/upload")
-    public Result<String> uploadImage(@RequestParam("file") MultipartFile file) {
+    public Result<String> uploadImage(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
         if (file.isEmpty()) {
             return Result.failed("请选择要上传的图片");
         }
@@ -48,7 +50,13 @@ public class FileUploadController {
             file.transferTo(dest);
 
             // 返回文件访问路径
-            String fileUrl = "http://127.0.0.1:9001/static/images/" + newFileName;
+            String fileUrl;
+            String handler = request.getHeader("source-client");
+            if (StringUtils.equals(handler, "miniapp")) {
+                fileUrl = "/static/images/" + newFileName;
+            } else {
+                fileUrl = "http://127.0.0.1:9001/static/images/" + newFileName;
+            }
             return Result.success(fileUrl, "上传成功");
         } catch (IOException e) {
             e.printStackTrace();
