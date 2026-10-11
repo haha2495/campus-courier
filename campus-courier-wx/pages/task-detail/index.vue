@@ -259,6 +259,7 @@
             v-else-if="activeTab === 1"
             :taskId="taskId"
             :messages="taskDetail.messages"
+            :task="taskDetail.task"
             @refresh="fetchTaskDetail"
           />
 

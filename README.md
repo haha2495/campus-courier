@@ -1,143 +1,199 @@
-# 校园跑腿系统
+# Campus Courier・校园跑腿平台（含 AI 纠纷智能判责）
 
-## 项目简介
-校园跑腿系统是一个面向高校学生的跑腿服务平台，为校园内的学生提供快递代取、食堂打饭、商品代购等跑腿服务。
-
-## 系统架构
-项目采用前后端分离架构：
-- 前端小程序：Vue 3 + uni-app
-- 管理后台：Vue 3 + Element Plus
-- 后端服务：Spring Boot + MyBatis-Plus + MySQL
-
-## 功能特性
-
-### 小程序端功能
+> 一个面向高校学生的校园跑腿 O2O 平台：快递代取 / 食堂打饭 / 商品代购，完整跑通「发单 → 抢单 → 实时沟通 → 结算 → 评价 → 纠纷处理」交易闭环。
+> 🌟 
+>
+> **核心亮点：独立设计并落地「AI 纠纷智能判责」模块**
+>
+>  —— 接入豆包大模型，自动读取订单上下文与聊天记录，输出结构化责任判定，实现 "AI 初判 → 人工复核" 的人机协同。
 
 
-## 技术栈
-- 前端小程序：
-  - Vue 3
-  - uni-app
-  - uview-plus
-  - Pinia
 
-- 管理后台：
-  - Vue 3
-  - Element Plus
-  - Vue Router
-  - Pinia
-  - Axios
+![Spring Boot](https://img.shields.io/badge/Backend-Spring%20Boot-6DB33F)
 
-- 后端服务：
-  - Spring Boot
-  - MyBatis-Plus
-  - MySQL
-  - Redis
-  - Sa-Token
-  - WebSocket
 
-## 开发规范
 
-### API设计规范
+![Vue](https://img.shields.io/badge/Frontend-Vue3-4FC08D)
 
-#### 返回值规范
 
-1. **增删改操作**:
-   - 返回类型使用`boolean`，表示操作成功或失败
-   - 不返回具体数据对象，保持接口干净简洁
-   - 例如：`addTaskType`, `updateTaskType`, `deleteTaskType`等方法均返回`boolean`
 
-2. **查询操作**:
-   - 返回具体的数据对象或集合
-   - 单条查询返回对应实体对象，如`SysTaskType`
-   - 列表查询返回集合对象，如`List<SysTaskType>`或分页对象`PageResult<SysTaskType>`
+![uni-app](https://img.shields.io/badge/MiniProgram-uni-app-2B9939)
 
-#### 实体对象设计规范
 
-1. **贫血模型实现**:
-   - 实体类中提供`init`方法进行内部初始化
-   - `init`方法返回`this`以支持链式调用
-   - 初始化逻辑集中在实体类内部，提高代码内聚性
 
-2. **创建对象流程**:
-   ```java
-   // 推荐做法
-   SysTaskType taskType = new SysTaskType().init(request);
-   
-   // 不推荐做法
-   SysTaskType taskType = new SysTaskType();
-   taskType.setTypeName(request.getTypeName());
-   // ... 其他设置
-   ```
+![LLM](https://img.shields.io/badge/LLM-Doubao%20\(Volcano\)-3C7CFF)
 
-#### Controller层规范
 
-1. **统一响应格式**:
-   - 所有接口使用`Result<T>`封装返回结果
-   - 增删改操作返回`Result<Boolean>`
-   - 查询操作返回`Result<实体类型>`或`Result<List<实体类型>>`
 
-2. **权限控制**:
-   - 在Controller层进行权限验证
-   - 使用`isAdmin()`等方法判断用户权限
-   - 权限不足时统一返回`Result.forbidden()`
+***
 
-#### 事务管理规范
+## ✨ 项目亮点
 
-1. **事务注解**:
-   - 在Service层方法上添加`@Transactional(rollbackFor = Exception.class)`
-   - 确保操作的原子性和数据一致性
-   - 特别是对于涉及多个数据库操作的方法，必须添加事务注解
 
-### 分层职责
 
-1. **Controller层**：
-   - 处理HTTP请求，进行参数校验和权限验证
-   - 调用Service层处理业务逻辑
-   - 转换Service结果并封装为统一返回格式
+* **完整交易闭环**：微信小程序（用户端）+ Vue 管理后台（运营端）+ Spring Boot 后端，鉴权 / 实时通讯 / 余额结算 / 评价体系一应俱全
 
-2. **Service层**：
-   - 实现业务逻辑
-   - 处理事务控制
-   - 调用Handler层进行复杂数据操作
+* **AI 纠纷判责**：引入大模型解决交易纠纷人工判责慢、成本高的痛点，详见下方 [AI 模块](#-ai-纠纷智能判责模块)
 
-3. **Handler层**：
-   - 位于Mapper下，继承ServiceImpl
-   - 处理复杂数据库操作，可被多个Service复用
+* **工程规范**：分层清晰（Controller → Service → Handler → Mapper）、统一响应封装、事务管理、权限控制
 
-4. **Mapper层**：
-   - 定义基础的数据库CRUD操作接口
-   - 继承BaseMapper接口
+## 📱 产品截图
 
-## 开发环境搭建
-1. 环境要求
-   - Node.js 16+
-   - JDK 17+
-   - MySQL 8.0+
-   - Redis 6.0+
+> （上传小程序首页 / 任务大厅 / 纠纷详情 / AI 判责卡片截图后替换此处）
 
-2. 项目启动
-   ```bash
-   # 启动后端服务
-   cd campus-courier
-   mvn spring-boot:run
 
-   # 启动管理后台
-   cd campus-courier-web
-   npm install
-   npm run dev
 
-   # 启动小程序
-   cd campus-courier-wx
-   npm install
-   npm run dev:mp-weixin
-   ```
+***
 
-## 部署说明
-[待补充]
+## 🏗 系统架构
 
-## 项目成员
-[待补充]
 
-## 开源协议
-MIT License
+
+```
+┌─────────────────────┐   ┌──────────────────────┐
+│  微信小程序（用户端）  │   │  Vue3 管理后台（运营端）│
+│  Vue3 + uni-app     │   │  Element Plus        │
+└─────────┬───────────┘   └──────────┬───────────┘
+          │  HTTPS / WebSocket       │
+┌─────────▼─────────────────────────▼───────────┐
+│            Spring Boot 后端服务                  │
+│  Controller → Service → Handler → Mapper      │
+│  Sa-Token 鉴权 │ Redis │ WebSocket 实时消息      │
+│  AI 模块：火山方舟 SDK → 豆包大模型              │
+└─────────────────────┬──────────────────────────┘
+                      │
+              ┌───────▼───────┐
+              │  MySQL 8.0     │
+              └───────────────┘
+```
+
+## 🧩 核心功能
+
+### 小程序端
+
+
+
+* 发单（选择任务类型 / 取件送达地址 / 酬劳）、任务大厅抢单
+
+* 任务详情：双方实时聊天（WebSocket）、进度时间线、凭证上传
+
+* 余额体系：充值 / 提现 / 结算
+
+* 双向评价、纠纷申诉提交
+
+### 管理后台
+
+
+
+* 用户与学生管理、任务类型配置、订单管理
+
+* 数据看板（ECharts）、纠纷审核工作台
+
+* **AI 判责审核**：查看 AI 判定建议，一键采纳 / 修正
+
+### AI 模块
+
+
+
+* 纠纷提交后，大模型自动输出结构化责任判定
+
+* 按置信度分级流转，高置信自动采纳、低置信转人工
+
+
+
+***
+
+## 🤖 AI 纠纷智能判责模块
+
+### 解决的问题
+
+平台交易涉及金钱，历史纠纷（超时、丢件、物品损坏、酬劳争议）依赖管理员人工查看聊天记录与凭证，单条处理约 20 分钟，高峰期积压严重。
+
+### 方案设计
+
+采用 **大模型 + 人机协同**，而非全自动判责 —— 在效率与资金安全之间做平衡。
+
+
+
+```
+纠纷提交
+  → 大模型读取【订单信息 + 聊天记录 + 时间线 + 凭证】
+  → 输出 JSON：{责任方, 责任比例, 判定依据, 处理建议, 置信度}
+  → 按置信度流转：
+       > 0.85 自动采纳
+       0.6~0.85 管理员一键确认
+       < 0.6 转人工
+  → 管理员修正结果 → Badcase 回流 → 迭代 Prompt
+```
+
+### 技术要点
+
+
+
+* **大模型**：豆包 doubao-pro（火山引擎方舟），对比评测 DeepSeek-V3 / 通义千问后选型
+
+* **Prompt 工程**：System 层注入角色与平台判责规则，上下文层拼接订单与聊天记录，Few-shot 稳定输出格式，强约束 JSON 结构化输出
+
+* **效果**：历史纠纷回放判责一致率约 82%，单条处理时长由～20min 降至～5min
+
+> 设计思路与 Prompt 细节见 
+>
+> [docs / 简历项目包装 - AI 产品经理.md](docs/简历项目包装-AI产品经理.md)
+
+
+
+***
+
+## 🛠 技术栈
+
+
+
+| 层    | 技术                                                      |
+| ---- | ------------------------------------------------------- |
+| 小程序端 | Vue 3、uni-app、uview-plus、Pinia                          |
+| 管理后台 | Vue 3、Element Plus、Vue Router、Axios                     |
+| 后端   | Spring Boot、MyBatis-Plus、MySQL、Redis、Sa-Token、WebSocket |
+| AI   | 豆包大模型（火山方舟）、Prompt Engineering、JSON 结构化输出               |
+| 其他   | ECharts、Maven、JDK 17                                    |
+
+## 🚀 快速启动
+
+环境要求：JDK 17+、Node.js 16+、MySQL 8.0+、Redis 6.0+
+
+
+
+```
+# 1. 初始化数据库
+mysql -u root -p < sql/campus_courier.sql
+
+# 2. 启动后端
+mvn spring-boot:run
+
+# 3. 启动管理后台
+cd campus-courier-web && npm install && npm run dev
+
+# 4. 启动小程序
+cd campus-courier-wx && npm install && npm run dev:mp-weixin
+```
+
+## 📁 目录结构
+
+
+
+```
+campus-courier/
+├── campus-courier-wx/     # 微信小程序端（uni-app）
+├── campus-courier-web/    # Vue3 管理后台
+├── src/                   # Spring Boot 后端
+│   └── main/java/.../courier/
+│       ├── controller/    # 接口层
+│       ├── service/      # 业务层
+│       ├── mapper/       # 数据访问层
+│       └── model/        # 实体 / 请求对象
+├── sql/                   # 数据库脚本
+└── docs/                  # 设计与简历素材
+```
+
+## 👤 作者
+
+张若水・人工智能专业・求职方向 AI 产品经理

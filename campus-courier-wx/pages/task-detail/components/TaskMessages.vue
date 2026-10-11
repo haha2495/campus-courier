@@ -197,6 +197,9 @@ const canSend = computed(() => {
 
 // 判断是否是发布者
 const isPublisher = (messageDTO) => {
+  console.log(12321321)
+  console.log(messageDTO)
+  console.log(props.task)
   return messageDTO?.message?.userId === props.task?.publisherId
 }
 
