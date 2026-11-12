@@ -130,3 +130,6 @@ pnpm-debug.log*
 /corp-courier-wx/unpackage/
 .hbuilderx/
 unpackage/
+
+# 个人简历（含个人信息，不上传）
+docs/简历*.md
