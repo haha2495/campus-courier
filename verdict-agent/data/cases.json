@@ -1,0 +1,5927 @@
+[
+  {
+    "dispute_id": "CASE0001",
+    "dispute_type": "未送达",
+    "order_amount": 10.0,
+    "evidences": [
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0002",
+    "dispute_type": "货损",
+    "order_amount": 11.5,
+    "evidences": [
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0003",
+    "dispute_type": "超时",
+    "order_amount": 13.0,
+    "evidences": [
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0004",
+    "dispute_type": "金额争议",
+    "order_amount": 14.5,
+    "evidences": [
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0005",
+    "dispute_type": "未送达",
+    "order_amount": 16.0,
+    "evidences": [
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0006",
+    "dispute_type": "货损",
+    "order_amount": 17.5,
+    "evidences": [
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0007",
+    "dispute_type": "超时",
+    "order_amount": 19.0,
+    "evidences": [
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0008",
+    "dispute_type": "金额争议",
+    "order_amount": 20.5,
+    "evidences": [
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0009",
+    "dispute_type": "未送达",
+    "order_amount": 22.0,
+    "evidences": [
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0010",
+    "dispute_type": "货损",
+    "order_amount": 23.5,
+    "evidences": [
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0011",
+    "dispute_type": "超时",
+    "order_amount": 25.0,
+    "evidences": [
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0012",
+    "dispute_type": "金额争议",
+    "order_amount": 26.5,
+    "evidences": [
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0013",
+    "dispute_type": "未送达",
+    "order_amount": 28.0,
+    "evidences": [
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0014",
+    "dispute_type": "货损",
+    "order_amount": 29.5,
+    "evidences": [
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0015",
+    "dispute_type": "超时",
+    "order_amount": 31.0,
+    "evidences": [
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0016",
+    "dispute_type": "金额争议",
+    "order_amount": 32.5,
+    "evidences": [
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0017",
+    "dispute_type": "未送达",
+    "order_amount": 34.0,
+    "evidences": [
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0018",
+    "dispute_type": "货损",
+    "order_amount": 35.5,
+    "evidences": [
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0019",
+    "dispute_type": "超时",
+    "order_amount": 37.0,
+    "evidences": [
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0020",
+    "dispute_type": "金额争议",
+    "order_amount": 38.5,
+    "evidences": [
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0021",
+    "dispute_type": "未送达",
+    "order_amount": 10.0,
+    "evidences": [
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0022",
+    "dispute_type": "货损",
+    "order_amount": 11.5,
+    "evidences": [
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0023",
+    "dispute_type": "超时",
+    "order_amount": 13.0,
+    "evidences": [
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0024",
+    "dispute_type": "金额争议",
+    "order_amount": 14.5,
+    "evidences": [
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0025",
+    "dispute_type": "未送达",
+    "order_amount": 16.0,
+    "evidences": [
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0026",
+    "dispute_type": "货损",
+    "order_amount": 17.5,
+    "evidences": [
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0027",
+    "dispute_type": "超时",
+    "order_amount": 19.0,
+    "evidences": [
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0028",
+    "dispute_type": "金额争议",
+    "order_amount": 20.5,
+    "evidences": [
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0029",
+    "dispute_type": "未送达",
+    "order_amount": 22.0,
+    "evidences": [
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0030",
+    "dispute_type": "货损",
+    "order_amount": 23.5,
+    "evidences": [
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0031",
+    "dispute_type": "超时",
+    "order_amount": 25.0,
+    "evidences": [
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0032",
+    "dispute_type": "金额争议",
+    "order_amount": 26.5,
+    "evidences": [
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0033",
+    "dispute_type": "未送达",
+    "order_amount": 28.0,
+    "evidences": [
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0034",
+    "dispute_type": "货损",
+    "order_amount": 29.5,
+    "evidences": [
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0035",
+    "dispute_type": "超时",
+    "order_amount": 31.0,
+    "evidences": [
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0036",
+    "dispute_type": "金额争议",
+    "order_amount": 32.5,
+    "evidences": [
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0037",
+    "dispute_type": "未送达",
+    "order_amount": 34.0,
+    "evidences": [
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0038",
+    "dispute_type": "货损",
+    "order_amount": 35.5,
+    "evidences": [
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0039",
+    "dispute_type": "超时",
+    "order_amount": 37.0,
+    "evidences": [
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0040",
+    "dispute_type": "金额争议",
+    "order_amount": 38.5,
+    "evidences": [
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0041",
+    "dispute_type": "未送达",
+    "order_amount": 10.0,
+    "evidences": [
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0042",
+    "dispute_type": "货损",
+    "order_amount": 11.5,
+    "evidences": [
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0043",
+    "dispute_type": "超时",
+    "order_amount": 13.0,
+    "evidences": [
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0044",
+    "dispute_type": "金额争议",
+    "order_amount": 14.5,
+    "evidences": [
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0045",
+    "dispute_type": "未送达",
+    "order_amount": 16.0,
+    "evidences": [
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0046",
+    "dispute_type": "货损",
+    "order_amount": 17.5,
+    "evidences": [
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0047",
+    "dispute_type": "超时",
+    "order_amount": 19.0,
+    "evidences": [
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0048",
+    "dispute_type": "金额争议",
+    "order_amount": 20.5,
+    "evidences": [
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0049",
+    "dispute_type": "未送达",
+    "order_amount": 22.0,
+    "evidences": [
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0050",
+    "dispute_type": "货损",
+    "order_amount": 23.5,
+    "evidences": [
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0051",
+    "dispute_type": "超时",
+    "order_amount": 25.0,
+    "evidences": [
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0052",
+    "dispute_type": "金额争议",
+    "order_amount": 26.5,
+    "evidences": [
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0053",
+    "dispute_type": "未送达",
+    "order_amount": 28.0,
+    "evidences": [
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0054",
+    "dispute_type": "货损",
+    "order_amount": 29.5,
+    "evidences": [
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0055",
+    "dispute_type": "超时",
+    "order_amount": 31.0,
+    "evidences": [
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0056",
+    "dispute_type": "金额争议",
+    "order_amount": 32.5,
+    "evidences": [
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0057",
+    "dispute_type": "未送达",
+    "order_amount": 34.0,
+    "evidences": [
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0058",
+    "dispute_type": "货损",
+    "order_amount": 35.5,
+    "evidences": [
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0059",
+    "dispute_type": "超时",
+    "order_amount": 37.0,
+    "evidences": [
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0060",
+    "dispute_type": "金额争议",
+    "order_amount": 38.5,
+    "evidences": [
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0061",
+    "dispute_type": "未送达",
+    "order_amount": 10.0,
+    "evidences": [
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0062",
+    "dispute_type": "货损",
+    "order_amount": 11.5,
+    "evidences": [
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0063",
+    "dispute_type": "超时",
+    "order_amount": 13.0,
+    "evidences": [
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0064",
+    "dispute_type": "金额争议",
+    "order_amount": 14.5,
+    "evidences": [
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0065",
+    "dispute_type": "未送达",
+    "order_amount": 16.0,
+    "evidences": [
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0066",
+    "dispute_type": "货损",
+    "order_amount": 17.5,
+    "evidences": [
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0067",
+    "dispute_type": "超时",
+    "order_amount": 19.0,
+    "evidences": [
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0068",
+    "dispute_type": "金额争议",
+    "order_amount": 20.5,
+    "evidences": [
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0069",
+    "dispute_type": "未送达",
+    "order_amount": 22.0,
+    "evidences": [
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0070",
+    "dispute_type": "货损",
+    "order_amount": 23.5,
+    "evidences": [
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0071",
+    "dispute_type": "超时",
+    "order_amount": 25.0,
+    "evidences": [
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0072",
+    "dispute_type": "金额争议",
+    "order_amount": 26.5,
+    "evidences": [
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0073",
+    "dispute_type": "未送达",
+    "order_amount": 28.0,
+    "evidences": [
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0074",
+    "dispute_type": "货损",
+    "order_amount": 29.5,
+    "evidences": [
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0075",
+    "dispute_type": "超时",
+    "order_amount": 31.0,
+    "evidences": [
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0076",
+    "dispute_type": "金额争议",
+    "order_amount": 32.5,
+    "evidences": [
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0077",
+    "dispute_type": "未送达",
+    "order_amount": 34.0,
+    "evidences": [
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0078",
+    "dispute_type": "货损",
+    "order_amount": 35.5,
+    "evidences": [
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0079",
+    "dispute_type": "超时",
+    "order_amount": 37.0,
+    "evidences": [
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0080",
+    "dispute_type": "金额争议",
+    "order_amount": 38.5,
+    "evidences": [
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0081",
+    "dispute_type": "未送达",
+    "order_amount": 10.0,
+    "evidences": [
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0082",
+    "dispute_type": "货损",
+    "order_amount": 11.5,
+    "evidences": [
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0083",
+    "dispute_type": "超时",
+    "order_amount": 13.0,
+    "evidences": [
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0084",
+    "dispute_type": "金额争议",
+    "order_amount": 14.5,
+    "evidences": [
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0085",
+    "dispute_type": "未送达",
+    "order_amount": 16.0,
+    "evidences": [
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0086",
+    "dispute_type": "货损",
+    "order_amount": 17.5,
+    "evidences": [
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0087",
+    "dispute_type": "超时",
+    "order_amount": 19.0,
+    "evidences": [
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0088",
+    "dispute_type": "金额争议",
+    "order_amount": 20.5,
+    "evidences": [
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0089",
+    "dispute_type": "未送达",
+    "order_amount": 22.0,
+    "evidences": [
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0090",
+    "dispute_type": "货损",
+    "order_amount": 23.5,
+    "evidences": [
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0091",
+    "dispute_type": "超时",
+    "order_amount": 25.0,
+    "evidences": [
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0092",
+    "dispute_type": "金额争议",
+    "order_amount": 26.5,
+    "evidences": [
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0093",
+    "dispute_type": "未送达",
+    "order_amount": 28.0,
+    "evidences": [
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0094",
+    "dispute_type": "货损",
+    "order_amount": 29.5,
+    "evidences": [
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0095",
+    "dispute_type": "超时",
+    "order_amount": 31.0,
+    "evidences": [
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0096",
+    "dispute_type": "金额争议",
+    "order_amount": 32.5,
+    "evidences": [
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0097",
+    "dispute_type": "未送达",
+    "order_amount": 34.0,
+    "evidences": [
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0098",
+    "dispute_type": "货损",
+    "order_amount": 35.5,
+    "evidences": [
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0099",
+    "dispute_type": "超时",
+    "order_amount": 37.0,
+    "evidences": [
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0100",
+    "dispute_type": "金额争议",
+    "order_amount": 38.5,
+    "evidences": [
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0101",
+    "dispute_type": "未送达",
+    "order_amount": 10.0,
+    "evidences": [
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0102",
+    "dispute_type": "货损",
+    "order_amount": 11.5,
+    "evidences": [
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0103",
+    "dispute_type": "超时",
+    "order_amount": 13.0,
+    "evidences": [
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0104",
+    "dispute_type": "金额争议",
+    "order_amount": 14.5,
+    "evidences": [
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0105",
+    "dispute_type": "未送达",
+    "order_amount": 16.0,
+    "evidences": [
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0106",
+    "dispute_type": "货损",
+    "order_amount": 17.5,
+    "evidences": [
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0107",
+    "dispute_type": "超时",
+    "order_amount": 19.0,
+    "evidences": [
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0108",
+    "dispute_type": "金额争议",
+    "order_amount": 20.5,
+    "evidences": [
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0109",
+    "dispute_type": "未送达",
+    "order_amount": 22.0,
+    "evidences": [
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0110",
+    "dispute_type": "货损",
+    "order_amount": 23.5,
+    "evidences": [
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0111",
+    "dispute_type": "超时",
+    "order_amount": 25.0,
+    "evidences": [
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0112",
+    "dispute_type": "金额争议",
+    "order_amount": 26.5,
+    "evidences": [
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0113",
+    "dispute_type": "未送达",
+    "order_amount": 28.0,
+    "evidences": [
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0114",
+    "dispute_type": "货损",
+    "order_amount": 29.5,
+    "evidences": [
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0115",
+    "dispute_type": "超时",
+    "order_amount": 31.0,
+    "evidences": [
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0116",
+    "dispute_type": "金额争议",
+    "order_amount": 32.5,
+    "evidences": [
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      },
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester"
+  },
+  {
+    "dispute_id": "CASE0117",
+    "dispute_type": "未送达",
+    "order_amount": 34.0,
+    "evidences": [
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner"
+  },
+  {
+    "dispute_id": "CASE0118",
+    "dispute_type": "货损",
+    "order_amount": 35.5,
+    "evidences": [
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester",
+    "reviewer_accepted": true
+  },
+  {
+    "dispute_id": "CASE0119",
+    "dispute_type": "超时",
+    "order_amount": 37.0,
+    "evidences": [
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner",
+    "reviewer_accepted": true
+  },
+  {
+    "dispute_id": "CASE0120",
+    "dispute_type": "金额争议",
+    "order_amount": 38.5,
+    "evidences": [
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester",
+    "reviewer_accepted": true
+  },
+  {
+    "dispute_id": "CASE0121",
+    "dispute_type": "未送达",
+    "order_amount": 10.0,
+    "evidences": [
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner",
+    "reviewer_accepted": true
+  },
+  {
+    "dispute_id": "CASE0122",
+    "dispute_type": "货损",
+    "order_amount": 11.5,
+    "evidences": [
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "requester",
+    "reviewer_accepted": true
+  },
+  {
+    "dispute_id": "CASE0123",
+    "dispute_type": "超时",
+    "order_amount": 13.0,
+    "evidences": [
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "runner",
+    "reviewer_accepted": true
+  },
+  {
+    "dispute_id": "CASE0124",
+    "dispute_type": "金额争议",
+    "order_amount": 14.5,
+    "evidences": [
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "runner",
+    "reviewer_accepted": true
+  },
+  {
+    "dispute_id": "CASE0125",
+    "dispute_type": "未送达",
+    "order_amount": 16.0,
+    "evidences": [
+      {
+        "id": "requester-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "requester",
+        "content": "聊天记录显示对方答应 12:00 送达，实际迟到"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "requester",
+    "reviewer_accepted": true
+  },
+  {
+    "dispute_id": "CASE0126",
+    "dispute_type": "货损",
+    "order_amount": 17.5,
+    "evidences": [
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "runner",
+    "reviewer_accepted": true
+  },
+  {
+    "dispute_id": "CASE0127",
+    "dispute_type": "超时",
+    "order_amount": 19.0,
+    "evidences": [
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "requester",
+    "reviewer_accepted": true
+  },
+  {
+    "dispute_id": "CASE0128",
+    "dispute_type": "金额争议",
+    "order_amount": 20.5,
+    "evidences": [
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "runner",
+    "reviewer_accepted": true
+  },
+  {
+    "dispute_id": "CASE0129",
+    "dispute_type": "未送达",
+    "order_amount": 22.0,
+    "evidences": [
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "requester",
+    "reviewer_accepted": true
+  },
+  {
+    "dispute_id": "CASE0130",
+    "dispute_type": "货损",
+    "order_amount": 23.5,
+    "evidences": [
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "runner",
+    "reviewer_accepted": true
+  },
+  {
+    "dispute_id": "CASE0131",
+    "dispute_type": "超时",
+    "order_amount": 25.0,
+    "evidences": [
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "requester",
+    "reviewer_accepted": true
+  },
+  {
+    "dispute_id": "CASE0132",
+    "dispute_type": "金额争议",
+    "order_amount": 26.5,
+    "evidences": [
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "runner",
+    "reviewer_accepted": true
+  },
+  {
+    "dispute_id": "CASE0133",
+    "dispute_type": "未送达",
+    "order_amount": 28.0,
+    "evidences": [
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "requester",
+    "reviewer_accepted": true
+  },
+  {
+    "dispute_id": "CASE0134",
+    "dispute_type": "货损",
+    "order_amount": 29.5,
+    "evidences": [
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-chat_screenshot",
+        "type": "chat_screenshot",
+        "submitted_by": "runner",
+        "content": "聊天记录显示已联系对方，对方称收到"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "runner",
+    "reviewer_accepted": true
+  },
+  {
+    "dispute_id": "CASE0135",
+    "dispute_type": "超时",
+    "order_amount": 31.0,
+    "evidences": [
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "requester",
+    "reviewer_accepted": true
+  },
+  {
+    "dispute_id": "CASE0136",
+    "dispute_type": "金额争议",
+    "order_amount": 32.5,
+    "evidences": [
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "runner",
+    "reviewer_accepted": true
+  },
+  {
+    "dispute_id": "CASE0137",
+    "dispute_type": "未送达",
+    "order_amount": 34.0,
+    "evidences": [
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "requester",
+    "reviewer_accepted": true
+  },
+  {
+    "dispute_id": "CASE0138",
+    "dispute_type": "货损",
+    "order_amount": 35.5,
+    "evidences": [
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "runner",
+    "reviewer_accepted": true
+  },
+  {
+    "dispute_id": "CASE0139",
+    "dispute_type": "超时",
+    "order_amount": 37.0,
+    "evidences": [
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "requester",
+    "reviewer_accepted": true
+  },
+  {
+    "dispute_id": "CASE0140",
+    "dispute_type": "金额争议",
+    "order_amount": 38.5,
+    "evidences": [
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "runner",
+    "reviewer_accepted": true
+  },
+  {
+    "dispute_id": "CASE0141",
+    "dispute_type": "未送达",
+    "order_amount": 10.0,
+    "evidences": [
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "requester",
+    "reviewer_accepted": true
+  },
+  {
+    "dispute_id": "CASE0142",
+    "dispute_type": "货损",
+    "order_amount": 11.5,
+    "evidences": [
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "runner",
+    "reviewer_accepted": true
+  },
+  {
+    "dispute_id": "CASE0143",
+    "dispute_type": "超时",
+    "order_amount": 13.0,
+    "evidences": [
+      {
+        "id": "requester-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "requester",
+        "content": "门口照片，物品破损，未收到"
+      },
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "requester",
+    "reviewer_accepted": true
+  },
+  {
+    "dispute_id": "CASE0144",
+    "dispute_type": "金额争议",
+    "order_amount": 14.5,
+    "evidences": [
+      {
+        "id": "runner-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "runner",
+        "content": "已收款 20 元，订单编号 88231"
+      },
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "runner",
+    "reviewer_accepted": true
+  },
+  {
+    "dispute_id": "CASE0145",
+    "dispute_type": "未送达",
+    "order_amount": 16.0,
+    "evidences": [
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "requester",
+    "reviewer_accepted": true
+  },
+  {
+    "dispute_id": "CASE0146",
+    "dispute_type": "货损",
+    "order_amount": 17.5,
+    "evidences": [
+      {
+        "id": "runner-timestamp",
+        "type": "timestamp",
+        "submitted_by": "runner",
+        "content": "12:00 接单，12:20 已送达"
+      },
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "runner",
+    "reviewer_accepted": true
+  },
+  {
+    "dispute_id": "CASE0147",
+    "dispute_type": "超时",
+    "order_amount": 19.0,
+    "evidences": [
+      {
+        "id": "requester-payment_proof",
+        "type": "payment_proof",
+        "submitted_by": "requester",
+        "content": "已支付 20 元，订单编号 88231"
+      },
+      {
+        "id": "requester-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "requester",
+        "content": "该跑腿方此前超时两次"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "requester",
+    "reviewer_accepted": true
+  },
+  {
+    "dispute_id": "CASE0148",
+    "dispute_type": "金额争议",
+    "order_amount": 20.5,
+    "evidences": [
+      {
+        "id": "runner-scene_photo",
+        "type": "scene_photo",
+        "submitted_by": "runner",
+        "content": "交付照片，物品完好，已拍照"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "runner",
+    "reviewer_accepted": false
+  },
+  {
+    "dispute_id": "CASE0149",
+    "dispute_type": "未送达",
+    "order_amount": 22.0,
+    "evidences": [
+      {
+        "id": "requester-timestamp",
+        "type": "timestamp",
+        "submitted_by": "requester",
+        "content": "12:00 下单，12:40 仍未送达"
+      },
+      {
+        "id": "requester-order_record",
+        "type": "order_record",
+        "submitted_by": "requester",
+        "content": "订单要求 12:00 前送达，实际未送达"
+      }
+    ],
+    "machine_liable": "runner",
+    "gold_liable": "requester",
+    "reviewer_accepted": false
+  },
+  {
+    "dispute_id": "CASE0150",
+    "dispute_type": "货损",
+    "order_amount": 23.5,
+    "evidences": [
+      {
+        "id": "runner-order_record",
+        "type": "order_record",
+        "submitted_by": "runner",
+        "content": "订单记录显示已送达，已签收"
+      },
+      {
+        "id": "runner-history_dispute",
+        "type": "history_dispute",
+        "submitted_by": "runner",
+        "content": "此前无纠纷记录，按时完成"
+      }
+    ],
+    "machine_liable": "requester",
+    "gold_liable": "runner",
+    "reviewer_accepted": false
+  }
+]
